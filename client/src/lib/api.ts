@@ -11,6 +11,87 @@ import {
   Conversation
 } from '@/types';
 
+export interface LearningPathProgress {
+  total_courses: number;
+  completed_courses: number;
+  overall_progress: number;
+  total_milestones: number;
+  completed_milestones: number;
+  current_milestone: string | null;
+  next_course_id: string | null;
+}
+
+export interface LearningPathCourseItem {
+  id: string;
+  course_id?: string;
+  title: string;
+  provider?: string;
+  match_score?: number;
+  reason?: string;
+  status?: 'completed' | 'in_progress' | 'available' | 'locked';
+  is_completed?: boolean;
+  is_next?: boolean;
+}
+
+export interface LearningPathProjectItem {
+  id: string;
+  project_id?: string;
+  title: string;
+  description?: string;
+  reason?: string;
+  match_score?: number;
+  status?: 'completed' | 'available' | 'locked';
+  is_completed?: boolean;
+  is_locked?: boolean;
+  missing_prerequisites?: string[];
+}
+
+export interface LearningPathAssessmentItem {
+  id: string;
+  assessment_id?: string;
+  title: string;
+  description?: string;
+  reason?: string;
+  readiness_state?: 'eligible' | 'locked' | 'completed';
+  status?: 'completed' | 'eligible' | 'locked';
+  is_completed?: boolean;
+  is_locked?: boolean;
+  missing_skills?: string[];
+  last_score?: number;
+}
+
+export interface LearningPathMilestone {
+  milestone_id: string;
+  title: string;
+  description: string;
+  dependency_depth: number;
+  course_ids: string[];
+  courses?: (string | LearningPathCourseItem)[];
+  skills: string[];
+  estimated_hours: number;
+  status: 'not_started' | 'in_progress' | 'completed';
+  progress: number;
+  completed_course_ids: string[];
+  remaining_course_ids: string[];
+  next_course_id: string | null;
+  project_ids: string[];
+  projects?: (string | LearningPathProjectItem)[];
+  assessment_ids: string[];
+  assessments?: (string | LearningPathAssessmentItem)[];
+}
+
+export interface LearningPathResponse {
+  success: boolean;
+  goal: string;
+  status?: 'active' | 'completed' | 'no_recommendations' | string;
+  reason?: string;
+  total_courses: number;
+  total_milestones: number;
+  courses: (string | LearningPathCourseItem)[];
+  milestones: LearningPathMilestone[];
+  progress: LearningPathProgress;
+}
+
 const getNormalizedApiUrl = (): string => {
   const rawUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api/v1';
   const cleanUrl = rawUrl.trim().replace(/\/+$/, '');
@@ -74,6 +155,8 @@ apiClient.interceptors.response.use(
         // If refresh token request itself returned 401, clear session and reject
         if (typeof window !== 'undefined') {
           sessionStorage.removeItem('token');
+          delete apiClient.defaults.headers.common.Authorization;
+          window.dispatchEvent(new CustomEvent('auth:session-expired'));
         }
         return Promise.reject(error);
       }
@@ -113,6 +196,8 @@ apiClient.interceptors.response.use(
         processQueue(refreshError, null);
         if (typeof window !== 'undefined') {
           sessionStorage.removeItem('token');
+          delete apiClient.defaults.headers.common.Authorization;
+          window.dispatchEvent(new CustomEvent('auth:session-expired'));
         }
         return Promise.reject(refreshError);
       } finally {
@@ -823,5 +908,54 @@ export const api = {
     } catch (error) {
       return { success: false };
     }
+  },
+
+  // Learning Path
+  async generateLearningPath(
+    goal: string,
+    skillGaps: any[] = []
+  ): Promise<LearningPathResponse> {
+    const response = await apiClient.post('/learning-path/generate', {
+      goal,
+      skill_gaps: skillGaps
+    });
+
+    return unwrapData<LearningPathResponse>(response.data);
+  },
+
+  async completeCourse(
+    courseId: string
+  ): Promise<any> {
+    const response = await apiClient.post(
+      `/courses/${encodeURIComponent(courseId)}/complete`
+    );
+
+    return unwrapData<any>(response.data);
+  },
+
+  async completeProject(
+    projectId: string
+  ): Promise<any> {
+    const response = await apiClient.post(
+      `/projects/${encodeURIComponent(projectId)}/complete`
+    );
+
+    return unwrapData<any>(response.data);
+  },
+
+  async submitAssessment(
+    assessmentId: string,
+    score: number,
+    userAnswers: Record<string, any> = {}
+  ): Promise<any> {
+    const response = await apiClient.post(
+      `/assessments/${encodeURIComponent(assessmentId)}/submit`,
+      {
+        score,
+        user_answers: userAnswers
+      }
+    );
+
+    return unwrapData<any>(response.data);
   }
 };

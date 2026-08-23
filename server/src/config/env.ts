@@ -25,3 +25,23 @@ export const env = {
   GEMINI_MODEL: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
 };
 
+export function validateProductionEnv(): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  if (process.env.NODE_ENV === 'production') {
+    if (!process.env.MONGODB_URI) {
+      errors.push('MONGODB_URI environment variable is required in production.');
+    }
+    if (!process.env.JWT_ACCESS_SECRET || process.env.JWT_ACCESS_SECRET.startsWith('fallback_')) {
+      errors.push('Secure JWT_ACCESS_SECRET environment variable is required in production.');
+    }
+    if (!process.env.JWT_REFRESH_SECRET || process.env.JWT_REFRESH_SECRET.startsWith('fallback_')) {
+      errors.push('Secure JWT_REFRESH_SECRET environment variable is required in production.');
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+}

@@ -13,9 +13,9 @@ This document explains the exact step-by-step workflow of how the **Roadmap Gene
  [Step 1] Profile Skill & Commitment Normalization (skill_normalizer.py)
                                           │
                                           ▼
- [Step 2] Career Retrieval & Skill Gap Analysis (recommendation_engine.py)
-          - Computes Weighted Skill Match Ratio
-          - Categorizes: Missing Skills, Skills Needing Work, Strong Skills
+ [Step 2] Career Goal Matching & Ranking (recommendation_engine.py)
+          - Executes 6-Factor Hybrid Match Scoring
+          - Ranks candidate career goals based on profile compatibility
                                           │
                                           ▼
  [Step 3] Prerequisite DAG Topological Sorting & Cycle Check (skill_graph.py)

@@ -15,6 +15,7 @@ import feedbackRoutes from './routes/feedback.routes';
 import conversationRoutes from './routes/conversation.routes';
 import assistantRoutes from './routes/assistant.routes';
 import dashboardRoutes from './routes/dashboard.routes';
+import learningPathRoutes from './routes/learning-path.routes';
 
 import { notFoundMiddleware } from './middleware/notFound.middleware';
 import { errorMiddleware } from './middleware/error.middleware';
@@ -60,6 +61,7 @@ app.use(cookieParser());
 
 // Base API Routes
 app.use('/api/v1', healthRoutes);
+app.use('/api/v1', learningPathRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/profile', profileRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);

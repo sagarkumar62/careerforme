@@ -1,8 +1,9 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Sparkles, ArrowRight, CheckCircle2, Play, Compass, Flame, Clock, Target, AlertCircle } from 'lucide-react';
+import { Sparkles, ArrowRight, CheckCircle2, Play, Compass, Flame, Target, AlertCircle, Zap, Radio } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,16 +11,44 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { MatchScore } from '@/components/ui/match-score';
 import { api } from '@/lib/api';
-
 import { useAuth } from '@/context/AuthContext';
+import { useSocket } from '@/context/SocketContext';
 
 export default function DashboardPage() {
   const { user: authUser, profile: authProfile } = useAuth();
+  const { socket, isConnected } = useSocket();
+  const queryClient = useQueryClient();
+  const [liveNotification, setLiveNotification] = useState<string | null>(null);
 
   const { data: dashboard, isLoading } = useQuery({
     queryKey: ['dashboard'],
-    queryFn: () => api.getDashboardData()
+    queryFn: () => api.getDashboardData(),
+    refetchOnWindowFocus: true,
   });
+
+  // Real-time Socket.IO Live Synchronization
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleLiveProgressUpdate = (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['progress'] });
+      setLiveNotification('⚡ Dashboard updated in real time!');
+      setTimeout(() => setLiveNotification(null), 4000);
+    };
+
+    socket.on('progress:updated', handleLiveProgressUpdate);
+    socket.on('progress:summary-updated', handleLiveProgressUpdate);
+    socket.on('progress:milestone-completed', handleLiveProgressUpdate);
+    socket.on('progress:skill-acquired', handleLiveProgressUpdate);
+
+    return () => {
+      socket.off('progress:updated', handleLiveProgressUpdate);
+      socket.off('progress:summary-updated', handleLiveProgressUpdate);
+      socket.off('progress:milestone-completed', handleLiveProgressUpdate);
+      socket.off('progress:skill-acquired', handleLiveProgressUpdate);
+    };
+  }, [socket, queryClient]);
 
   if (isLoading || !dashboard) {
     return (
@@ -47,7 +76,6 @@ export default function DashboardPage() {
       overallCompletionPercent: dashboard.currentProgress?.overallCompletionPercent ?? dashboard.progress?.overallPercentage ?? (dashboard.roadmap as any)?.overallCompletionPercent ?? 0,
       completedMilestones: dashboard.currentProgress?.completedMilestones ?? dashboard.progress?.completedMilestones ?? 0,
       totalMilestones: dashboard.currentProgress?.totalMilestones ?? dashboard.progress?.totalMilestones ?? 0,
-      learningHours: dashboard.currentProgress?.learningHours ?? dashboard.progress?.totalTimeSpentHours ?? 0,
       streakDays: dashboard.currentProgress?.streakDays ?? dashboard.progress?.currentStreakDays ?? 0
     },
     currentPhase: {
@@ -82,9 +110,20 @@ export default function DashboardPage() {
         {/* Header Greeting */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Good evening, {safeDashboard.user.name.split(' ')[0]} 👋
-            </h1>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                Good evening, {safeDashboard.user.name.split(' ')[0]} 👋
+              </h1>
+              {isConnected && (
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-extrabold shadow-2xs">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <span>Live Sync Active</span>
+                </div>
+              )}
+            </div>
             <p className="text-slate-500 text-sm mt-0.5">
               You're on track to become an <strong className="text-indigo-600">{safeDashboard.activeGoal.title}</strong>.
             </p>
@@ -96,8 +135,21 @@ export default function DashboardPage() {
           </Link>
         </div>
 
+        {/* Real-time Live Notification Banner */}
+        {liveNotification && (
+          <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-extrabold flex items-center justify-between shadow-md animate-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-emerald-600 shrink-0" />
+              <span>{liveNotification}</span>
+            </div>
+            <button onClick={() => setLiveNotification(null)} className="opacity-70 hover:opacity-100 px-2 py-0.5 text-xs font-bold">
+              ✕
+            </button>
+          </div>
+        )}
+
         {/* Metric Cards Row */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Active Goal */}
           <Card className="p-5 flex items-center gap-4 bg-white border-slate-200">
             <MatchScore score={safeDashboard.activeGoal.matchScore} size="sm" showLabel={false} />
@@ -124,18 +176,6 @@ export default function DashboardPage() {
                 )}
               </div>
               <Progress value={safeDashboard.currentProgress.overallCompletionPercent} size="sm" className="mt-1" />
-            </div>
-          </Card>
-
-          {/* Learning Hours */}
-          <Card className="p-5 flex items-center gap-4 bg-white border-slate-200">
-            <div className="h-11 w-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold">
-              <Clock className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Total Learning</p>
-              <h3 className="font-extrabold text-slate-900 text-sm mt-0.5">{safeDashboard.currentProgress.learningHours} Hours</h3>
-              <p className="text-[11px] text-slate-500">Recorded study time</p>
             </div>
           </Card>
 

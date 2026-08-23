@@ -170,7 +170,7 @@ Generate thousands of user profiles programmatically from your knowledge base to
 | Component | Responsible Engine | Primary Task |
 |---|---|---|
 | **Semantic Matching** | SentenceTransformers + FAISS | Match user profile text with target career ($O(1)$ similarity lookup) |
-| **Skill Gap Calculation** | Python Rule Engine (`recommendation_engine.py`) | Calculate weighted skill match ratio $\sum (w_i \times \min(L_u / L_r, 1)) / \sum w_i$ |
+| **Career Goal Matching & Ranking** | Python Hybrid Engine (`recommendation_engine.py`) | Execute 6-factor hybrid match scoring (Learner $\rightarrow$ Career/Goal Matching $\rightarrow$ Rank career goals) |
 | **Phase & Order Sequencing** | Python Roadmap Engine (`roadmap_engine.py`) | Order prerequisites into 4 progressive learning phases |
 | **Content & Resource Enrichment** | Google Gemini API (`gemini-3.6-flash`) | Enrich each phase with Video 🎥, Docs 📄, Project 🚀 resources & flowcharts |
 | **Interactive UI & Persistence** | MongoDB & Next.js 16 | Render interactive checkable milestones, live progress tracking, and multi-roadmap tabs |

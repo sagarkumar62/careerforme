@@ -13,7 +13,8 @@ import {
   LogOut,
   Menu,
   X,
-  Target
+  Target,
+  Layers
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/recommendations', label: 'Explore Careers', icon: Compass },
   { href: '/roadmap', label: 'My Roadmap', icon: MapPin },
+  { href: '/learning-path', label: 'Learning Path', icon: Layers },
   { href: '/skill-gap', label: 'Skill Gap', icon: Target },
   { href: '/progress', label: 'Progress', icon: BarChart2 },
   { href: '/assistant', label: 'AI Assistant', icon: Bot },

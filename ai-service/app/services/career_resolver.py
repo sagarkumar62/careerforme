@@ -12,8 +12,10 @@ def normalize_career_input(target_career: str) -> str:
     if not target_career or not isinstance(target_career, str):
         return ""
     clean = target_career.strip().lower()
-    clean = re.sub(r'[^a-z0-9\s\-]+', '', clean)
-    return re.sub(r'\s+', ' ', clean)
+    clean = clean.replace('-', ' ')
+    clean = re.sub(r'[^a-z0-9\s]+', '', clean)
+    clean = re.sub(r'^(become\s+an?\s+|become\s+|master\s+|learn\s+|study\s+|path\s+to\s+|how\s+to\s+become\s+an?\s+|how\s+to\s+become\s+)', '', clean).strip()
+    return re.sub(r'\s+', ' ', clean).strip()
 
 
 def get_alias_map() -> Dict[str, str]:

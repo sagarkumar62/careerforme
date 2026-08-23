@@ -1,0 +1,275 @@
+[
+  {
+    "id": "python-foundations-assessment",
+    "title": "Python Foundations Assessment",
+    "description": "Evaluate fundamental Python programming knowledge and problem-solving ability.",
+    "type": "quiz",
+    "skills": [
+      {
+        "skill_id": "python",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_minutes": 30,
+    "passing_score": 70,
+    "questions": [
+      {
+        "id": "python-foundations-q1",
+        "skill_id": "python",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "python-foundations-q2",
+        "skill_id": "python",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "python-foundations-q3",
+        "skill_id": "python",
+        "type": "coding"
+      }
+    ],
+    "category": "Programming"
+  },
+  {
+    "id": "javascript-foundations-assessment",
+    "title": "JavaScript Foundations Assessment",
+    "description": "Evaluate JavaScript fundamentals including functions, objects, arrays, and asynchronous programming concepts.",
+    "type": "quiz",
+    "skills": [
+      {
+        "skill_id": "javascript",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_minutes": 30,
+    "passing_score": 70,
+    "questions": [
+      {
+        "id": "javascript-foundations-q1",
+        "skill_id": "javascript",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "javascript-foundations-q2",
+        "skill_id": "javascript",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "javascript-foundations-q3",
+        "skill_id": "javascript",
+        "type": "coding"
+      }
+    ],
+    "category": "Web Development"
+  },
+  {
+    "id": "react-assessment",
+    "title": "React Development Assessment",
+    "description": "Evaluate the learner's ability to build React components and manage application state.",
+    "type": "quiz",
+    "skills": [
+      {
+        "skill_id": "react",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_minutes": 35,
+    "passing_score": 70,
+    "questions": [
+      {
+        "id": "react-q1",
+        "skill_id": "react",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "react-q2",
+        "skill_id": "react",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "react-q3",
+        "skill_id": "react",
+        "type": "coding"
+      }
+    ],
+    "category": "Web Development"
+  },
+  {
+    "id": "machine-learning-assessment",
+    "title": "Machine Learning Fundamentals Assessment",
+    "description": "Evaluate understanding of supervised learning, model evaluation, feature engineering, and common machine learning algorithms.",
+    "type": "quiz",
+    "skills": [
+      {
+        "skill_id": "machine learning",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "statistics",
+        "target_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_minutes": 40,
+    "passing_score": 70,
+    "questions": [
+      {
+        "id": "ml-q1",
+        "skill_id": "machine learning",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "ml-q2",
+        "skill_id": "machine learning",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "ml-q3",
+        "skill_id": "statistics",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "ml-q4",
+        "skill_id": "machine learning",
+        "type": "coding"
+      }
+    ],
+    "category": "Artificial Intelligence"
+  },
+  {
+    "id": "statistics-assessment",
+    "title": "Statistics for Data Science Assessment",
+    "description": "Evaluate statistical reasoning and practical data-analysis concepts.",
+    "type": "quiz",
+    "skills": [
+      {
+        "skill_id": "statistics",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_minutes": 35,
+    "passing_score": 70,
+    "questions": [
+      {
+        "id": "statistics-q1",
+        "skill_id": "statistics",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "statistics-q2",
+        "skill_id": "statistics",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "statistics-q3",
+        "skill_id": "statistics",
+        "type": "problem_solving"
+      }
+    ],
+    "category": "Data Science"
+  },
+  {
+    "id": "docker-assessment",
+    "title": "Docker and Containerization Assessment",
+    "description": "Evaluate knowledge of Docker images, containers, networking, volumes, and containerized application workflows.",
+    "type": "quiz",
+    "skills": [
+      {
+        "skill_id": "docker",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_minutes": 30,
+    "passing_score": 70,
+    "questions": [
+      {
+        "id": "docker-q1",
+        "skill_id": "docker",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "docker-q2",
+        "skill_id": "docker",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "docker-q3",
+        "skill_id": "docker",
+        "type": "practical"
+      }
+    ],
+    "category": "DevOps"
+  },
+  {
+    "id": "kubernetes-assessment",
+    "title": "Kubernetes Foundations Assessment",
+    "description": "Evaluate understanding of Kubernetes workloads, services, configuration, and deployment concepts.",
+    "type": "quiz",
+    "skills": [
+      {
+        "skill_id": "kubernetes",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_minutes": 35,
+    "passing_score": 70,
+    "questions": [
+      {
+        "id": "kubernetes-q1",
+        "skill_id": "kubernetes",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "kubernetes-q2",
+        "skill_id": "kubernetes",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "kubernetes-q3",
+        "skill_id": "kubernetes",
+        "type": "practical"
+      }
+    ],
+    "category": "DevOps"
+  },
+  {
+    "id": "security-assessment",
+    "title": "Security Fundamentals Assessment",
+    "description": "Evaluate understanding of common security principles, threats, vulnerabilities, and defensive practices.",
+    "type": "quiz",
+    "skills": [
+      {
+        "skill_id": "security fundamentals",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_minutes": 35,
+    "passing_score": 70,
+    "questions": [
+      {
+        "id": "security-q1",
+        "skill_id": "security fundamentals",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "security-q2",
+        "skill_id": "security fundamentals",
+        "type": "multiple_choice"
+      },
+      {
+        "id": "security-q3",
+        "skill_id": "security fundamentals",
+        "type": "scenario"
+      }
+    ],
+    "category": "Cybersecurity"
+  }
+]

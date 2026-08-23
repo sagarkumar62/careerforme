@@ -1,0 +1,261 @@
+[
+  {
+    "id": "python-cli-project",
+    "title": "Build a Python Command-Line Productivity Tool",
+    "description": "Build a practical command-line application that uses functions, modules, data structures, file handling, and error handling.",
+    "skills": [
+      {
+        "skill_id": "python",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_hours": 8.0,
+    "prerequisites": [],
+    "deliverables": [
+      "Working command-line application",
+      "README documentation",
+      "Unit tests"
+    ],
+    "category": "Programming"
+  },
+  {
+    "id": "fullstack-task-manager",
+    "title": "Build a Full-Stack Task Management Application",
+    "description": "Build a web application with a React frontend and Node.js REST API backed by a relational database.",
+    "skills": [
+      {
+        "skill_id": "javascript",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "react",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "node.js",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "sql",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 20.0,
+    "prerequisites": [
+      {
+        "skill_id": "javascript",
+        "minimum_level": 4.0
+      },
+      {
+        "skill_id": "html-css",
+        "minimum_level": 4.0
+      }
+    ],
+    "deliverables": [
+      "React frontend",
+      "Node.js REST API",
+      "Database schema",
+      "CRUD functionality",
+      "README documentation"
+    ],
+    "category": "Web Development"
+  },
+  {
+    "id": "python-data-analysis-project",
+    "title": "Build an Exploratory Data Analysis Report",
+    "description": "Use Python and data-analysis techniques to clean a real dataset, explore patterns, visualize findings, and communicate conclusions.",
+    "skills": [
+      {
+        "skill_id": "python",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "data analysis",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "statistics",
+        "target_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 10.0,
+    "prerequisites": [
+      {
+        "skill_id": "python",
+        "minimum_level": 3.0
+      }
+    ],
+    "deliverables": [
+      "Cleaned dataset",
+      "Exploratory analysis notebook",
+      "Data visualizations",
+      "Findings report"
+    ],
+    "category": "Data Science"
+  },
+  {
+    "id": "ml-regression-project",
+    "title": "Build a Machine Learning Regression System",
+    "description": "Build an end-to-end regression pipeline including data preparation, model training, validation, evaluation, and interpretation.",
+    "skills": [
+      {
+        "skill_id": "python",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "machine learning",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "statistics",
+        "target_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 12.0,
+    "prerequisites": [
+      {
+        "skill_id": "python",
+        "minimum_level": 5.0
+      },
+      {
+        "skill_id": "statistics",
+        "minimum_level": 4.0
+      }
+    ],
+    "deliverables": [
+      "Data preprocessing pipeline",
+      "Trained regression model",
+      "Model evaluation results",
+      "Technical report"
+    ],
+    "category": "Artificial Intelligence"
+  },
+  {
+    "id": "ml-model-engineering-project",
+    "title": "Build a Production-Ready ML Pipeline",
+    "description": "Design a robust machine learning pipeline with feature engineering, model comparison, hyperparameter optimization, and reproducible evaluation.",
+    "skills": [
+      {
+        "skill_id": "machine learning",
+        "target_level": 8.0
+      },
+      {
+        "skill_id": "python",
+        "target_level": 8.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 18.0,
+    "prerequisites": [
+      {
+        "skill_id": "machine learning",
+        "minimum_level": 5.0
+      },
+      {
+        "skill_id": "python",
+        "minimum_level": 5.0
+      }
+    ],
+    "deliverables": [
+      "Feature engineering pipeline",
+      "Multiple trained models",
+      "Hyperparameter optimization results",
+      "Model evaluation report"
+    ],
+    "category": "Artificial Intelligence"
+  },
+  {
+    "id": "dockerized-web-application",
+    "title": "Containerize and Deploy a Web Application",
+    "description": "Containerize a web application using Docker, configure networking and environment variables, and run the application using multiple containers.",
+    "skills": [
+      {
+        "skill_id": "docker",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "linux",
+        "target_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 10.0,
+    "prerequisites": [
+      {
+        "skill_id": "linux",
+        "minimum_level": 3.0
+      }
+    ],
+    "deliverables": [
+      "Dockerfile",
+      "Docker Compose configuration",
+      "Containerized application",
+      "Deployment documentation"
+    ],
+    "category": "DevOps"
+  },
+  {
+    "id": "kubernetes-deployment-project",
+    "title": "Deploy an Application to Kubernetes",
+    "description": "Deploy a containerized application to Kubernetes using Deployments, Services, ConfigMaps, Secrets, and basic scaling.",
+    "skills": [
+      {
+        "skill_id": "kubernetes",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "docker",
+        "target_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 14.0,
+    "prerequisites": [
+      {
+        "skill_id": "docker",
+        "minimum_level": 5.0
+      }
+    ],
+    "deliverables": [
+      "Kubernetes Deployment manifest",
+      "Service configuration",
+      "ConfigMap and Secret configuration",
+      "Deployment instructions"
+    ],
+    "category": "DevOps"
+  },
+  {
+    "id": "security-audit-project",
+    "title": "Perform a Web Application Security Audit",
+    "description": "Analyze a deliberately vulnerable web application, identify common security weaknesses, and document remediation recommendations.",
+    "skills": [
+      {
+        "skill_id": "security fundamentals",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "networking",
+        "target_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 12.0,
+    "prerequisites": [
+      {
+        "skill_id": "security fundamentals",
+        "minimum_level": 4.0
+      }
+    ],
+    "deliverables": [
+      "Security findings report",
+      "Vulnerability severity assessment",
+      "Evidence for identified vulnerabilities",
+      "Remediation recommendations"
+    ],
+    "category": "Cybersecurity"
+  }
+]

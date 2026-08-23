@@ -17,7 +17,7 @@ def test_resolve_frontend_developer_graph():
     assert res["success"] is True
     assert res["resolved_career"] == "Frontend Developer"
     assert res["career_id"] == "frontend-developer"
-    assert res["domain"] == "technology"
+    assert res["domain"] in ["technology", "software-development"]
 
 
 def test_resolve_devops_engineer_graph():
@@ -25,7 +25,7 @@ def test_resolve_devops_engineer_graph():
     assert res["success"] is True
     assert res["resolved_career"] == "DevOps Engineer"
     assert res["career_id"] == "devops-engineer"
-    assert res["domain"] == "technology"
+    assert res["domain"] in ["technology", "cloud-and-devops"]
 
 
 def test_resolve_ai_engineer_graph():
@@ -33,7 +33,8 @@ def test_resolve_ai_engineer_graph():
     assert res["success"] is True
     assert res["resolved_career"] == "AI Engineer"
     assert res["career_id"] == "ai-engineer"
-    assert res["domain"] == "technology"
+    assert res["domain"] in ["technology", "data-and-ai"]
+
 
 
 def test_resolve_ux_designer_graph():

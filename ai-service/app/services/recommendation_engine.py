@@ -1,3 +1,22 @@
+"""
+Recommendation Engine Service (Career/Goal Matching & Ranking)
+
+Single Responsibility:
+    Learner Profile -> Career/Goal Matching -> Rank possible career goals
+
+Role & Scope:
+    This engine executes the 6-factor hybrid match scoring model (Skill Match, Interest Match,
+    Goal Alignment, Experience Alignment, Education Alignment, and Semantic Similarity) to calculate 
+    compatibility between a learner profile and candidate career goals. It ranks possible career goals 
+    and returns top matches.
+
+Non-Goals / Scope Boundaries:
+    - Does NOT handle detailed skill gap analysis (delegated to dedicated skill gap endpoints/services)
+    - Does NOT recommend learning courses (delegated to course recommendation engines)
+    - Does NOT generate learning roadmaps (delegated to roadmap_engine.py)
+    - Does NOT call LLMs for explanations (delegated to gateway LLM service)
+"""
+
 import json
 from typing import Dict, List, Tuple
 from pathlib import Path
@@ -12,6 +31,7 @@ from app.ingestion.unified_loader import load_unified_careers
 
 
 def load_careers() -> List[Career]:
+
     unified = load_unified_careers()
     careers = []
     for c in unified:
@@ -110,6 +130,12 @@ def _semantic_similarity(profile_text: str, career_id: str, embedding_service=No
 
 
 def recommend(profile: Dict, top_k: int = 3, embedding_service=None, career_embeddings: dict = None) -> Dict:
+    """
+    Evaluates a learner profile against all available career goals using 
+    the 6-factor hybrid match scoring system and returns top_k ranked career recommendations.
+    
+    Pipeline: Learner Profile -> Career/Goal Matching (6-factor score) -> Rank career goals
+    """
     profile = normalize_profile_skills(profile)
     recommendations = []
     for career in CAREERS:

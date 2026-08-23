@@ -12,6 +12,17 @@ export const generateRoadmap = async (
     const userId = req.user!._id;
     const { targetCareer } = req.body;
     const roadmap = await roadmapService.generateRoadmap(userId, targetCareer);
+
+    try {
+      const { emitProgressEvent, PROGRESS_EVENTS } = await import('../socket');
+      const { progressService } = await import('../services/progress.service');
+      const summary = await progressService.getProgressSummary(userId);
+      emitProgressEvent(userId, PROGRESS_EVENTS.UPDATED, { userId, timestamp: new Date().toISOString() });
+      emitProgressEvent(userId, PROGRESS_EVENTS.SUMMARY_UPDATED, { summary });
+    } catch (err: any) {
+      console.warn('[RoadmapController] Socket notification skipped:', err.message);
+    }
+
     res.status(201).json(new ApiResponse(201, roadmap, 'Learning roadmap generated successfully'));
   } catch (error) {
     next(error);

@@ -8,7 +8,13 @@
     "start": "node dist/server.js",
     "seed": "tsx src/utils/seed.ts",
     "test:routes": "tsx src/utils/test-routes.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:gateway": "tsx src/utils/test-learning-path-gateway.ts",
+    "test:sync": "tsx src/utils/test-learner-state-synchronization.ts",
+    "test:e2e": "tsx src/utils/test-adaptive-learning-e2e.ts",
+    "test:logging": "tsx src/utils/test-learning-path-logging.ts",
+    "test:perf": "tsx src/utils/test-learning-path-performance.ts",
+    "test:security": "tsx src/utils/test-learning-path-security.ts",
+    "test": "tsx src/utils/test-learning-path-gateway.ts && tsx src/utils/test-learner-state-synchronization.ts && tsx src/utils/test-adaptive-learning-e2e.ts && tsx src/utils/test-learning-path-logging.ts && tsx src/utils/test-learning-path-performance.ts && tsx src/utils/test-learning-path-security.ts"
   },
   "keywords": [],
   "author": "",

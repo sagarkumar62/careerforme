@@ -56,6 +56,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     fetchUserAndProfile();
+
+    const handleSessionExpired = () => {
+      setUser(null);
+      setProfile(null);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth:session-expired', handleSessionExpired);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('auth:session-expired', handleSessionExpired);
+      }
+    };
   }, []);
 
   const updateUserAndProfile = async (
@@ -85,8 +100,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       queryClient.invalidateQueries({ queryKey: ['progress'] });
       queryClient.invalidateQueries({ queryKey: ['skill-gap'] });
       queryClient.invalidateQueries({ queryKey: ['career'] });
-    } catch (error) {
+    } catch (error: any) {
       console.error('[AuthProvider] Failed to update user profile:', error);
+      if (error?.response?.status === 401) {
+        setUser(null);
+        setProfile(null);
+      }
       throw error;
     }
   };

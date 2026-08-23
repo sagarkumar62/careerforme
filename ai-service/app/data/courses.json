@@ -1,0 +1,1077 @@
+[
+  {
+    "id": "python-basics",
+    "title": "Python Fundamentals",
+    "description": "Learn foundational programming concepts, control flow, functions, modules, and basic data structures using Python.",
+    "skills": [
+      {
+        "skill_id": "python",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 15.0,
+    "category": "Programming",
+    "tags": ["python", "programming", "basics"]
+  },
+  {
+    "id": "python-advanced",
+    "title": "Advanced Python & Software Architecture",
+    "description": "Master decorators, generators, async code with asyncio, metaprogramming, and clean package design.",
+    "skills": [
+      {
+        "skill_id": "python",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "python",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 25.0,
+    "category": "Programming",
+    "tags": ["python", "advanced", "backend"]
+  },
+  {
+    "id": "js-basics",
+    "title": "Modern JavaScript Fundamentals",
+    "description": "Understand core JavaScript execution, DOM manipulation, ES6+ syntax, arrays, objects, and event handling.",
+    "skills": [
+      {
+        "skill_id": "javascript",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 18.0,
+    "category": "Web Development",
+    "tags": ["javascript", "web", "frontend"]
+  },
+  {
+    "id": "js-advanced",
+    "title": "Advanced JavaScript & Asynchronous Patterns",
+    "description": "Deep dive into event loop architecture, promises, async/await, closures, prototypes, and performance.",
+    "skills": [
+      {
+        "skill_id": "javascript",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "javascript",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 22.0,
+    "category": "Web Development",
+    "tags": ["javascript", "async", "es6"]
+  },
+  {
+    "id": "ts-fundamentals",
+    "title": "TypeScript Essentials",
+    "description": "Add static typing to JavaScript applications. Covers type annotations, interfaces, generics, and compiler options.",
+    "skills": [
+      {
+        "skill_id": "typescript",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "javascript",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_hours": 14.0,
+    "category": "Web Development",
+    "tags": ["typescript", "javascript", "types"]
+  },
+  {
+    "id": "ts-advanced",
+    "title": "Enterprise TypeScript & Design Patterns",
+    "description": "Advanced mapped types, conditional types, template literal types, AST processing, and large-scale architecture.",
+    "skills": [
+      {
+        "skill_id": "typescript",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "typescript",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 20.0,
+    "category": "Web Development",
+    "tags": ["typescript", "architecture", "design-patterns"]
+  },
+  {
+    "id": "html-css-basics",
+    "title": "HTML5 & Modern CSS3 Fundamentals",
+    "description": "Build responsive, accessible, semantic web layouts using Flexbox, CSS Grid, and media queries.",
+    "skills": [
+      {
+        "skill_id": "html-css",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 12.0,
+    "category": "Web Development",
+    "tags": ["html", "css", "frontend"]
+  },
+  {
+    "id": "css-advanced",
+    "title": "Advanced CSS Layouts & Styling Systems",
+    "description": "CSS architecture (BEM), animations, custom properties, container queries, and responsive design systems.",
+    "skills": [
+      {
+        "skill_id": "html-css",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "html-css",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 16.0,
+    "category": "Web Development",
+    "tags": ["css", "design-system", "ui"]
+  },
+  {
+    "id": "react-basics",
+    "title": "React Fundamentals & Hook Architecture",
+    "description": "Build dynamic component-driven user interfaces with React hooks, state, props, and side effects.",
+    "skills": [
+      {
+        "skill_id": "react",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "javascript",
+        "minimum_level": 4.0
+      },
+      {
+        "skill_id": "html-css",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 28.0,
+    "category": "Web Development",
+    "tags": ["react", "frontend", "javascript"]
+  },
+  {
+    "id": "react-advanced",
+    "title": "Advanced React & State Management",
+    "description": "Master React Server Components, custom hooks performance optimization, Context API, and state libraries.",
+    "skills": [
+      {
+        "skill_id": "react",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "react",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 32.0,
+    "category": "Web Development",
+    "tags": ["react", "state-management", "performance"]
+  },
+  {
+    "id": "node-basics",
+    "title": "Node.js & Express RESTful API Development",
+    "description": "Develop back-end HTTP servers, RESTful endpoints, middleware, routing, and JSON request handling.",
+    "skills": [
+      {
+        "skill_id": "node.js",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "api development",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "javascript",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 24.0,
+    "category": "Backend Development",
+    "tags": ["node.js", "express", "backend", "api"]
+  },
+  {
+    "id": "node-advanced",
+    "title": "Enterprise Node.js Microservices",
+    "description": "Build high-throughput Node.js microservices with event streams, authentication, rate limiting, and caching.",
+    "skills": [
+      {
+        "skill_id": "node.js",
+        "target_level": 8.0
+      },
+      {
+        "skill_id": "api development",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "node.js",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 30.0,
+    "category": "Backend Development",
+    "tags": ["node.js", "microservices", "architecture"]
+  },
+  {
+    "id": "sql-basics",
+    "title": "Relational Databases & SQL Fundamentals",
+    "description": "Master SQL SELECT queries, JOINs, aggregations, filtering, table creation, and primary/foreign keys.",
+    "skills": [
+      {
+        "skill_id": "sql",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "databases",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 16.0,
+    "category": "Databases",
+    "tags": ["sql", "databases", "postgresql"]
+  },
+  {
+    "id": "sql-advanced",
+    "title": "Database Schema Design & Query Optimization",
+    "description": "Advanced indexing strategies, window functions, CTEs, query execution plans, and transaction isolation levels.",
+    "skills": [
+      {
+        "skill_id": "sql",
+        "target_level": 8.0
+      },
+      {
+        "skill_id": "databases",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "sql",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 22.0,
+    "category": "Databases",
+    "tags": ["sql", "indexing", "optimization"]
+  },
+  {
+    "id": "dsa-basics",
+    "title": "Data Structures & Algorithms Fundamentals",
+    "description": "Learn essential data structures: arrays, linked lists, stacks, queues, hash tables, binary trees, and searching.",
+    "skills": [
+      {
+        "skill_id": "dsa",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "python",
+        "minimum_level": 3.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_hours": 30.0,
+    "category": "Computer Science",
+    "tags": ["dsa", "algorithms", "problem-solving"]
+  },
+  {
+    "id": "dsa-advanced",
+    "title": "Advanced Algorithms & Graph Theory",
+    "description": "Dynamic programming, graph algorithms (Dijkstra, A*), tries, segment trees, and asymptotic time complexity.",
+    "skills": [
+      {
+        "skill_id": "dsa",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "dsa",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 40.0,
+    "category": "Computer Science",
+    "tags": ["algorithms", "dsa", "graph-theory", "dp"]
+  },
+  {
+    "id": "system-design-intro",
+    "title": "Principles of System Design",
+    "description": "Scalability basics: load balancers, caching strategies, database replication, and stateless web servers.",
+    "skills": [
+      {
+        "skill_id": "system design",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "node.js",
+        "minimum_level": 4.0
+      },
+      {
+        "skill_id": "databases",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 20.0,
+    "category": "Software Engineering",
+    "tags": ["system-design", "scalability", "architecture"]
+  },
+  {
+    "id": "system-design-advanced",
+    "title": "High Scalability & Distributed Systems Architecture",
+    "description": "Design resilient distributed architectures: consensus algorithms, event-driven message queues, sharding.",
+    "skills": [
+      {
+        "skill_id": "system design",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "system design",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 35.0,
+    "category": "Software Engineering",
+    "tags": ["distributed-systems", "architecture", "microservices"]
+  },
+  {
+    "id": "data-analysis-basics",
+    "title": "Data Analysis with Python & Pandas",
+    "description": "Data manipulation, cleaning, filtering, aggregation, and visualization using Pandas, NumPy, and Matplotlib.",
+    "skills": [
+      {
+        "skill_id": "data analysis",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "python",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "python",
+        "minimum_level": 3.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_hours": 20.0,
+    "category": "Data Science",
+    "tags": ["data-analysis", "pandas", "python"]
+  },
+  {
+    "id": "data-analysis-advanced",
+    "title": "Exploratory Data Analysis & Statistical Inference",
+    "description": "Advanced exploratory techniques, feature transformation, correlation analysis, and statistical hypothesis testing.",
+    "skills": [
+      {
+        "skill_id": "data analysis",
+        "target_level": 8.0
+      },
+      {
+        "skill_id": "statistics",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "data analysis",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 25.0,
+    "category": "Data Science",
+    "tags": ["data-analysis", "statistics", "eda"]
+  },
+  {
+    "id": "stats-basics",
+    "title": "Mathematical Statistics for Data Science",
+    "description": "Probability distributions, mean/variance, Bayes' theorem, sampling distributions, and confidence intervals.",
+    "skills": [
+      {
+        "skill_id": "statistics",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 18.0,
+    "category": "Data Science",
+    "tags": ["statistics", "math", "probability"]
+  },
+  {
+    "id": "stats-advanced",
+    "title": "Inferential Statistics & A/B Experimentation",
+    "description": "Hypothesis testing, ANOVA, linear & logistic regression modeling, and experimental design for digital products.",
+    "skills": [
+      {
+        "skill_id": "statistics",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "statistics",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 22.0,
+    "category": "Data Science",
+    "tags": ["statistics", "experimentation", "ab-testing"]
+  },
+  {
+    "id": "ml-fundamentals",
+    "title": "Machine Learning Fundamentals",
+    "description": "Supervised and unsupervised learning, decision trees, linear regression, classification, cross-validation.",
+    "skills": [
+      {
+        "skill_id": "machine learning",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "python",
+        "minimum_level": 5.0
+      },
+      {
+        "skill_id": "statistics",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 30.0,
+    "category": "Artificial Intelligence",
+    "tags": ["machine-learning", "python", "scikit-learn"]
+  },
+  {
+    "id": "ml-advanced",
+    "title": "Advanced Machine Learning & Model Engineering",
+    "description": "Gradient boosting (XGBoost/LightGBM), hyperparameter optimization, feature engineering pipelines, model evaluation.",
+    "skills": [
+      {
+        "skill_id": "machine learning",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "machine learning",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 35.0,
+    "category": "Artificial Intelligence",
+    "tags": ["machine-learning", "xgboost", "pipeline"]
+  },
+  {
+    "id": "dl-basics",
+    "title": "Deep Learning & Neural Network Foundations",
+    "description": "Artificial neural networks, backpropagation, activation functions, CNNs, and RNNs using PyTorch.",
+    "skills": [
+      {
+        "skill_id": "machine learning",
+        "target_level": 7.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "machine learning",
+        "minimum_level": 5.0
+      },
+      {
+        "skill_id": "python",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 36.0,
+    "category": "Artificial Intelligence",
+    "tags": ["deep-learning", "pytorch", "neural-networks"]
+  },
+  {
+    "id": "dl-advanced",
+    "title": "Transformer Models & Generative AI Systems",
+    "description": "Attention mechanisms, Transformer architectures, fine-tuning LLMs, embeddings, and vector databases.",
+    "skills": [
+      {
+        "skill_id": "machine learning",
+        "target_level": 9.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "machine learning",
+        "minimum_level": 7.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 42.0,
+    "category": "Artificial Intelligence",
+    "tags": ["genai", "transformers", "llm"]
+  },
+  {
+    "id": "data-eng-basics",
+    "title": "Data Pipeline Engineering Foundations",
+    "description": "ETL pipeline construction, data orchestration, batch processing, and relational data warehousing.",
+    "skills": [
+      {
+        "skill_id": "data engineering",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "sql",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "python",
+        "minimum_level": 4.0
+      },
+      {
+        "skill_id": "sql",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 26.0,
+    "category": "Data Engineering",
+    "tags": ["data-engineering", "etl", "python"]
+  },
+  {
+    "id": "data-eng-advanced",
+    "title": "Distributed Big Data Processing with Spark",
+    "description": "Apache Spark RDDs/DataFrames, streaming data pipelines, delta lake storage, and distributed processing.",
+    "skills": [
+      {
+        "skill_id": "data engineering",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "data engineering",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 32.0,
+    "category": "Data Engineering",
+    "tags": ["spark", "big-data", "data-engineering"]
+  },
+  {
+    "id": "git-basics",
+    "title": "Git & Version Control Essentials",
+    "description": "Master Git commands: init, clone, add, commit, branch, merge, rebase, and GitHub collaborative pull requests.",
+    "skills": [
+      {
+        "skill_id": "git",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 8.0,
+    "category": "DevOps & Tools",
+    "tags": ["git", "github", "version-control"]
+  },
+  {
+    "id": "linux-basics",
+    "title": "Linux System Administration & Shell Scripting",
+    "description": "Command line navigation, file permissions, user management, bash scripting, process monitoring, and SSH.",
+    "skills": [
+      {
+        "skill_id": "linux",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 15.0,
+    "category": "DevOps & Systems",
+    "tags": ["linux", "bash", "shell"]
+  },
+  {
+    "id": "docker-basics",
+    "title": "Containerization with Docker",
+    "description": "Create Dockerfiles, containerize applications, manage multi-container apps with docker-compose and networking.",
+    "skills": [
+      {
+        "skill_id": "docker",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "linux",
+        "minimum_level": 3.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 14.0,
+    "category": "DevOps",
+    "tags": ["docker", "containers", "devops"]
+  },
+  {
+    "id": "docker-advanced",
+    "title": "Enterprise Containerization & Security",
+    "description": "Multi-stage builds, rootless container security, image scanning, layer optimization, and registry management.",
+    "skills": [
+      {
+        "skill_id": "docker",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "docker",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 18.0,
+    "category": "DevOps",
+    "tags": ["docker", "security", "devops"]
+  },
+  {
+    "id": "k8s-basics",
+    "title": "Kubernetes Foundations & Cluster Deployment",
+    "description": "Pods, Deployments, Services, ConfigMaps, Secrets, Ingress controllers, and basic kubectl administration.",
+    "skills": [
+      {
+        "skill_id": "kubernetes",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "docker",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 28.0,
+    "category": "DevOps",
+    "tags": ["kubernetes", "k8s", "devops"]
+  },
+  {
+    "id": "k8s-advanced",
+    "title": "Production Kubernetes Orchestration & Helm",
+    "description": "Custom Resource Definitions (CRDs), Helm chart creation, auto-scaling (HPA/VPA), mesh networking, and monitoring.",
+    "skills": [
+      {
+        "skill_id": "kubernetes",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "kubernetes",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 34.0,
+    "category": "DevOps",
+    "tags": ["kubernetes", "helm", "orchestration"]
+  },
+  {
+    "id": "cloud-basics",
+    "title": "Cloud Computing Foundations (AWS/GCP)",
+    "description": "Core cloud concepts: compute instances (EC2/GCE), object storage (S3/GCS), virtual private clouds, and IAM.",
+    "skills": [
+      {
+        "skill_id": "cloud",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "linux",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_hours": 22.0,
+    "category": "Cloud Infrastructure",
+    "tags": ["cloud", "aws", "gcp"]
+  },
+  {
+    "id": "cloud-advanced",
+    "title": "Cloud Infrastructure Architecture & Terraform",
+    "description": "Infrastructure as Code (IaC) using Terraform, multi-region architecture, cost optimization, and HA setup.",
+    "skills": [
+      {
+        "skill_id": "cloud",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "cloud",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 30.0,
+    "category": "Cloud Infrastructure",
+    "tags": ["cloud", "terraform", "iac"]
+  },
+  {
+    "id": "cicd-basics",
+    "title": "CI/CD Pipeline Automation",
+    "description": "Automated build, test, and release workflows using GitHub Actions and GitLab CI/CD.",
+    "skills": [
+      {
+        "skill_id": "ci/cd",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "git",
+        "minimum_level": 4.0
+      },
+      {
+        "skill_id": "docker",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 16.0,
+    "category": "DevOps",
+    "tags": ["ci-cd", "devops", "automation"]
+  },
+  {
+    "id": "security-basics",
+    "title": "Cybersecurity Fundamentals & Threat Modeling",
+    "description": "Core security principles (CIA triad), authentication/authorization, common attack vectors (OWASP Top 10), and risk assessment.",
+    "skills": [
+      {
+        "skill_id": "security fundamentals",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "linux",
+        "minimum_level": 3.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_hours": 18.0,
+    "category": "Cybersecurity",
+    "tags": ["cybersecurity", "security", "owasp"]
+  },
+  {
+    "id": "network-security",
+    "title": "Network Protocols & Security Analysis",
+    "description": "TCP/IP layer security, TLS/SSL handshake, firewalls, packet inspection with Wireshark, and intrusion detection.",
+    "skills": [
+      {
+        "skill_id": "networking",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "security fundamentals",
+        "target_level": 6.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "security fundamentals",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 24.0,
+    "category": "Cybersecurity",
+    "tags": ["networking", "security", "protocols"]
+  },
+  {
+    "id": "app-security",
+    "title": "Application Security & Secure Coding Practices",
+    "description": "Remediating SQL injection, XSS, CSRF, insecure deserialization, secret management, and code auditing.",
+    "skills": [
+      {
+        "skill_id": "security fundamentals",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "javascript",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 22.0,
+    "category": "Cybersecurity",
+    "tags": ["security", "secure-coding", "appsec"]
+  },
+  {
+    "id": "design-basics",
+    "title": "UI/UX Design Fundamentals",
+    "description": "Visual design principles, color theory, typography, user flows, wireframing, and basic Figma prototyping.",
+    "skills": [
+      {
+        "skill_id": "design",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "prototyping",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 16.0,
+    "category": "Design",
+    "tags": ["design", "ui", "ux", "figma"]
+  },
+  {
+    "id": "design-advanced",
+    "title": "Design Systems & Interactive Component Prototyping",
+    "description": "Create scalable design tokens, component libraries, accessibility guidelines (WCAG), and high-fidelity prototypes.",
+    "skills": [
+      {
+        "skill_id": "design",
+        "target_level": 8.0
+      },
+      {
+        "skill_id": "prototyping",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "design",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 24.0,
+    "category": "Design",
+    "tags": ["design-systems", "ui-ux", "accessibility"]
+  },
+  {
+    "id": "mobile-basics",
+    "title": "Mobile Application Development Essentials",
+    "description": "Cross-platform mobile apps with React Native or Flutter: components, navigation, layouts, and API integration.",
+    "skills": [
+      {
+        "skill_id": "mobile development",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "javascript",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "beginner",
+    "duration_hours": 22.0,
+    "category": "Mobile Development",
+    "tags": ["mobile", "react-native", "apps"]
+  },
+  {
+    "id": "mobile-advanced",
+    "title": "Cross-Platform Mobile Performance Engineering",
+    "description": "Native bridge modules, offline storage, push notifications, performance profiling, and app store deployment.",
+    "skills": [
+      {
+        "skill_id": "mobile development",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "mobile development",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 28.0,
+    "category": "Mobile Development",
+    "tags": ["mobile", "performance", "native"]
+  },
+  {
+    "id": "pilot-ground-school",
+    "title": "Aviation Ground School & Flight Regulations",
+    "description": "FAA/EASA civil aviation rules, airspace classification, flight operations, and aircraft operational limitations.",
+    "skills": [
+      {
+        "skill_id": "aviation regulations",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "aircraft systems",
+        "target_level": 4.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 35.0,
+    "category": "Aviation",
+    "tags": ["aviation", "pilot", "regulations"]
+  },
+  {
+    "id": "pilot-navigation",
+    "title": "Aeronautical Navigation & Flight Planning",
+    "description": "VFR/IFR flight planning, chart reading, wind triangle calculations, aeronautical meteorology, and radio navigation.",
+    "skills": [
+      {
+        "skill_id": "flight navigation",
+        "target_level": 6.0
+      },
+      {
+        "skill_id": "aeronautical meteorology",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "aviation regulations",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 40.0,
+    "category": "Aviation",
+    "tags": ["navigation", "aviation", "weather"]
+  },
+  {
+    "id": "civil-structural-basics",
+    "title": "Structural Analysis Foundations",
+    "description": "Statics, stress/strain analysis, truss calculations, shear force and bending moment diagrams for civil engineering.",
+    "skills": [
+      {
+        "skill_id": "structural analysis",
+        "target_level": 5.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 30.0,
+    "category": "Civil Engineering",
+    "tags": ["structural-analysis", "civil-engineering", "statics"]
+  },
+  {
+    "id": "civil-cad-advanced",
+    "title": "Advanced AutoCAD & Building Information Modeling",
+    "description": "2D/3D structural drafting in AutoCAD, Revit BIM integration, clash detection, and construction blueprints.",
+    "skills": [
+      {
+        "skill_id": "autocad & cad design",
+        "target_level": 8.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "autocad & cad design",
+        "minimum_level": 4.0
+      }
+    ],
+    "difficulty": "intermediate",
+    "duration_hours": 32.0,
+    "category": "Civil Engineering",
+    "tags": ["autocad", "cad", "bim", "revit"]
+  },
+  {
+    "id": "finance-accounting-basics",
+    "title": "Financial Accounting Fundamentals",
+    "description": "Double-entry bookkeeping, balance sheets, income statements, cash flow statements, and Excel ledger modeling.",
+    "skills": [
+      {
+        "skill_id": "financial accounting",
+        "target_level": 5.0
+      },
+      {
+        "skill_id": "excel financial modeling",
+        "target_level": 4.0
+      }
+    ],
+    "prerequisites": [],
+    "difficulty": "beginner",
+    "duration_hours": 24.0,
+    "category": "Finance & Accounting",
+    "tags": ["accounting", "finance", "excel"]
+  },
+  {
+    "id": "finance-taxation-advanced",
+    "title": "Advanced Corporate Taxation & Financial Compliance",
+    "description": "Corporate income taxation, deferred tax assets, IFRS compliance, auditing workflows, and tax strategy.",
+    "skills": [
+      {
+        "skill_id": "taxation & compliance",
+        "target_level": 8.0
+      },
+      {
+        "skill_id": "auditing",
+        "target_level": 7.0
+      }
+    ],
+    "prerequisites": [
+      {
+        "skill_id": "financial accounting",
+        "minimum_level": 5.0
+      }
+    ],
+    "difficulty": "advanced",
+    "duration_hours": 36.0,
+    "category": "Finance & Accounting",
+    "tags": ["taxation", "auditing", "compliance"]
+  }
+]

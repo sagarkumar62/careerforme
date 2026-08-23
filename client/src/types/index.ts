@@ -179,8 +179,17 @@ export interface UserProgress {
   totalMilestones?: number;
   remainingMilestones?: number;
   overallPercentage?: number;
+  roadmapCompletionPercentage?: number;
+  learningPathCompletionPercentage?: number;
+  skillGrowthPercentage?: number;
+  baselineSkillsCount?: number;
+  currentSkillsCount?: number;
   acquiredSkillsCount: number;
+  skillsGainedCount?: number;
+  completedCoursesCount?: number;
   completedProjectsCount: number;
+  completedAssessmentsCount?: number;
+  completedLearningPathItemsCount?: number;
   phaseBreakdown?: {
     phaseId: string;
     title: string;

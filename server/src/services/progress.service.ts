@@ -352,10 +352,48 @@ export class ProgressService {
     const inProgressMilestones = progressList.filter((p) => p.status === 'in_progress').length;
     const totalTimeSpent = progressList.reduce((acc, p) => acc + (p.timeSpent || 0), 0);
 
-    const overallPercentage = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+    const roadmapCompletionPercentage = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
     const { currentStreakDays, longestStreakDays } = await this.calculateStreak(userId);
 
-    const acquiredSkillsCount = Array.isArray(profile?.skills) ? profile.skills.length : 0;
+    // 1. Learning Path Completion Metrics (courses, projects, assessments)
+    const completedCoursesCount = Array.isArray(profile?.completedCourses) ? profile.completedCourses.length : 0;
+    const completedProjectsCount = Array.isArray(profile?.projects) ? profile.projects.length : 0;
+    const completedAssessmentsCount = Array.isArray(profile?.certifications) ? profile.certifications.length : 0;
+    const completedLearningPathItems = completedCoursesCount + completedProjectsCount + completedAssessmentsCount;
+    // Total target items baseline (determined deterministically against career goals / roadmap length)
+    const totalLearningPathItems = Math.max(5, totalMilestones > 0 ? totalMilestones * 2 : 6, completedLearningPathItems);
+    const learningPathCompletionPercentage = Math.min(100, Math.round((completedLearningPathItems / totalLearningPathItems) * 100));
+
+    // 2. Skill Growth Delta Metrics (baseline profile creation vs current acquired)
+    const currentSkillsCount = Array.isArray(profile?.skills) ? profile.skills.length : 0;
+    const acquiredSkillsCount = Array.isArray(profile?.skills)
+      ? profile.skills.filter((s: any) => typeof s === 'object' && s.category === 'Acquired').length
+      : 0;
+
+    let baselineSkillsCount = Array.isArray(profile?.baselineSkills) && profile.baselineSkills.length > 0
+      ? profile.baselineSkills.length
+      : Math.max(1, currentSkillsCount - acquiredSkillsCount);
+
+    if (baselineSkillsCount > currentSkillsCount) {
+      baselineSkillsCount = currentSkillsCount;
+    }
+
+    const skillsGainedCount = Math.max(0, currentSkillsCount - baselineSkillsCount + acquiredSkillsCount);
+    const targetSkillsGrowthGoal = Math.max(6, baselineSkillsCount + 5);
+    const skillGrowthPercentage = Math.min(100, Math.round((skillsGainedCount / (targetSkillsGrowthGoal - baselineSkillsCount)) * 100));
+
+    // 3. Multi-dimensional Holistic Overall Progress Synthesis (40% Roadmap + 30% Learning Path + 30% Skill Delta)
+    const overallPercentage = Math.min(
+      100,
+      Math.max(
+        0,
+        Math.round(
+          0.40 * roadmapCompletionPercentage +
+          0.30 * learningPathCompletionPercentage +
+          0.30 * skillGrowthPercentage
+        )
+      )
+    );
 
     // Phase progress breakdown for selected roadmap
     const phaseBreakdown = activeRoadmap && Array.isArray(activeRoadmap.phases)
@@ -419,11 +457,27 @@ export class ProgressService {
       inProgressMilestones,
       remainingMilestones: Math.max(0, totalMilestones - completedMilestones),
       totalTimeSpentHours: totalTimeSpent,
+
+      // Multi-dimensional Progress Metrics
       overallPercentage: Math.min(100, Math.max(0, overallPercentage)),
+      roadmapCompletionPercentage,
+      learningPathCompletionPercentage,
+      skillGrowthPercentage,
+
+      // Baseline vs Acquired Skill Growth Metrics
+      baselineSkillsCount,
+      currentSkillsCount,
+      acquiredSkillsCount,
+      skillsGainedCount,
+
+      // Learning Path Execution Items
+      completedCoursesCount,
+      completedProjectsCount,
+      completedAssessmentsCount,
+      completedLearningPathItemsCount: completedLearningPathItems,
+
       currentStreakDays,
       longestStreakDays,
-      acquiredSkillsCount,
-      completedProjectsCount: profile?.projects?.length || 0,
       phaseBreakdown,
       recentActivity,
     };

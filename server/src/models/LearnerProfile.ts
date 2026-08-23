@@ -31,6 +31,7 @@ export interface ILearnerProfile extends Document {
   currentRole?: string;
   targetCareer?: string;
   skills: any[];
+  baselineSkills: any[];
   interests: string[];
   careerGoals: string[];
   learningPreferences: string[];
@@ -62,6 +63,7 @@ const learnerProfileSchema = new Schema<ILearnerProfile>(
     currentRole: { type: String, default: '' },
     targetCareer: { type: String, default: '' },
     skills: { type: [Schema.Types.Mixed] as any, default: [] },
+    baselineSkills: { type: [Schema.Types.Mixed] as any, default: [] },
     interests: { type: [String], default: [] },
     careerGoals: { type: [String], default: [] },
     learningPreferences: { type: Schema.Types.Mixed, default: [] },

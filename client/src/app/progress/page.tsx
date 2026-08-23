@@ -46,10 +46,19 @@ export default function ProgressPage() {
     completedMilestonesCount: progress.completedMilestonesCount ?? 0,
     totalMilestones: progress.totalMilestones ?? 0,
     overallPercentage: progress.overallPercentage ?? 0,
-    acquiredSkillsCount: (Array.isArray(authProfile?.skills) && authProfile.skills.length > 0)
+    roadmapCompletionPercentage: progress.roadmapCompletionPercentage ?? progress.overallPercentage ?? 0,
+    learningPathCompletionPercentage: progress.learningPathCompletionPercentage ?? 0,
+    skillGrowthPercentage: progress.skillGrowthPercentage ?? 0,
+    baselineSkillsCount: progress.baselineSkillsCount ?? 1,
+    currentSkillsCount: (Array.isArray(authProfile?.skills) && authProfile.skills.length > 0)
       ? authProfile.skills.length
-      : (progress.acquiredSkillsCount ?? 0),
+      : (progress.currentSkillsCount ?? progress.acquiredSkillsCount ?? 0),
+    acquiredSkillsCount: progress.acquiredSkillsCount ?? 0,
+    skillsGainedCount: progress.skillsGainedCount ?? progress.acquiredSkillsCount ?? 0,
+    completedCoursesCount: progress.completedCoursesCount ?? 0,
     completedProjectsCount: progress.completedProjectsCount ?? 0,
+    completedAssessmentsCount: progress.completedAssessmentsCount ?? 0,
+    completedLearningPathItemsCount: progress.completedLearningPathItemsCount ?? 0,
     phaseBreakdown: Array.isArray(progress.phaseBreakdown) ? progress.phaseBreakdown : [],
     recentActivity: Array.isArray(progress.recentActivity) ? progress.recentActivity : []
   };
@@ -61,9 +70,71 @@ export default function ProgressPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Your Learning Progress</h1>
-            <p className="text-slate-500 text-sm mt-0.5">Real-time stats, phase breakdown chart, and recent activity logs per roadmap.</p>
+            <p className="text-slate-500 text-sm mt-0.5">Comprehensive progress measuring Roadmap Milestones, Adaptive Learning Path, and Skill Growth since starting your journey.</p>
           </div>
         </div>
+
+        {/* Holistic Progress Breakdown Card */}
+        <Card className="p-6 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-2xl shadow-xl space-y-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-xs font-semibold backdrop-blur-sm">
+                <Trophy className="h-3.5 w-3.5 text-amber-400" /> Multi-Dimensional Progress Engine
+              </div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-white">
+                Holistic Journey Progress: {safeProgress.overallPercentage}%
+              </h2>
+              <p className="text-xs text-indigo-200/90 leading-relaxed max-w-2xl">
+                Synthesizing Roadmap Milestones (40%), Adaptive Learning Path Execution (30%), and Skill Acquisition Delta (30%) compared to your baseline when you created your profile.
+              </p>
+            </div>
+            <div className="text-center bg-white/10 p-4 rounded-xl border border-white/20 shrink-0 min-w-[140px]">
+              <div className="text-3xl font-black text-amber-400">{safeProgress.overallPercentage}%</div>
+              <div className="text-[10px] uppercase font-bold text-indigo-200 tracking-wider">Holistic Growth</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            <div className="bg-white/10 p-4 rounded-xl border border-white/15 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-extrabold text-indigo-200 flex items-center gap-1.5">
+                  <MapPin className="h-4 w-4 text-indigo-400" /> 1. Roadmap Progress
+                </span>
+                <span className="text-xs font-black text-white">{safeProgress.roadmapCompletionPercentage}%</span>
+              </div>
+              <Progress value={safeProgress.roadmapCompletionPercentage} className="h-2 bg-indigo-950/60" />
+              <p className="text-[11px] text-indigo-200/80">
+                {safeProgress.completedMilestonesCount} of {safeProgress.totalMilestones || '—'} roadmap milestones completed
+              </p>
+            </div>
+
+            <div className="bg-white/10 p-4 rounded-xl border border-white/15 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-extrabold text-indigo-200 flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> 2. Learning Path
+                </span>
+                <span className="text-xs font-black text-white">{safeProgress.learningPathCompletionPercentage}%</span>
+              </div>
+              <Progress value={safeProgress.learningPathCompletionPercentage} className="h-2 bg-indigo-950/60" />
+              <p className="text-[11px] text-indigo-200/80">
+                {safeProgress.completedCoursesCount} Courses • {safeProgress.completedProjectsCount} Projects • {safeProgress.completedAssessmentsCount} Certs
+              </p>
+            </div>
+
+            <div className="bg-white/10 p-4 rounded-xl border border-white/15 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-extrabold text-indigo-200 flex items-center gap-1.5">
+                  <Trophy className="h-4 w-4 text-amber-400" /> 3. Skill Acquisition
+                </span>
+                <span className="text-xs font-black text-white">{safeProgress.skillGrowthPercentage}%</span>
+              </div>
+              <Progress value={safeProgress.skillGrowthPercentage} className="h-2 bg-indigo-950/60" />
+              <p className="text-[11px] text-indigo-200/80">
+                {safeProgress.baselineSkillsCount} Baseline Skills → {safeProgress.currentSkillsCount} Current Skills (+{safeProgress.skillsGainedCount} Acquired)
+              </p>
+            </div>
+          </div>
+        </Card>
 
         {/* Roadmap Selector Tabs */}
         {roadmaps.length > 0 && (

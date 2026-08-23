@@ -51,4 +51,8 @@ export class ApiError extends Error {
   static serviceUnavailable(message: string = 'Service temporarily unavailable', code: string = 'SERVICE_UNAVAILABLE') {
     return new ApiError(533, message, {}, code);
   }
+
+  static gatewayTimeout(message: string = 'Gateway timeout', code: string = 'GATEWAY_TIMEOUT') {
+    return new ApiError(504, message, {}, code);
+  }
 }

@@ -4,6 +4,10 @@ from app.api.routes.recommendation import router as recommend_router
 from app.api.routes.embeddings import router as embeddings_router
 from app.api.routes.search import router as search_router
 from app.api.routes.roadmap import router as roadmap_router
+from app.api.routes.learning_path import router as learning_path_router
+from app.api.routes.assessment import router as assessment_router
+from app.api.routes.course_progress import router as course_progress_router
+from app.api.routes.project_progress import router as project_progress_router
 from app.config.settings import settings
 from app.services.embedding_service import get_embedding_service
 from app.services.embedding_cache import build_career_embeddings
@@ -17,6 +21,10 @@ app.include_router(recommend_router)
 app.include_router(embeddings_router)
 app.include_router(search_router)
 app.include_router(roadmap_router)
+app.include_router(learning_path_router)
+app.include_router(assessment_router)
+app.include_router(course_progress_router)
+app.include_router(project_progress_router)
 
 
 @app.on_event("startup")

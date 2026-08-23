@@ -47,6 +47,7 @@ export default function ProfilePage() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Password Change State
   const [currentPassword, setCurrentPassword] = useState('');
@@ -127,6 +128,7 @@ export default function ProfilePage() {
   const handleConfirmSave = async () => {
     try {
       setSaving(true);
+      setSaveError(null);
 
       const updatedUserData = {
         name
@@ -154,8 +156,14 @@ export default function ProfilePage() {
       setIsEditing(false);
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error saving profile:', err);
+      setShowConfirmModal(false);
+      if (err?.response?.status === 401) {
+        setSaveError('Your session has expired. Please log in again.');
+      } else {
+        setSaveError(err?.response?.data?.message || err?.message || 'Failed to update profile. Please try again.');
+      }
     } finally {
       setSaving(false);
     }
@@ -290,6 +298,21 @@ export default function ProfilePage() {
               ✓
             </div>
             <span>Profile updated successfully! Your updated name and details are now reflected across PATHFINDER.</span>
+          </div>
+        )}
+
+        {/* Error Alert Banner */}
+        {saveError && (
+          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-between gap-3 text-rose-800 text-xs font-bold animate-in fade-in slide-in-from-top-2 duration-300 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="h-6 w-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold">
+                ✕
+              </div>
+              <span>{saveError}</span>
+            </div>
+            <button onClick={() => setSaveError(null)} className="text-rose-600 hover:text-rose-800">
+              <X className="h-4 w-4" />
+            </button>
           </div>
         )}
 
