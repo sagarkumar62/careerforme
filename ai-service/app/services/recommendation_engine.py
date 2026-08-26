@@ -110,12 +110,22 @@ def _experience_match(profile_experience: str, career: Career) -> float:
 
 
 def _semantic_similarity(profile_text: str, career_id: str, embedding_service=None, career_embeddings: dict = None) -> float:
-    # Use precomputed career_embeddings when available; otherwise fall back to computing both encodings
+    from app.services.embedding_service import get_embedding_service
+    from app.services.embedding_cache import load_precomputed_career_embeddings
+
+    if embedding_service is None:
+        svc = get_embedding_service()
+        if svc.available():
+            embedding_service = svc
+
+    if career_embeddings is None:
+        career_embeddings = load_precomputed_career_embeddings()
+
     try:
         if career_embeddings and career_id in career_embeddings and embedding_service and embedding_service.available():
             p_emb = embedding_service.encode([profile_text])
             p_vec = np.array(p_emb[0], dtype=float).reshape(1, -1)
-            c_vec = career_embeddings[career_id].reshape(1, -1)
+            c_vec = np.array(career_embeddings[career_id], dtype=float).reshape(1, -1)
             sim = float(cosine_similarity(p_vec, c_vec)[0][0])
             return max(0.0, min(1.0, sim))
 
@@ -124,9 +134,11 @@ def _semantic_similarity(profile_text: str, career_id: str, embedding_service=No
             c_emb = embedding_service.encode([career_id])
             sim = float(cosine_similarity(p_emb, c_emb)[0][0])
             return max(0.0, min(1.0, sim))
-    except Exception:
+    except Exception as e:
+        print(f"[RecommendationEngine] Semantic similarity warning: {e}")
         return 0.0
     return 0.0
+
 
 
 def recommend(profile: Dict, top_k: int = 3, embedding_service=None, career_embeddings: dict = None) -> Dict:

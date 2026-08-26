@@ -1,22 +1,34 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from app.config.settings import settings
+from app.services.recommendation_engine import CAREERS
 
 router = APIRouter()
 
 
 @router.get("/health")
 async def health():
-    """Service health check. Do NOT return any secrets."""
-    gemini_status = "unavailable"
-    if settings.AI_MOCK_MODE:
-        gemini_status = "mock"
-    elif settings.GEMINI_API_KEY:
-        gemini_status = "available"
+    """Lightweight service health check endpoint for Render health probes."""
+    return {
+        "status": "ok",
+        "service": "career-pathfinder-ai",
+        "gemini": "mock" if settings.AI_MOCK_MODE else ("available" if settings.GEMINI_API_KEY else "unavailable"),
+        "embedding_model": "all-MiniLM-L6-v2 (ONNX CPU)",
+    }
+
+
+@router.get("/ready")
+async def ready(request: Request):
+    """Readiness probe reporting model and career dataset status."""
+    embed_svc = getattr(request.app.state, "embedding_service", None)
+    career_embeddings = getattr(request.app.state, "career_embeddings", {})
+
+    model_loaded = bool(embed_svc and embed_svc.available())
+    careers_loaded = len(CAREERS) > 0
 
     return {
-        "status": "healthy",
-        "service": "career-pathfinder-ai",
-        "gemini": gemini_status,
-        "model": settings.GEMINI_MODEL,
-        "embedding_model": settings.EMBEDDING_MODEL,
+        "ready": model_loaded and careers_loaded,
+        "model_loaded": model_loaded,
+        "careers_loaded": careers_loaded,
+        "career_count": len(CAREERS),
+        "cached_embeddings_count": len(career_embeddings),
     }

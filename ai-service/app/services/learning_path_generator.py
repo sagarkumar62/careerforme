@@ -674,7 +674,14 @@ def generate_milestone_title(
         },
     }
 
-    for skill in sorted(normalized_skills):
+    raw_skill_ids = [
+        str(s).strip().lower().replace("_", "-").replace(" ", "-")
+        for s in skills
+        if s
+    ]
+    check_skills = raw_skill_ids + sorted(list(normalized_skills))
+
+    for skill in check_skills:
         if skill in skill_titles:
             levels = skill_titles[skill]
 
@@ -893,28 +900,35 @@ def select_personalized_course_sequence(
         for course_id in (completed_course_ids or set())
     }
 
-    # Preserve completed courses belonging to the catalog in required_course_ids
-    # so that progress increases deterministically upon course completion.
-    for c in courses:
-        cid = str(c.get("id", "")).strip().lower()
-        title = normalize_text(str(c.get("title", "")))
+    # Exclude completed courses and prerequisite courses already satisfied by learner skills
+    filtered_required = set()
+    for cid in required_course_ids:
+        c = course_lookup.get(cid)
+        title = normalize_text(str(c.get("title", ""))) if c else ""
         norm_cid = normalize_text(cid)
         skill_cid = normalize_skill_id(cid)
-
-        if (
-            cid in completed_ids
+        is_completed = (
+            cid.lower() in completed_ids
             or norm_cid in completed_ids
             or skill_cid in completed_ids
             or title in completed_ids
-            or any(normalize_text(item) == title or item.lower() == cid for item in completed_ids)
-        ):
-            if c.get("id"):
-                required_course_ids.add(c["id"])
+            or any(normalize_text(item) == title or item.lower() == cid.lower() for item in completed_ids)
+        )
+        if is_completed:
+            continue
+
+        # If it's a prerequisite course (not directly in target_course_ids), skip if learner's existing skills satisfy it
+        if cid not in target_course_ids and c:
+            taught = get_course_skill_levels(c)
+            if taught and all(learner_skills.get(sk, 0.0) >= lvl for sk, lvl in taught.items()):
+                continue
+
+        filtered_required.add(cid)
 
     subgraph = {
-        course_id: dependencies & required_course_ids
+        course_id: dependencies & filtered_required
         for course_id, dependencies in dependency_graph.items()
-        if course_id in required_course_ids
+        if course_id in filtered_required
     }
 
     ordered_ids = topological_sort_courses(subgraph)
@@ -1106,10 +1120,10 @@ def attach_projects_to_learning_path(
                     if isinstance(sk, dict) and sk.get("skill_id"):
                         proj_skills.add(str(sk["skill_id"]).strip().lower())
 
+                if pid in completed_projects:
+                    continue
+
                 if proj_skills & milestone_skills:
-                    if pid in completed_projects:
-                        rec["is_completed"] = True
-                        rec["status"] = "completed"
                     milestone_project_ids.append(rec["project_id"])
                     milestone_projects.append(rec)
                     assigned_project_ids.add(pid)
