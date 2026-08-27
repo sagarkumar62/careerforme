@@ -183,59 +183,159 @@ Path Finder/
 
 ---
 
-## 💻 Important Commands & Local Setup Guide
+## 🛠️ Complete Project Setup Guide
 
-### 🟢 1. Express Backend Server (`server/`)
+Follow this guide to configure and run the full stack locally (Python FastAPI AI Microservice, Node.js/Express API Gateway, MongoDB, and Next.js 16 Client).
+
+---
+
+### 📋 Prerequisites
+
+Ensure you have the following installed on your system before proceeding:
+
+* **Node.js**: `v18.x` or `v20.x` (LTS recommended) & **npm** `v9.x+`
+* **Python**: `v3.10.x` or `v3.11.x`
+* **MongoDB**: Local MongoDB instance running on `mongodb://localhost:27017` or a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) connection string.
+* **Git**: `v2.x+`
+
+---
+
+### 1️⃣ Clone the Repository
+
 ```bash
-cd server
-
-# Install dependencies
-npm install
-
-# Seed MongoDB with canonical careers & dataset
-npm run seed
-
-# Start development server with live watch (Port 5000)
-npm run dev
-
-# Run automated integration tests
-npm run test
-
-# Run AI evaluation & precision benchmark suite
-npx tsx src/utils/ai-evaluation.ts
+git clone https://github.com/sagarkumar62/Path-Finder.git
+cd Path-Finder
 ```
 
-### 🔵 2. Python AI Microservice (`ai-service/`)
+---
+
+### 2️⃣ Environment Variables Configuration
+
+Copy and configure environment files for all three microservices:
+
+#### A. Express Backend Server (`server/.env`)
+Create `server/.env` based on `server/.env.example`:
+```ini
+PORT=5000
+NODE_ENV=development
+
+# Database Connection (MongoDB Atlas or Local)
+MONGODB_URI=mongodb://localhost:27017/career_pathfinder
+
+# Authentication Secrets
+JWT_ACCESS_SECRET=your_jwt_access_secret_key_here
+JWT_REFRESH_SECRET=your_jwt_refresh_secret_key_here
+ACCESS_TOKEN_EXPIRES_IN=15m
+REFRESH_TOKEN_EXPIRES_IN=7d
+
+# URLs & Services
+FRONTEND_URL=http://localhost:3000
+AI_SERVICE_URL=http://localhost:8000
+AI_SERVICE_TIMEOUT=30000
+AI_MOCK_MODE=false
+
+# Optional Gemini Direct Integration
+GEMINI_API_KEY=your_google_gemini_api_key
+```
+
+#### B. Python AI Microservice (`ai-service/.env`)
+Create `ai-service/.env` based on `ai-service/.env.example`:
+```ini
+GEMINI_API_KEY=your_google_gemini_api_key
+GEMINI_MODEL=gemini-1.0
+NODE_BACKEND_URL=http://localhost:5000
+AI_SERVICE_PORT=8000
+AI_MOCK_MODE=false
+EMBEDDING_MODEL=all-MiniLM-L6-v2
+AI_SERVICE_TIMEOUT=30000
+```
+
+#### C. Next.js Client (`client/.env.local`)
+Create `client/.env.local` based on `client/.env.example`:
+```ini
+NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api/v1
+```
+
+---
+
+### 3️⃣ Step-by-Step Microservice Launch
+
+#### 🔵 Step 1: Start Python AI Microservice (Port 8000)
 ```bash
 cd ai-service
 
-# Create & activate virtual environment (Python 3.11)
+# Create virtual environment
 python -m venv .venv
-.venv\Scripts\Activate.ps1       # Windows PowerShell
-source .venv/bin/activate        # Linux / macOS
 
-# Install lightweight dependencies
+# Activate virtual environment
+# Windows PowerShell:
+.venv\Scripts\Activate.ps1
+# Linux / macOS:
+source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 
-# Precompute vector embeddings (optional)
+# (Optional) Precompute vector embeddings
 python scripts/precompute_embeddings.py
 
-# Run FastAPI server with auto-reload (Port 8000)
+# Start FastAPI server
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+*Verify AI Microservice is running at `http://localhost:8000/docs` (Swagger UI).*
 
-### 🟣 3. Next.js Client Frontend (`client/`)
+#### 🟢 Step 2: Seed & Start Express Backend Server (Port 5000)
+Open a new terminal window:
+```bash
+cd server
+
+# Install Node.js dependencies
+npm install
+
+# Seed MongoDB with canonical career definitions and initial datasets
+npm run seed
+
+# Start Express dev server with live reloads
+npm run dev
+```
+*Verify Express Backend is running at `http://localhost:5000/health` or `http://localhost:5000/api/v1/health`.*
+
+#### 🟣 Step 3: Start Next.js Client Frontend (Port 3000)
+Open a third terminal window:
 ```bash
 cd client
 
-# Install dependencies
+# Install frontend dependencies
 npm install
 
-# Start Next.js development server (Port 3000)
+# Start Next.js development server
 npm run dev
+```
+*Open `http://localhost:3000` in your web browser.*
 
-# Build production distribution
-npm run build
+---
+
+### 🧪 Verification & Testing
+
+To verify end-to-end functionality across components:
+
+#### 1. Express Integration Test Suite
+```bash
+cd server
+npm run test
+```
+
+#### 2. AI Precision & Recommendation Evaluation Benchmark
+```bash
+cd server
+npx tsx src/utils/ai-evaluation.ts
+```
+
+#### 3. Python AI Microservice Unit Tests
+```bash
+cd ai-service
+pytest
 ```
 
 ---
