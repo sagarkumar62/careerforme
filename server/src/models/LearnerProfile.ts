@@ -30,6 +30,8 @@ export interface ILearnerProfile extends Document {
   experienceLevel?: string;
   currentRole?: string;
   targetCareer?: string;
+  targetCareerId?: string;
+  profileVersion: number;
   skills: any[];
   baselineSkills: any[];
   interests: string[];
@@ -62,6 +64,8 @@ const learnerProfileSchema = new Schema<ILearnerProfile>(
     experienceLevel: { type: String, default: 'Beginner' },
     currentRole: { type: String, default: '' },
     targetCareer: { type: String, default: '' },
+    targetCareerId: { type: String, default: '' },
+    profileVersion: { type: Number, default: 1 },
     skills: { type: [Schema.Types.Mixed] as any, default: [] },
     baselineSkills: { type: [Schema.Types.Mixed] as any, default: [] },
     interests: { type: [String], default: [] },
@@ -104,4 +108,17 @@ const learnerProfileSchema = new Schema<ILearnerProfile>(
   }
 );
 
+learnerProfileSchema.pre('save', function (this: ILearnerProfile) {
+  if (
+    this.isModified('skills') ||
+    this.isModified('targetCareer') ||
+    this.isModified('targetCareerId') ||
+    this.isModified('experienceLevel') ||
+    this.isModified('education')
+  ) {
+    this.profileVersion = (this.profileVersion || 1) + 1;
+  }
+});
+
 export const LearnerProfile = mongoose.model<ILearnerProfile>('LearnerProfile', learnerProfileSchema);
+

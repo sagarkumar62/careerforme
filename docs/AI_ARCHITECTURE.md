@@ -1,104 +1,42 @@
-# Career PathFinder — System & AI Architecture Specification
+# AI Architecture & Technical Overview
 
-This document details the high-level architecture, service boundaries, memory optimization strategy, and communication flow between the Next.js Frontend, Express API Gateway, Python FastAPI AI Service, Google Gemini API, and MongoDB database.
+## Purpose
+The Hybrid AI System in Career PathFinder provides personalized career decision intelligence and adaptive learning paths by cleanly separating deterministic machine-learning algorithms (Python FastAPI Service) from natural language synthesis and content enrichment (Gemini API), orchestrated via the Express Backend API Gateway.
 
----
-
-## High-Level System Architecture Diagram
-
+## High-Level Architecture Diagram
 ```
-                             ┌───────────────────────────────────┐
-                             │          Next.js Frontend         │
-                             │       (User Interface / UI)       │
-                             └─────────────────┬─────────────────┘
-                                               │
-                                               ▼
-                             ┌───────────────────────────────────┐
-                             │        Express Node.js Gateway    │
-                             │   (Auth, Routing, Gemini, DB)     │
-                             └────────┬─────────────────┬────────┘
-                                      │                 │
-            ┌─────────────────────────┘                 └─────────────────────────┐
-            │ (HTTP POST via AI_SERVICE_URL)                                      │
-            ▼                                                                     ▼
-┌───────────────────────────────────────┐                             ┌────────────────────────┐
-│       Python FastAPI AI Service       │                             │    Google Gemini API   │
-│     (0.0.0.0:$PORT, Python 3.11)      │                             │ (Natural Language &    │
-└───────────────────┬───────────────────┘                             │  Guidance Generation)  │
-                    │                                                 └────────────────────────┘
-                    ▼
-┌───────────────────────────────────────┐
-│       ONNX Runtime Embedding Engine   │
-│    (MiniLM-L6-v2 ONNX CPU ~30MB RAM)  │
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│     NumPy Semantic Similarity         │
-│   (384-dim Cosine Matrix Vector Search)│
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│    6-Factor Weighted Recommendation   │
-│      Engine (Deterministic ML)        │
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│        Structured JSON Response       │
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│        Express Gateway Enrichment     │
-│       (Gemini Roadmap Explanations)   │
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│         Next.js Frontend Render       │
-└───────────────────────────────────────┘
+Next.js Frontend (/recommendations, /careers/[id])
+       │
+       ▼
+Express API Gateway (/api/v1/ai/*) ── Authenticated with req.user._id
+       │
+       ├──► Python AI Microservice (FastAPI :8000)
+       │    ├── SentenceTransformers / ONNX Embeddings
+       │    ├── 6-Factor Hybrid Match Scoring Engine
+       │    ├── Prerequisite Graph Traversal (DAG)
+       │    └── Deterministic Skill Gap & Roadmap Generator
+       │
+       └──► Gemini LLM Service (Google Generative AI)
+            ├── Match Explanation & Human Reasoning
+            ├── Practical Project Ideation (Beginner, Intermediate, Advanced)
+            ├── Verified Skill-Mapped Learning Resources
+            └── Structured Flowchart Data Generation
 ```
 
----
+## System Boundaries & Responsibilities
+- **Python AI Microservice**: Authoritative scoring, skill gap math, priority calculation, topological graph ordering, roadmap phase structuring.
+- **Gemini LLM**: Human-readable synthesis, project ideas, resource curation, flowchart JSON. **Never overrides Python match scores**.
+- **Express API Gateway**: Enforces tenant security (`req.user._id`), handles dual-tier fallback resilience, persists results to MongoDB.
 
-## Core System Boundaries & Responsibilities
+## Files Involved
+- `ai-service/app/services/recommendation_engine.py`
+- `ai-service/app/services/skill_gap_engine.py`
+- `ai-service/app/services/roadmap_engine.py`
+- `server/src/services/ai-orchestrator.service.ts`
+- `server/src/services/ai.service.ts`
+- `server/src/routes/ai.routes.ts`
+- `server/src/controllers/ai.controller.ts`
 
-### 1. Python FastAPI AI Microservice (`ai-service`)
-- **Deterministic 6-Factor Matching Engine:**
-  - Skill Match (0.40)
-  - Interest Match (0.20)
-  - Goal Match (0.15)
-  - Experience Match (0.10)
-  - Education Match (0.05)
-  - Semantic Similarity (0.10)
-- **Lightweight CPU Semantic Search:** Powered by ONNX Runtime and MiniLM-L6-v2 ONNX quantized vectors.
-- **Skill-Gap Analysis:** Calculates missing skills and proficiency requirements.
-- **Career & Domain Resolution:** Taxonomy normalization, alias resolution, prerequisite dependency graph generation.
-- **No LLM Score Alteration:** Math scores are computed deterministically and never altered by LLMs.
-
-### 2. Express Node.js Backend Gateway (`server`)
-- **API Gateway & Routing:** Public API endpoints consumed by Next.js frontend.
-- **Authentication & Persistence:** User profiles, progress tracking, MongoDB integration.
-- **Python AI Communication:** Calls Python service via HTTP (`AI_SERVICE_URL`).
-- **Google Gemini Integration:** Passes deterministic Python recommendations and skill gap structures to Gemini to generate natural-language explanations, project ideas, documentation links, and video recommendations.
-
----
-
-## Render Free Memory Optimization Summary
-
-| Component | Legacy Stack | Optimized Stack | Memory Impact |
-| :--- | :--- | :--- | :--- |
-| **Framework** | PyTorch (`torch`) | ONNX Runtime (`onnxruntime` CPU) | -1,100 MB |
-| **Model** | `sentence-transformers` | `xenova/all-MiniLM-L6-v2` ONNX | -250 MB |
-| **Index** | FAISS C++ Index | NumPy Matrix Cosine Similarity | -80 MB |
-| **GPU Runtimes** | NVIDIA CUDA / Triton | None (Pure CPU execution) | -300 MB |
-| **Total Memory** | **> 1,200 MB (OOM Crash)** | **~45 MB RAM (Stable)** | **Passed Render Free** |
-
----
-
-## Health & Readiness Monitoring
-
-- `GET /health`: Fast probe for Render Web Service health checks (`status: ok`).
-- `GET /ready`: Detailed readiness status returning `ready: true`, model load state, and career dataset counts.
+## Failure Handling
+- **Python AI Service Offline**: Express falls back to deterministic local dataset scoring without breaking API responses.
+- **Gemini LLM Offline**: Express returns structured Python ML results with static fallback explanations.

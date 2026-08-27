@@ -1,0 +1,409 @@
+{
+  "id": "doctor",
+  "careerId": "doctor",
+  "career_id": "doctor",
+  "title": "Medical Doctor (Physician)",
+  "domain": "healthcare",
+  "description": "Diagnose, treat, and prevent human illnesses by mastering Human Anatomy, Physiology, Pathology, Pharmacology, Internal Medicine, General Surgery, Pediatrics, Emergency Medicine, and Clinical Clerkships.",
+  "aliases": [
+    "doctor",
+    "physician",
+    "medical doctor",
+    "md",
+    "general practitioner",
+    "resident physician"
+  ],
+  "estimatedMonths": 24,
+  "estimatedHours": 600,
+  "nodes": [
+    {
+      "id": "human-anatomy-histology",
+      "nodeId": "human-anatomy-histology",
+      "title": "Human Gross Anatomy & Histology",
+      "description": "Master human organ systems, musculoskeletal anatomy, neuroanatomy, cardiovascular structures, and microscopic tissue histology.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "human-physiology",
+      "nodeId": "human-physiology",
+      "title": "Human Physiology & Homeostasis",
+      "description": "Master cellular mechanisms, cardiovascular dynamics, renal function, respiratory gas exchange, endocrine control, and gastrointestinal systems.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "human-anatomy-histology"
+      ]
+    },
+    {
+      "id": "biochemistry-medical-genetics",
+      "nodeId": "biochemistry-medical-genetics",
+      "title": "Medical Biochemistry & Genetics",
+      "description": "Master metabolic pathways (glycolysis, Krebs cycle), enzyme kinetics, molecular genetics, DNA replication, and hereditary gene mutations.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "medical-microbiology-immunology",
+      "nodeId": "medical-microbiology-immunology",
+      "title": "Medical Microbiology & Immunology",
+      "description": "Master bacteriology, virology, mycology, parasitology, innate/adaptive immunity, antibody response, and vaccination mechanisms.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "human-physiology"
+      ]
+    },
+    {
+      "id": "pathology-disease-mechanisms",
+      "nodeId": "pathology-disease-mechanisms",
+      "title": "General & Systemic Pathology",
+      "description": "Master cellular injury, inflammation, neoplasia/oncology, hemodynamic disorders, and organ-specific disease pathophysiology.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "human-physiology",
+        "biochemistry-medical-genetics"
+      ]
+    },
+    {
+      "id": "pharmacology-drug-therapeutics",
+      "nodeId": "pharmacology-drug-therapeutics",
+      "title": "Medical Pharmacology & Drug Therapeutics",
+      "description": "Master pharmacokinetics, pharmacodynamics, autonomic drugs, antibiotics, cardiovascular medications, CNS drugs, and adverse drug reactions.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "human-physiology",
+        "pathology-disease-mechanisms"
+      ]
+    },
+    {
+      "id": "physical-diagnosis-clinical-skills",
+      "nodeId": "physical-diagnosis-clinical-skills",
+      "title": "Physical Examination & History Taking",
+      "description": "Master patient history taking, physical examination techniques (auscultation, palpation, percussion), differential diagnosis, and medical charting.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "human-anatomy-histology",
+        "human-physiology"
+      ]
+    },
+    {
+      "id": "internal-medicine-diagnostics",
+      "nodeId": "internal-medicine-diagnostics",
+      "title": "Internal Medicine & Clinical Diagnostics",
+      "description": "Master diagnosis and management of adult diseases: Cardiology, Pulmonology, Gastroenterology, Nephrology, and Endocrinology.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "pathology-disease-mechanisms",
+        "pharmacology-drug-therapeutics",
+        "physical-diagnosis-clinical-skills"
+      ]
+    },
+    {
+      "id": "general-surgery-operating-principles",
+      "nodeId": "general-surgery-operating-principles",
+      "title": "General Surgery & Operating Principles",
+      "description": "Master surgical anatomy, sterile technique, wound healing, pre/post-operative care, acute abdomen management, and minor surgical procedures.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "human-anatomy-histology",
+        "pathology-disease-mechanisms"
+      ]
+    },
+    {
+      "id": "pediatrics-child-health",
+      "nodeId": "pediatrics-child-health",
+      "title": "Pediatrics & Child Health",
+      "description": "Master neonatal care, pediatric growth milestones, childhood immunizations, congenital anomalies, and pediatric infectious diseases.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "internal-medicine-diagnostics"
+      ]
+    },
+    {
+      "id": "obstetrics-gynecology-obgyn",
+      "nodeId": "obstetrics-gynecology-obgyn",
+      "title": "Obstetrics & Gynecology (OB/GYN)",
+      "description": "Master prenatal care, labor and delivery management, high-risk pregnancies, gynecological disorders, and reproductive endocrinology.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "general-surgery-operating-principles",
+        "internal-medicine-diagnostics"
+      ]
+    },
+    {
+      "id": "psychiatry-mental-health",
+      "nodeId": "psychiatry-mental-health",
+      "title": "Psychiatry & Behavioral Health",
+      "description": "Master DSM-5 psychiatric diagnoses, mood disorders, anxiety, psychosis, psychopharmacology, and mental status examinations (MSE).",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "internal-medicine-diagnostics",
+        "pharmacology-drug-therapeutics"
+      ]
+    },
+    {
+      "id": "radiology-diagnostic-imaging",
+      "nodeId": "radiology-diagnostic-imaging",
+      "title": "Diagnostic Radiology & Imaging (X-Ray, CT, MRI)",
+      "description": "Interpret Chest X-Rays, CT scans of head/abdomen, MRI images, and Ultrasound diagnostics in clinical practice.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "human-anatomy-histology",
+        "internal-medicine-diagnostics"
+      ]
+    },
+    {
+      "id": "emergency-medicine-trauma",
+      "nodeId": "emergency-medicine-trauma",
+      "title": "Emergency Medicine & Trauma Resuscitation",
+      "description": "Master ACLS/ATLS protocols, airway management (intubation), cardiac arrest resuscitation, shock management, and acute trauma triage.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "internal-medicine-diagnostics",
+        "general-surgery-operating-principles"
+      ]
+    },
+    {
+      "id": "medical-ethics-law-professionalism",
+      "nodeId": "medical-ethics-law-professionalism",
+      "title": "Medical Ethics, Law & Doctor-Patient Communication",
+      "description": "Master bioethics principles (Autonomy, Beneficence, Non-maleficence, Justice), informed consent, HIPAA privacy, and breaking bad news.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "physical-diagnosis-clinical-skills"
+      ]
+    },
+    {
+      "id": "clinical-clerkship-residency-prep",
+      "nodeId": "clinical-clerkship-residency-prep",
+      "title": "Clinical Rotation Clerkships & Residency Prep",
+      "description": "Complete supervised clinical hospital rotations (Medicine, Surgery, OB/GYN, Pediatrics), ward rounds, and USMLE / Licensing Exam prep.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "internal-medicine-diagnostics",
+        "general-surgery-operating-principles",
+        "emergency-medicine-trauma",
+        "pediatrics-child-health"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "Medical Doctor Clinical Case Portfolio",
+      "description": "Package clinical case presentations, medical licensing exam certifications, research papers, and residency application documents.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "clinical-clerkship-residency-prep"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "human-anatomy-histology",
+      "target": "human-physiology",
+      "type": "prerequisite"
+    },
+    {
+      "source": "human-physiology",
+      "target": "medical-microbiology-immunology",
+      "type": "prerequisite"
+    },
+    {
+      "source": "human-physiology",
+      "target": "pathology-disease-mechanisms",
+      "type": "prerequisite"
+    },
+    {
+      "source": "biochemistry-medical-genetics",
+      "target": "pathology-disease-mechanisms",
+      "type": "prerequisite"
+    },
+    {
+      "source": "human-physiology",
+      "target": "pharmacology-drug-therapeutics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pathology-disease-mechanisms",
+      "target": "pharmacology-drug-therapeutics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "human-anatomy-histology",
+      "target": "physical-diagnosis-clinical-skills",
+      "type": "prerequisite"
+    },
+    {
+      "source": "human-physiology",
+      "target": "physical-diagnosis-clinical-skills",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pathology-disease-mechanisms",
+      "target": "internal-medicine-diagnostics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pharmacology-drug-therapeutics",
+      "target": "internal-medicine-diagnostics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "physical-diagnosis-clinical-skills",
+      "target": "internal-medicine-diagnostics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "human-anatomy-histology",
+      "target": "general-surgery-operating-principles",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pathology-disease-mechanisms",
+      "target": "general-surgery-operating-principles",
+      "type": "prerequisite"
+    },
+    {
+      "source": "internal-medicine-diagnostics",
+      "target": "pediatrics-child-health",
+      "type": "prerequisite"
+    },
+    {
+      "source": "general-surgery-operating-principles",
+      "target": "obstetrics-gynecology-obgyn",
+      "type": "prerequisite"
+    },
+    {
+      "source": "internal-medicine-diagnostics",
+      "target": "obstetrics-gynecology-obgyn",
+      "type": "prerequisite"
+    },
+    {
+      "source": "internal-medicine-diagnostics",
+      "target": "psychiatry-mental-health",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pharmacology-drug-therapeutics",
+      "target": "psychiatry-mental-health",
+      "type": "prerequisite"
+    },
+    {
+      "source": "human-anatomy-histology",
+      "target": "radiology-diagnostic-imaging",
+      "type": "prerequisite"
+    },
+    {
+      "source": "internal-medicine-diagnostics",
+      "target": "radiology-diagnostic-imaging",
+      "type": "prerequisite"
+    },
+    {
+      "source": "internal-medicine-diagnostics",
+      "target": "emergency-medicine-trauma",
+      "type": "prerequisite"
+    },
+    {
+      "source": "general-surgery-operating-principles",
+      "target": "emergency-medicine-trauma",
+      "type": "prerequisite"
+    },
+    {
+      "source": "physical-diagnosis-clinical-skills",
+      "target": "medical-ethics-law-professionalism",
+      "type": "prerequisite"
+    },
+    {
+      "source": "internal-medicine-diagnostics",
+      "target": "clinical-clerkship-residency-prep",
+      "type": "prerequisite"
+    },
+    {
+      "source": "general-surgery-operating-principles",
+      "target": "clinical-clerkship-residency-prep",
+      "type": "prerequisite"
+    },
+    {
+      "source": "emergency-medicine-trauma",
+      "target": "clinical-clerkship-residency-prep",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pediatrics-child-health",
+      "target": "clinical-clerkship-residency-prep",
+      "type": "prerequisite"
+    },
+    {
+      "source": "clinical-clerkship-residency-prep",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
+  ]
+}

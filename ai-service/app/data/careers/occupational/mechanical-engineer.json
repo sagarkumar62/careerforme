@@ -1,0 +1,390 @@
+{
+  "id": "mechanical-engineer",
+  "careerId": "mechanical-engineer",
+  "career_id": "mechanical-engineer",
+  "title": "Mechanical Engineer",
+  "domain": "engineering",
+  "description": "Design, analyze, and manufacture mechanical systems, thermodynamics, fluid dynamics, 3D CAD modeling (SolidWorks/AutoCAD), Finite Element Analysis (FEA), mechatronics, and HVAC/thermal machinery.",
+  "aliases": [
+    "mechanical engineer",
+    "design engineer",
+    "thermal engineer",
+    "mechatronics engineer",
+    "manufacturing engineer"
+  ],
+  "estimatedMonths": 12,
+  "estimatedHours": 320,
+  "nodes": [
+    {
+      "id": "engineering-math-calculus",
+      "nodeId": "engineering-math-calculus",
+      "title": "Engineering Mathematics & Vector Calculus",
+      "description": "Master differential equations, linear algebra, vector calculus, Fourier transforms, and numerical methods for engineering problem solving.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "physics-statics-dynamics",
+      "nodeId": "physics-statics-dynamics",
+      "title": "Engineering Mechanics (Statics & Dynamics)",
+      "description": "Master force equilibrium, free-body diagrams, friction, kinematics, kinetics, work-energy principles, and rigid body dynamics.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-math-calculus"
+      ]
+    },
+    {
+      "id": "thermodynamics-heat-transfer",
+      "nodeId": "thermodynamics-heat-transfer",
+      "title": "Thermodynamics & Heat Transfer",
+      "description": "Master 1st & 2nd Laws of Thermodynamics, Rankine/Otto cycles, conduction, convection, radiation, and heat exchangers.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-math-calculus"
+      ]
+    },
+    {
+      "id": "engineering-drawing-cad",
+      "nodeId": "engineering-drawing-cad",
+      "title": "Engineering Drawing & Fundamentals of CAD",
+      "description": "Master orthographic projections, isometric views, drafting standards, dimensioning, and 2D computer-aided design (AutoCAD).",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "mechanics-of-materials",
+      "nodeId": "mechanics-of-materials",
+      "title": "Mechanics of Materials & Strength Analysis",
+      "description": "Master stress-strain relationships, Mohr's circle, shear force & bending moment diagrams, beam deflection, and torsional stress.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "physics-statics-dynamics"
+      ]
+    },
+    {
+      "id": "fluid-mechanics-hydraulics",
+      "nodeId": "fluid-mechanics-hydraulics",
+      "title": "Fluid Mechanics & Hydraulics",
+      "description": "Master fluid statics, Bernoulli's equation, Navier-Stokes equations, pipe flow friction losses, pumps, and hydraulic turbines.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "physics-statics-dynamics",
+        "engineering-math-calculus"
+      ]
+    },
+    {
+      "id": "3d-cad-solidworks-autocad",
+      "nodeId": "3d-cad-solidworks-autocad",
+      "title": "3D Parametric CAD (SolidWorks / Fusion 360)",
+      "description": "Master 3D part modeling, assembly design, surface modeling, exploded views, and parametric design in SolidWorks or Fusion 360.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-drawing-cad"
+      ]
+    },
+    {
+      "id": "manufacturing-processes-machining",
+      "nodeId": "manufacturing-processes-machining",
+      "title": "Manufacturing Processes & CNC Machining",
+      "description": "Master casting, forging, sheet metal fabrication, injection molding, CNC lathe/milling machining, and additive manufacturing (3D printing).",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "3d-cad-solidworks-autocad"
+      ]
+    },
+    {
+      "id": "machine-design-kinematics",
+      "nodeId": "machine-design-kinematics",
+      "title": "Machine Component Design & Kinematics",
+      "description": "Design gears, shafts, bearings, springs, clutches, fasteners, linkages, gear trains, and fatigue failure criteria (S-N curves).",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "mechanics-of-materials",
+        "3d-cad-solidworks-autocad"
+      ]
+    },
+    {
+      "id": "finite-element-analysis-fea",
+      "nodeId": "finite-element-analysis-fea",
+      "title": "Finite Element Analysis (FEA - ANSYS / Abaqus)",
+      "description": "Perform structural stress analysis, thermal stress, modal vibration analysis, mesh refinement, and safety factor validation in ANSYS.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "mechanics-of-materials",
+        "3d-cad-solidworks-autocad"
+      ]
+    },
+    {
+      "id": "computational-fluid-dynamics-cfd",
+      "nodeId": "computational-fluid-dynamics-cfd",
+      "title": "Computational Fluid Dynamics (CFD)",
+      "description": "Simulate aerodynamics, internal pipe flow, heat dissipation, turbulence models (k-epsilon), and flow visualization using ANSYS Fluent.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "fluid-mechanics-hydraulics",
+        "thermodynamics-heat-transfer"
+      ]
+    },
+    {
+      "id": "mechatronics-robotics-sensors",
+      "nodeId": "mechatronics-robotics-sensors",
+      "title": "Mechatronics, Control Systems & Robotics",
+      "description": "Integrate microcontrollers (Arduino/Raspberry Pi), stepper/servo motors, PID control loops, sensors, and robotic actuators.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "physics-statics-dynamics",
+        "engineering-math-calculus"
+      ]
+    },
+    {
+      "id": "materials-science-metallurgy",
+      "nodeId": "materials-science-metallurgy",
+      "title": "Materials Science & Industrial Metallurgy",
+      "description": "Master crystal structures, phase diagrams (Iron-Carbon), heat treatment (annealing, quenching), polymers, composites, and material selection.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "mechanics-of-materials"
+      ]
+    },
+    {
+      "id": "hvac-thermal-system-design",
+      "nodeId": "hvac-thermal-system-design",
+      "title": "HVAC & Thermal Systems Engineering",
+      "description": "Design Heating, Ventilation & Air Conditioning (HVAC) systems, psychrometrics, refrigeration cycles, ductwork, and boiler systems.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "thermodynamics-heat-transfer",
+        "fluid-mechanics-hydraulics"
+      ]
+    },
+    {
+      "id": "gd-t-engineering-standards",
+      "nodeId": "gd-t-engineering-standards",
+      "title": "Geometric Dimensioning & Tolerancing (GD&T)",
+      "description": "Master ASME Y14.5 GD&T symbols, datums, position tolerances, runout, maximum material condition (MMC), and inspection gauges.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "3d-cad-solidworks-autocad",
+        "manufacturing-processes-machining"
+      ]
+    },
+    {
+      "id": "mechanical-engineering-capstone",
+      "nodeId": "mechanical-engineering-capstone",
+      "title": "Enterprise Mechanical Engineering Capstone Project",
+      "description": "Design a complete mechanical assembly: 3D SolidWorks CAD ➔ FEA Stress Simulation ➔ GD&T Technical Drawings ➔ Machining Plan ➔ Physical Prototype.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "machine-design-kinematics",
+        "finite-element-analysis-fea",
+        "manufacturing-processes-machining",
+        "gd-t-engineering-standards"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "Mechanical Engineering Portfolio & Design Showcase",
+      "description": "Package 3D CAD models, FEA simulation reports, GD&T drawings, prototype documentation, and engineering calculation workbooks.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "mechanical-engineering-capstone"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "engineering-math-calculus",
+      "target": "physics-statics-dynamics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-math-calculus",
+      "target": "thermodynamics-heat-transfer",
+      "type": "prerequisite"
+    },
+    {
+      "source": "physics-statics-dynamics",
+      "target": "mechanics-of-materials",
+      "type": "prerequisite"
+    },
+    {
+      "source": "physics-statics-dynamics",
+      "target": "fluid-mechanics-hydraulics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-math-calculus",
+      "target": "fluid-mechanics-hydraulics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-drawing-cad",
+      "target": "3d-cad-solidworks-autocad",
+      "type": "prerequisite"
+    },
+    {
+      "source": "3d-cad-solidworks-autocad",
+      "target": "manufacturing-processes-machining",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mechanics-of-materials",
+      "target": "machine-design-kinematics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "3d-cad-solidworks-autocad",
+      "target": "machine-design-kinematics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mechanics-of-materials",
+      "target": "finite-element-analysis-fea",
+      "type": "prerequisite"
+    },
+    {
+      "source": "3d-cad-solidworks-autocad",
+      "target": "finite-element-analysis-fea",
+      "type": "prerequisite"
+    },
+    {
+      "source": "fluid-mechanics-hydraulics",
+      "target": "computational-fluid-dynamics-cfd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "thermodynamics-heat-transfer",
+      "target": "computational-fluid-dynamics-cfd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "physics-statics-dynamics",
+      "target": "mechatronics-robotics-sensors",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-math-calculus",
+      "target": "mechatronics-robotics-sensors",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mechanics-of-materials",
+      "target": "materials-science-metallurgy",
+      "type": "prerequisite"
+    },
+    {
+      "source": "thermodynamics-heat-transfer",
+      "target": "hvac-thermal-system-design",
+      "type": "prerequisite"
+    },
+    {
+      "source": "fluid-mechanics-hydraulics",
+      "target": "hvac-thermal-system-design",
+      "type": "prerequisite"
+    },
+    {
+      "source": "3d-cad-solidworks-autocad",
+      "target": "gd-t-engineering-standards",
+      "type": "prerequisite"
+    },
+    {
+      "source": "manufacturing-processes-machining",
+      "target": "gd-t-engineering-standards",
+      "type": "prerequisite"
+    },
+    {
+      "source": "machine-design-kinematics",
+      "target": "mechanical-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "finite-element-analysis-fea",
+      "target": "mechanical-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "manufacturing-processes-machining",
+      "target": "mechanical-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "gd-t-engineering-standards",
+      "target": "mechanical-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mechanical-engineering-capstone",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
+  ]
+}

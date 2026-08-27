@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   api,
   LearningPathResponse,
@@ -37,7 +38,8 @@ import {
   Star,
   Check,
   AlertTriangle,
-  GraduationCap
+  GraduationCap,
+  RefreshCw
 } from 'lucide-react';
 
 const POPULAR_GOALS = [
@@ -48,11 +50,14 @@ const POPULAR_GOALS = [
   'Cybersecurity Analyst',
 ];
 
-export default function LearningPathPage() {
+function LearningPathContent() {
+  const queryClient = useQueryClient();
   const { profile } = useAuth();
-  const [goal, setGoal] = useState<string>(
-    profile?.targetCareerGoal || (profile as any)?.targetCareer || 'AI Engineer'
-  );
+  const searchParams = useSearchParams();
+  const urlTargetCareer = searchParams?.get('targetCareer') || searchParams?.get('goal');
+  const userTargetCareer = urlTargetCareer || profile?.targetCareerGoal || (profile as any)?.targetCareer || '';
+
+  const [goal, setGoal] = useState<string>('');
   const [customGoalInput, setCustomGoalInput] = useState('');
   const [learningPath, setLearningPath] = useState<LearningPathResponse | null>(null);
   const [expandedMilestones, setExpandedMilestones] = useState<Record<string, boolean>>({});
@@ -60,21 +65,146 @@ export default function LearningPathPage() {
   const [notification, setNotification] = useState<{ type: 'success' | 'info' | 'error'; message: string } | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
 
+  // Persistent tracking of completed item IDs across path generations
+  const [completedItemIds, setCompletedItemIds] = useState<Set<string>>(() => {
+    try {
+      const saved = sessionStorage.getItem('learning_path_completed_items');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch (e) {
+      return new Set();
+    }
+  });
+
+  const recordCompletedItem = (itemId: string): Set<string> => {
+    let nextSet = new Set<string>();
+    setCompletedItemIds((prev) => {
+      nextSet = new Set(prev);
+      nextSet.add(itemId);
+      try {
+        sessionStorage.setItem('learning_path_completed_items', JSON.stringify(Array.from(nextSet)));
+      } catch (e) { }
+      return nextSet;
+    });
+    return nextSet;
+  };
+
+  const mergeCompletedItemsIntoPath = (
+    data: LearningPathResponse,
+    completedIds: Set<string>
+  ): LearningPathResponse => {
+    if (!data?.milestones) return data;
+
+    let totalCoursesCompleted = 0;
+    let totalCourses = 0;
+
+    const mergedMilestones = data.milestones.map((m) => {
+      const milestoneCompletedCourses = new Set(m.completed_course_ids || []);
+      (m.course_ids || []).forEach((cid) => {
+        if (completedIds.has(cid)) {
+          milestoneCompletedCourses.add(cid);
+        }
+      });
+
+      const updatedCompletedCoursesArr = Array.from(milestoneCompletedCourses);
+      totalCoursesCompleted += updatedCompletedCoursesArr.length;
+      totalCourses += m.course_ids?.length || 0;
+
+      const updatedProjects = (m.projects || []).map((p: any) => {
+        const pid = p.id || p.project_id;
+        if (completedIds.has(pid)) {
+          return { ...p, is_completed: true, status: 'completed' };
+        }
+        return p;
+      });
+
+      const updatedAssessments = (m.assessments || []).map((a: any) => {
+        const aid = a.id || a.assessment_id;
+        if (completedIds.has(aid)) {
+          return { ...a, is_completed: true, status: 'completed' };
+        }
+        return a;
+      });
+
+      const hasCourses = Boolean(m.course_ids && m.course_ids.length > 0);
+      const isAllCoursesDone = !hasCourses || updatedCompletedCoursesArr.length >= (m.course_ids || []).length;
+
+      const hasProjects = Boolean(updatedProjects && updatedProjects.length > 0);
+      const isAllProjectsDone = !hasProjects || updatedProjects.every((p: any) => p.is_completed || p.status === 'completed');
+
+      const hasAssessments = Boolean(updatedAssessments && updatedAssessments.length > 0);
+      const isAllAssessmentsDone = !hasAssessments || updatedAssessments.every((a: any) => a.is_completed || a.status === 'completed');
+
+      const isMilestoneComplete = (hasCourses || hasProjects || hasAssessments) && isAllCoursesDone && isAllProjectsDone && isAllAssessmentsDone;
+
+      return {
+        ...m,
+        completed_course_ids: updatedCompletedCoursesArr,
+        projects: updatedProjects,
+        assessments: updatedAssessments,
+        status: isMilestoneComplete ? ('completed' as const) : m.status,
+      };
+    });
+
+    const progressPercentage = totalCourses > 0 ? Math.round((totalCoursesCompleted / totalCourses) * 100) : data.progress?.overall_progress || 0;
+    const completedMilestonesCount = mergedMilestones.filter((m) => m.status === 'completed').length;
+
+    return {
+      ...data,
+      milestones: mergedMilestones,
+      progress: {
+        ...(data.progress || {}),
+        overall_progress: progressPercentage,
+        completed_courses: totalCoursesCompleted,
+        completed_milestones: completedMilestonesCount,
+      },
+    };
+  };
+
   // Active mutation trackers
   const [activeCourseId, setActiveCourseId] = useState<string | null>(null);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
   const [activeAssessmentId, setActiveAssessmentId] = useState<string | null>(null);
 
-  React.useEffect(() => {
-    const targetGoal = profile?.targetCareerGoal || (profile as any)?.targetCareer || 'AI Engineer';
-    setGoal(targetGoal);
-    if (!learningPath && !generateMutation.isPending && !generationError) {
-      generateMutation.mutate(targetGoal);
-    }
-  }, [profile]);
+  useEffect(() => {
+    let savedGoal = '';
+    try {
+      savedGoal = sessionStorage.getItem('learning_path_current_goal') || '';
+    } catch (e) { }
+
+    const initialGoal = userTargetCareer || savedGoal || 'AI Engineer';
+    setGoal(initialGoal);
+    setCustomGoalInput(initialGoal);
+    generateMutation.mutate(initialGoal);
+  }, [userTargetCareer]);
 
   const showNotification = (type: 'success' | 'info' | 'error', message: string) => {
     setNotification({ type, message });
+    setTimeout(() => {
+      setNotification(null);
+    }, 4500);
+  };
+
+  const focusNextUncompletedStep = (pathData: LearningPathResponse) => {
+    if (!pathData?.milestones || pathData.milestones.length === 0) return;
+
+    const targetMilestone =
+      pathData.milestones.find((m) => {
+        const allCoursesCompleted = !m.course_ids || m.course_ids.every((cid) => (m.completed_course_ids || []).includes(cid));
+        const allProjectsCompleted = !m.projects || m.projects.every((p: any) => p.is_completed || p.status === 'completed');
+        const allAssessmentsCompleted = !m.assessments || m.assessments.every((a: any) => a.is_completed || a.status === 'completed');
+        return !(allCoursesCompleted && allProjectsCompleted && allAssessmentsCompleted);
+      }) || pathData.milestones[pathData.milestones.length - 1];
+
+    if (targetMilestone) {
+      const mId = targetMilestone.milestone_id;
+      setExpandedMilestones((prev) => ({ ...prev, [mId]: true }));
+      setTimeout(() => {
+        const el = document.getElementById(`milestone_card_${mId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 150);
+    }
   };
 
   const handleExpandAllMilestones = () => {
@@ -95,25 +225,16 @@ export default function LearningPathPage() {
     mutationFn: (targetGoal: string) => api.generateLearningPath(targetGoal, []),
     onSuccess: (data) => {
       setGenerationError(null);
-      setLearningPath(data);
+      const merged = mergeCompletedItemsIntoPath(data, completedItemIds);
+      setLearningPath(merged);
 
-      if (data.milestones && data.milestones.length > 0) {
-        const activeMilestone =
-          data.milestones.find((m) => m.status === 'in_progress') ||
-          data.milestones.find((m) => m.milestone_id === data.progress?.current_milestone) ||
-          data.milestones.find((m) => m.title === data.progress?.current_milestone) ||
-          data.milestones.find((m) => m.status !== 'completed') ||
-          data.milestones[0];
-
-        const activeId = activeMilestone?.milestone_id || 'milestone-1';
-
-        setExpandedMilestones((prev) => {
-          if (Object.keys(prev).length > 0) {
-            return { ...prev, [activeId]: true };
-          }
-          return { [activeId]: true };
-        });
+      if (data?.goal) {
+        try {
+          sessionStorage.setItem('learning_path_current_goal', data.goal);
+        } catch (e) { }
       }
+
+      focusNextUncompletedStep(merged);
       showNotification('success', `Adaptive Learning Path synchronized for "${data.goal}"!`);
     },
     onError: (error: any) => {
@@ -130,13 +251,15 @@ export default function LearningPathPage() {
       return api.completeCourse(courseId);
     },
     onSuccess: (res, courseId) => {
-      showNotification('success', `Course "${courseId}" completed! Learner state synchronized.`);
-      if (learningPath?.goal) {
-        generateMutation.mutate(learningPath.goal);
-      }
+      queryClient.invalidateQueries({ queryKey: ['progress'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmaps'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmap'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      showNotification('success', `Course completed! Roadmap, progress & profile synchronized.`);
     },
     onError: (err: any, courseId) => {
-      showNotification('error', `Failed to complete course "${courseId}": ${err?.message || 'Server error'}`);
+      showNotification('error', `Failed to complete course: ${err?.message || 'Server error'}`);
     },
     onSettled: () => {
       setActiveCourseId(null);
@@ -150,13 +273,15 @@ export default function LearningPathPage() {
       return api.completeProject(projectId);
     },
     onSuccess: (res, projectId) => {
-      showNotification('success', `Project "${projectId}" completed! Skills updated.`);
-      if (learningPath?.goal) {
-        generateMutation.mutate(learningPath.goal);
-      }
+      queryClient.invalidateQueries({ queryKey: ['progress'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmaps'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmap'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      showNotification('success', `Project completed! Roadmap, progress & skills updated.`);
     },
     onError: (err: any, projectId) => {
-      showNotification('error', `Failed to complete project "${projectId}": ${err?.message || 'Server error'}`);
+      showNotification('error', `Failed to complete project: ${err?.message || 'Server error'}`);
     },
     onSettled: () => {
       setActiveProjectId(null);
@@ -170,32 +295,73 @@ export default function LearningPathPage() {
       return api.submitAssessment(assessmentId, score, { completed_at: new Date().toISOString() });
     },
     onSuccess: (res: any, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['progress'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmaps'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmap'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       const isPassed = res?.data?.passed ?? res?.data?.assessment_result?.passed ?? variables.score >= 70;
       if (isPassed) {
         showNotification(
           'success',
-          `🎉 Assessment "${variables.assessmentId}" passed with score ${variables.score}%!`
+          `🎉 Assessment passed with score ${variables.score}%! Roadmap & progress synchronized.`
         );
       } else {
         showNotification(
           'info',
-          `Assessment "${variables.assessmentId}" submitted with score ${variables.score}%. (Score 70%+ required to pass).`
+          `Assessment submitted with score ${variables.score}%. (Score 70%+ required to pass).`
         );
-      }
-      if (learningPath?.goal) {
-        generateMutation.mutate(learningPath.goal);
       }
     },
     onError: (err: any, variables) => {
       showNotification(
         'error',
-        `Failed to submit assessment "${variables.assessmentId}": ${err?.message || 'Server error'}`
+        `Failed to submit assessment: ${err?.message || 'Server error'}`
       );
     },
     onSettled: () => {
       setActiveAssessmentId(null);
     },
   });
+
+  const handleCompleteCourse = (courseId: string) => {
+    if (!learningPath) return;
+
+    const nextCompletedSet = new Set(completedItemIds);
+    nextCompletedSet.add(courseId);
+    recordCompletedItem(courseId);
+
+    const updatedPath = mergeCompletedItemsIntoPath(learningPath, nextCompletedSet);
+    setLearningPath(updatedPath);
+    focusNextUncompletedStep(updatedPath);
+    completeCourseMutation.mutate(courseId);
+  };
+
+  const handleCompleteProject = (projectId: string) => {
+    if (!learningPath) return;
+
+    const nextCompletedSet = new Set(completedItemIds);
+    nextCompletedSet.add(projectId);
+    recordCompletedItem(projectId);
+
+    const updatedPath = mergeCompletedItemsIntoPath(learningPath, nextCompletedSet);
+    setLearningPath(updatedPath);
+    focusNextUncompletedStep(updatedPath);
+    completeProjectMutation.mutate(projectId);
+  };
+
+  const handleSubmitAssessment = (assessmentId: string, score: number) => {
+    if (!learningPath) return;
+
+    const nextCompletedSet = new Set(completedItemIds);
+    nextCompletedSet.add(assessmentId);
+    recordCompletedItem(assessmentId);
+
+    const updatedPath = mergeCompletedItemsIntoPath(learningPath, nextCompletedSet);
+    setLearningPath(updatedPath);
+    focusNextUncompletedStep(updatedPath);
+    submitAssessmentMutation.mutate({ assessmentId, score });
+  };
 
   const handleGenerate = (targetGoal?: string) => {
     const selectedGoal = targetGoal || customGoalInput.trim() || goal;
@@ -212,7 +378,15 @@ export default function LearningPathPage() {
     learningPath !== null &&
     (!learningPath.milestones || learningPath.milestones.length === 0);
 
-  const nextCourseId = learningPath?.progress?.next_course_id;
+  const nextCourseId = useMemo(() => {
+    if (!learningPath?.milestones) return null;
+    for (const m of learningPath.milestones) {
+      const completedSet = new Set(m.completed_course_ids || []);
+      const uncompletedCourse = (m.course_ids || []).find((cid) => !completedSet.has(cid));
+      if (uncompletedCourse) return uncompletedCourse;
+    }
+    return learningPath?.progress?.next_course_id || null;
+  }, [learningPath]);
 
   return (
     <AppLayout>
@@ -220,8 +394,21 @@ export default function LearningPathPage() {
         {/* Header & Goal Selector */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-xl">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-xs font-semibold backdrop-blur-sm">
-              <Sparkles className="h-3.5 w-3.5 text-indigo-300" /> Adaptive Learning Path (F.9.2)
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-xs font-semibold backdrop-blur-sm">
+                <Sparkles className="h-3.5 w-3.5 text-indigo-300" /> Adaptive Learning Path (F.9.2)
+              </div>
+              {userTargetCareer && (
+                <button
+                  onClick={() => handleGenerate(userTargetCareer)}
+                  disabled={generateMutation.isPending}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-200 hover:bg-emerald-500/30 text-xs font-bold transition-all disabled:opacity-50"
+                  title="Sync learning path with active target career from profile"
+                >
+                  <RefreshCw className={`h-3 w-3 text-emerald-300 ${generateMutation.isPending ? 'animate-spin' : ''}`} />
+                  Sync Target: {userTargetCareer}
+                </button>
+              )}
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               Personalized Learning Path
@@ -263,11 +450,10 @@ export default function LearningPathPage() {
                   key={g}
                   onClick={() => handleGenerate(g)}
                   disabled={generateMutation.isPending}
-                  className={`text-[11px] px-2.5 py-1 rounded-lg font-medium transition-all ${
-                    goal === g
+                  className={`text-[11px] px-2.5 py-1 rounded-lg font-medium transition-all ${goal === g
                       ? 'bg-white text-indigo-900 font-bold shadow-xs'
                       : 'bg-white/10 text-indigo-200 hover:bg-white/20'
-                  } disabled:opacity-50`}
+                    } disabled:opacity-50`}
                 >
                   {g}
                 </button>
@@ -279,13 +465,12 @@ export default function LearningPathPage() {
         {/* Floating Notification */}
         {notification && (
           <div
-            className={`p-4 rounded-xl border flex items-center justify-between text-xs font-semibold shadow-lg animate-in slide-in-from-top-2 ${
-              notification.type === 'success'
+            className={`p-4 rounded-xl border flex items-center justify-between text-xs font-semibold shadow-lg animate-in slide-in-from-top-2 ${notification.type === 'success'
                 ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                 : notification.type === 'error'
-                ? 'bg-rose-50 border-rose-200 text-rose-800'
-                : 'bg-indigo-50 border-indigo-200 text-indigo-800'
-            }`}
+                  ? 'bg-rose-50 border-rose-200 text-rose-800'
+                  : 'bg-indigo-50 border-indigo-200 text-indigo-800'
+              }`}
           >
             <div className="flex items-center gap-2">
               {notification.type === 'error' ? (
@@ -453,7 +638,7 @@ export default function LearningPathPage() {
                 <Button
                   size="sm"
                   disabled={activeCourseId === nextCourseId || completeCourseMutation.isPending}
-                  onClick={() => completeCourseMutation.mutate(nextCourseId)}
+                  onClick={() => handleCompleteCourse(nextCourseId)}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shrink-0 shadow-sm"
                 >
                   {activeCourseId === nextCourseId ? (
@@ -466,8 +651,6 @@ export default function LearningPathPage() {
                 </Button>
               </Card>
             )}
-
-
 
             {/* Progress Metrics Overview */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -499,7 +682,7 @@ export default function LearningPathPage() {
                   <Target className="h-4 w-4 text-indigo-600" />
                 </div>
                 <div className="text-sm font-bold text-slate-900 truncate">
-                  {learningPath.progress?.next_course_id || 'Path Complete!'}
+                  {nextCourseId || 'Path Complete!'}
                 </div>
                 <span className="text-[11px] text-indigo-600 font-medium">Optimal next step</span>
               </Card>
@@ -546,26 +729,24 @@ export default function LearningPathPage() {
                 const milestoneProgress = m.progress ?? Math.round((completedCount / totalCount) * 100);
 
                 return (
-                  <Card key={m.milestone_id} className="border-slate-200 overflow-hidden shadow-xs">
+                  <Card key={m.milestone_id} id={`milestone_card_${m.milestone_id}`} className="border-slate-200 overflow-hidden shadow-xs">
                     {/* Milestone Accordion Header */}
                     <div
                       onClick={() => toggleMilestone(m.milestone_id)}
-                      className={`p-5 flex items-center justify-between cursor-pointer transition-colors ${
-                        isCompleted
+                      className={`p-5 flex items-center justify-between cursor-pointer transition-colors ${isCompleted
                           ? 'bg-emerald-50/50 hover:bg-emerald-50'
                           : isCurrentMilestone
-                          ? 'bg-indigo-50/50 hover:bg-indigo-50'
-                          : 'bg-white hover:bg-slate-50'
-                      }`}
+                            ? 'bg-indigo-50/50 hover:bg-indigo-50'
+                            : 'bg-white hover:bg-slate-50'
+                        }`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`flex h-10 w-10 items-center justify-center rounded-xl font-black text-sm ${
-                          isCompleted
+                        <div className={`flex h-10 w-10 items-center justify-center rounded-xl font-black text-sm ${isCompleted
                             ? 'bg-emerald-100 text-emerald-800'
                             : isCurrentMilestone
-                            ? 'bg-indigo-600 text-white'
-                            : 'bg-slate-100 text-slate-700'
-                        }`}>
+                              ? 'bg-indigo-600 text-white'
+                              : 'bg-slate-100 text-slate-700'
+                          }`}>
                           {isCompleted ? <Check className="h-5 w-5 text-emerald-700" /> : index + 1}
                         </div>
 
@@ -650,13 +831,12 @@ export default function LearningPathPage() {
                                 return (
                                   <div
                                     key={cid}
-                                    className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 ${
-                                      isNext
+                                    className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 ${isNext
                                         ? 'border-indigo-400 bg-indigo-50/50 shadow-xs'
                                         : isCourseCompleted
-                                        ? 'border-emerald-200 bg-emerald-50/40'
-                                        : 'border-slate-200 bg-slate-50/50'
-                                    }`}
+                                          ? 'border-emerald-200 bg-emerald-50/40'
+                                          : 'border-slate-200 bg-slate-50/50'
+                                      }`}
                                   >
                                     <div className="min-w-0 space-y-1">
                                       <div className="flex items-center gap-1.5">
@@ -682,14 +862,13 @@ export default function LearningPathPage() {
                                       size="sm"
                                       variant={isCourseCompleted ? 'outline' : isNext ? 'primary' : 'secondary'}
                                       disabled={isCourseCompleted || isPendingThis || completeCourseMutation.isPending}
-                                      onClick={() => completeCourseMutation.mutate(cid)}
-                                      className={`text-xs font-bold shrink-0 ${
-                                        isCourseCompleted
+                                      onClick={() => handleCompleteCourse(cid)}
+                                      className={`text-xs font-bold shrink-0 ${isCourseCompleted
                                           ? 'text-emerald-700 border-emerald-200 bg-emerald-50'
                                           : isNext
-                                          ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                                          : ''
-                                      }`}
+                                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                                            : ''
+                                        }`}
                                     >
                                       {isCourseCompleted ? (
                                         <>
@@ -727,13 +906,12 @@ export default function LearningPathPage() {
                                 return (
                                   <div
                                     key={pid}
-                                    className={`p-3.5 rounded-xl border flex flex-col justify-between gap-3 ${
-                                      isLocked
+                                    className={`p-3.5 rounded-xl border flex flex-col justify-between gap-3 ${isLocked
                                         ? 'border-amber-200 bg-amber-50/40'
                                         : isProjCompleted
-                                        ? 'border-emerald-200 bg-emerald-50/40'
-                                        : 'border-slate-200 bg-slate-50/50'
-                                    }`}
+                                          ? 'border-emerald-200 bg-emerald-50/40'
+                                          : 'border-slate-200 bg-slate-50/50'
+                                      }`}
                                   >
                                     <div className="min-w-0 space-y-1">
                                       <div className="flex items-center justify-between">
@@ -761,12 +939,11 @@ export default function LearningPathPage() {
                                     <Button
                                       size="sm"
                                       disabled={isLocked || isProjCompleted || isPendingThis || completeProjectMutation.isPending}
-                                      onClick={() => completeProjectMutation.mutate(pid)}
-                                      className={`text-xs font-bold shrink-0 self-end ${
-                                        isLocked
+                                      onClick={() => handleCompleteProject(pid)}
+                                      className={`text-xs font-bold shrink-0 self-end ${isLocked
                                           ? 'bg-slate-200 text-slate-500 cursor-not-allowed border-slate-300'
                                           : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                                      }`}
+                                        }`}
                                     >
                                       {isLocked ? (
                                         <>
@@ -809,13 +986,12 @@ export default function LearningPathPage() {
                                 return (
                                   <div
                                     key={aid}
-                                    className={`p-3.5 rounded-xl border flex flex-col gap-2 ${
-                                      isLocked
+                                    className={`p-3.5 rounded-xl border flex flex-col gap-2 ${isLocked
                                         ? 'border-amber-200 bg-amber-50/40'
                                         : isAssessCompleted
-                                        ? 'border-emerald-200 bg-emerald-50/40'
-                                        : 'border-slate-200 bg-slate-50/50'
-                                    }`}
+                                          ? 'border-emerald-200 bg-emerald-50/40'
+                                          : 'border-slate-200 bg-slate-50/50'
+                                      }`}
                                   >
                                     <div className="flex items-center justify-between">
                                       <span className="font-bold text-xs text-slate-800 truncate">
@@ -864,17 +1040,11 @@ export default function LearningPathPage() {
                                         <Button
                                           size="sm"
                                           disabled={isLocked || isPendingThis || submitAssessmentMutation.isPending}
-                                          onClick={() =>
-                                            submitAssessmentMutation.mutate({
-                                              assessmentId: aid,
-                                              score: currentScore,
-                                            })
-                                          }
-                                          className={`text-xs font-bold shrink-0 ${
-                                            isLocked
+                                          onClick={() => handleSubmitAssessment(aid, currentScore)}
+                                          className={`text-xs font-bold shrink-0 ${isLocked
                                               ? 'bg-slate-200 text-slate-500 cursor-not-allowed border-slate-300'
                                               : 'bg-amber-600 hover:bg-amber-700 text-white'
-                                          }`}
+                                            }`}
                                         >
                                           {isLocked ? (
                                             <>
@@ -908,3 +1078,21 @@ export default function LearningPathPage() {
     </AppLayout>
   );
 }
+
+export default function LearningPathPage() {
+  return (
+    <Suspense
+      fallback={
+        <AppLayout>
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+          </div>
+        </AppLayout>
+      }
+    >
+      <LearningPathContent />
+    </Suspense>
+  );
+}
+
+

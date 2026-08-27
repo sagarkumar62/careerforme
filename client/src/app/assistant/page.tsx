@@ -190,48 +190,165 @@ export default function AssistantPage() {
     setMobileSidebarOpen(false);
   };
 
-  // Helper for rendering structured text with clean markdown format
+  // Helper to format inline markdown syntax (**bold**, `code`, *italic*)
+  const formatInlineMarkdown = (rawText: string) => {
+    const parts: (string | React.ReactNode)[] = [];
+    let text = rawText;
+
+    // Pattern matching for **bold**, `code`, and *italic*
+    const regex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+
+      const val = match[0];
+      if (val.startsWith('**') && val.endsWith('**')) {
+        parts.push(
+          <strong key={`b_${match.index}`} className="font-extrabold text-slate-900">
+            {val.slice(2, -2)}
+          </strong>
+        );
+      } else if (val.startsWith('`') && val.endsWith('`')) {
+        parts.push(
+          <code key={`c_${match.index}`} className="bg-indigo-50 text-indigo-700 font-mono text-[11px] px-1.5 py-0.5 rounded border border-indigo-100 font-semibold">
+            {val.slice(1, -1)}
+          </code>
+        );
+      } else if (val.startsWith('*') && val.endsWith('*')) {
+        parts.push(
+          <em key={`i_${match.index}`} className="italic text-slate-700">
+            {val.slice(1, -1)}
+          </em>
+        );
+      } else {
+        parts.push(val);
+      }
+
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : rawText;
+  };
+
+  // Helper for rendering structured text with clean markdown format & rich tables
   const renderMessageContent = (text: string) => {
+    if (!text) return null;
+
     const lines = text.split('\n');
-    return lines.map((line, i) => {
-      if (line.startsWith('### ')) {
-        return (
-          <h3 key={i} className="text-sm font-extrabold text-slate-900 mt-3 mb-1 flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-indigo-600 shrink-0" />
-            {line.replace('### ', '')}
-          </h3>
-        );
-      }
-      if (line.startsWith('## ')) {
-        return (
-          <h2 key={i} className="text-base font-extrabold text-slate-900 mt-4 mb-2">
-            {line.replace('## ', '')}
-          </h2>
-        );
-      }
-      if (line.startsWith('- ') || line.startsWith('* ')) {
-        return (
-          <li key={i} className="ml-4 list-disc text-xs text-slate-700 my-0.5">
-            {line.substring(2)}
-          </li>
-        );
-      }
-      if (line.startsWith('|')) {
-        return (
-          <div key={i} className="font-mono text-[11px] bg-slate-100 p-1 rounded overflow-x-auto my-1">
-            {line}
+    const elements: React.ReactNode[] = [];
+    let tableBuffer: string[] = [];
+
+    const flushTable = (tableKey: number) => {
+      if (tableBuffer.length === 0) return;
+      const cleanRows = tableBuffer.filter((r) => r.trim() && !r.includes('---'));
+      if (cleanRows.length > 0) {
+        const parseRow = (rowStr: string) =>
+          rowStr
+            .split('|')
+            .map((cell) => cell.trim())
+            .filter((cell, idx, arr) => idx > 0 && idx < arr.length - 1);
+
+        const headerCells = parseRow(cleanRows[0]);
+        const bodyRows = cleanRows.slice(1).map(parseRow);
+
+        elements.push(
+          <div key={`tbl_${tableKey}`} className="my-3 overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-2xs">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-slate-100/80 border-b border-slate-200">
+                  {headerCells.map((h, hIdx) => (
+                    <th key={hIdx} className="p-2.5 font-extrabold text-slate-900 uppercase text-[10px] tracking-wider">
+                      {formatInlineMarkdown(h)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {bodyRows.map((r, rIdx) => (
+                  <tr key={rIdx} className={rIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
+                    {r.map((c, cIdx) => (
+                      <td key={cIdx} className="p-2.5 text-slate-700 font-medium">
+                        {formatInlineMarkdown(c)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         );
       }
-      if (!line.trim()) {
-        return <div key={i} className="h-1.5" />;
+      tableBuffer = [];
+    };
+
+    lines.forEach((line, i) => {
+      if (line.trim().startsWith('|')) {
+        tableBuffer.push(line);
+        return;
+      } else if (tableBuffer.length > 0) {
+        flushTable(i);
       }
-      return (
-        <p key={i} className="text-xs text-slate-800 leading-relaxed font-normal my-0.5">
-          {line}
-        </p>
-      );
+
+      if (line.startsWith('### ')) {
+        elements.push(
+          <h3 key={i} className="text-sm font-extrabold text-slate-900 mt-4 mb-2 flex items-center gap-1.5 pb-1 border-b border-slate-100">
+            <Sparkles className="h-4 w-4 text-indigo-600 shrink-0" />
+            {formatInlineMarkdown(line.replace('### ', ''))}
+          </h3>
+        );
+      } else if (line.startsWith('## ')) {
+        elements.push(
+          <h2 key={i} className="text-base font-black text-indigo-900 mt-5 mb-2 flex items-center gap-2">
+            <Badge variant="ai" className="px-2 py-0.5 text-[10px]">SECTION</Badge>
+            {formatInlineMarkdown(line.replace('## ', ''))}
+          </h2>
+        );
+      } else if (line.startsWith('# ')) {
+        elements.push(
+          <h1 key={i} className="text-lg font-black text-slate-900 mt-4 mb-2">
+            {formatInlineMarkdown(line.replace('# ', ''))}
+          </h1>
+        );
+      } else if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
+        const cleanContent = line.trim().substring(2);
+        elements.push(
+          <div key={i} className="flex items-start gap-2 ml-1 my-1 text-xs text-slate-700">
+            <div className="h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0 mt-1.5" />
+            <div className="leading-relaxed">{formatInlineMarkdown(cleanContent)}</div>
+          </div>
+        );
+      } else if (/^\d+\.\s/.test(line.trim())) {
+        const cleanContent = line.trim().replace(/^\d+\.\s/, '');
+        elements.push(
+          <div key={i} className="flex items-start gap-2 ml-1 my-1 text-xs text-slate-700">
+            <span className="font-bold text-indigo-600 text-[11px] shrink-0 mt-0.5">•</span>
+            <div className="leading-relaxed">{formatInlineMarkdown(cleanContent)}</div>
+          </div>
+        );
+      } else if (!line.trim()) {
+        elements.push(<div key={i} className="h-2" />);
+      } else {
+        elements.push(
+          <p key={i} className="text-xs text-slate-800 leading-relaxed font-normal my-1">
+            {formatInlineMarkdown(line)}
+          </p>
+        );
+      }
     });
+
+    if (tableBuffer.length > 0) {
+      flushTable(lines.length);
+    }
+
+    return elements;
   };
 
   const targetRole = authProfile?.targetCareerGoal || (authProfile as any)?.targetCareer || 'AI Engineer';

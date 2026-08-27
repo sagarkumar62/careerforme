@@ -142,22 +142,20 @@ def organize_items_into_4_phases(
     phase_3_items = [i for i in ordered_items if i.get("level") == "advanced" or i.get("type") in ("intermediate", "advanced")]
     phase_4_items = [i for i in ordered_items if i.get("type") == "capstone"]
 
-    # Fallback partition if type/level metadata is not explicitly set
+    # Fallback partition using topological depth if type/level metadata is not explicitly set
     remaining = [i for i in ordered_items if i not in phase_1_items and i not in phase_2_items and i not in phase_3_items and i not in phase_4_items]
     
     if remaining:
-        chunk_size = max(1, len(remaining) // 4)
-        if not phase_1_items:
-            phase_1_items = remaining[:chunk_size]
-            remaining = remaining[chunk_size:]
-        if not phase_2_items:
-            phase_2_items = remaining[:chunk_size]
-            remaining = remaining[chunk_size:]
-        if not phase_3_items:
-            phase_3_items = remaining[:chunk_size]
-            remaining = remaining[chunk_size:]
-        if not phase_4_items:
-            phase_4_items = remaining
+        for idx, item in enumerate(remaining):
+            depth = item.get("topologicalDepth", idx)
+            if depth == 0 or not phase_1_items:
+                phase_1_items.append(item)
+            elif depth == 1 or not phase_2_items:
+                phase_2_items.append(item)
+            elif depth == 2 or not phase_3_items:
+                phase_3_items.append(item)
+            else:
+                phase_4_items.append(item)
 
     def create_phase_payload(
         phase_id: str,

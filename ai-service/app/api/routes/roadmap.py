@@ -15,6 +15,8 @@ class RoadmapGenerateRequest(BaseModel):
     user_id: Optional[str] = None
     target_career: Optional[str] = None
     targetCareer: Optional[str] = None
+    career_id: Optional[str] = None
+    careerId: Optional[str] = None
     profile: Dict[str, Any]
 
 
@@ -27,17 +29,21 @@ class GraphGenerateRequest(BaseModel):
 @router.post("/roadmap/generate")
 async def generate_roadmap_route(req: RoadmapGenerateRequest):
     if not req.profile:
-        raise HTTPException(status_code=400, detail={"success": False, "error": "Profile is required"})
+        raise HTTPException(status_code=400, detail={"success": False, "code": "INVALID_INPUT", "error": "Profile is required"})
 
-    target_career_name = (req.target_career or req.targetCareer or "").strip()
+    target_career_name = (req.careerId or req.career_id or req.targetCareer or req.target_career or "").strip()
     if not target_career_name:
-        raise HTTPException(status_code=400, detail={"success": False, "error": "target_career is required"})
+        raise HTTPException(status_code=400, detail={"success": False, "code": "INVALID_INPUT", "error": "target_career or careerId is required"})
 
     try:
         roadmap = generate_roadmap_structure(req.profile, target_career_name)
+        if not roadmap.get("success"):
+            raise HTTPException(status_code=400, detail=roadmap)
         return roadmap
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail={"success": False, "error": str(e)})
+        raise HTTPException(status_code=500, detail={"success": False, "code": "SERVER_ERROR", "error": str(e)})
 
 
 @router.post("/roadmap/skill-gap")
@@ -79,6 +85,30 @@ async def generate_synthetic_data_route(limit: Optional[int] = 50):
     return {"success": True, "count": len(dataset), "data": dataset}
 
 
+class RoadmapAdaptRequest(BaseModel):
+    user_id: Optional[str] = None
+    target_career: Optional[str] = None
+    targetCareer: Optional[str] = None
+    completed_milestones: Optional[List[str]] = None
+    missed_milestones: Optional[List[str]] = None
+    progress_percentage: Optional[float] = 0
+    current_roadmap: Optional[Dict[str, Any]] = None
+    profile: Dict[str, Any]
+
+
+@router.post("/roadmap/adapt")
+async def adapt_roadmap_route(req: RoadmapAdaptRequest):
+    if not req.profile:
+        raise HTTPException(status_code=400, detail={"success": False, "error": "Profile is required"})
+
+    try:
+        from app.services.roadmap_engine import adapt_roadmap_structure
+        adapted = adapt_roadmap_structure(req.profile, req.dict())
+        return adapted
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={"success": False, "error": str(e)})
+
+
 @router.post("/roadmap/graph")
 async def generate_graph_route(req: GraphGenerateRequest):
     role = (req.role or req.targetCareer or req.career or "").strip()
@@ -89,4 +119,5 @@ async def generate_graph_route(req: GraphGenerateRequest):
         return graph
     except Exception as e:
         raise HTTPException(status_code=500, detail={"success": False, "error": str(e)})
+
 

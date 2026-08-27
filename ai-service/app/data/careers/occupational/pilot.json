@@ -1,34 +1,389 @@
 {
   "id": "pilot",
+  "careerId": "pilot",
+  "career_id": "pilot",
   "title": "Commercial Pilot",
   "domain": "aviation",
-  "career_type": "occupational",
-  "source": {
-    "provider": "onet_or_esco",
-    "source_id": "53-2012.00",
-    "url": "https://www.onetonline.org/link/summary/53-2012.00"
-  },
-  "description": "Navigates and operates multi-engine aircraft for commercial airlines, cargo transport, and charter flight operations.",
-  "skills": [
-    { "id": "flight_navigation", "name": "Flight Navigation & Plotting", "importance": 0.95, "required_level": 4, "phase": 1 },
-    { "id": "aviation_regs", "name": "Aviation Regulations & FAA Standards", "importance": 0.92, "required_level": 4, "phase": 1 },
-    { "id": "meteorology", "name": "Aeronautical Meteorology & Weather Analysis", "importance": 0.90, "required_level": 3, "phase": 2 },
-    { "id": "aircraft_systems", "name": "Aircraft Avionics & Engines", "importance": 0.88, "required_level": 3, "phase": 2 },
-    { "id": "radio_comm", "name": "Cockpit Radio Communication & ATC Protocols", "importance": 0.85, "required_level": 3, "phase": 2 },
-    { "id": "instrument_rating", "name": "Instrument Flight Rules (IFR)", "importance": 0.85, "required_level": 3, "phase": 3 },
-    { "id": "multi_engine", "name": "Multi-Engine Aircraft Operations", "importance": 0.82, "required_level": 3, "phase": 3 },
-    { "id": "emergency_protocols", "name": "Flight Safety & Emergency Procedures", "importance": 0.90, "required_level": 4, "phase": 4 }
+  "description": "Navigate and operate multi-engine commercial aircraft by mastering Aerodynamics, Aviation Regulations (FAA/ICAO), Meteorology, Glass Cockpit Avionics, IFR Flight Rules, Multi-Engine Rating, and Airline Transport Pilot (ATP) simulator training.",
+  "aliases": [
+    "pilot",
+    "commercial pilot",
+    "airline pilot",
+    "first officer",
+    "captain",
+    "aviator"
   ],
-  "prerequisites": [
-    ["aviation_regs", "flight_navigation"],
-    ["flight_navigation", "instrument_rating"],
-    ["meteorology", "instrument_rating"],
-    ["aircraft_systems", "multi_engine"],
-    ["multi_engine", "emergency_protocols"]
+  "estimatedMonths": 12,
+  "estimatedHours": 350,
+  "nodes": [
+    {
+      "id": "aerodynamics-flight-principles",
+      "nodeId": "aerodynamics-flight-principles",
+      "title": "Aerodynamics & Principles of Flight",
+      "description": "Master Lift, Drag, Thrust, Weight, Bernoulli's Principle, Airfoils, Stall Speed, Angle of Attack (AoA), and Primary Flight Controls.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "aviation-regulations-faa",
+      "nodeId": "aviation-regulations-faa",
+      "title": "Aviation Regulations & Air Law (FAA / ICAO)",
+      "description": "Master Airspace Classifications (A, B, C, D, E, G), FAR/AIM regulations, pilot limitations, flight logging, and certification standards.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "aeronautical-meteorology",
+      "nodeId": "aeronautical-meteorology",
+      "title": "Aeronautical Meteorology & Weather Theory",
+      "description": "Master atmospheric pressure, lapse rates, wind shear, icing, thunderstorm hazards, METARs, TAFs, and SIGMET weather interpretation.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "vfr-flight-navigation",
+      "nodeId": "vfr-flight-navigation",
+      "title": "VFR Flight Navigation & Plotting",
+      "description": "Master Sectional charts, pilotage, dead reckoning, VOR navigation, magnetic variation, wind correction, and E6B flight computer math.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "aerodynamics-flight-principles",
+        "aeronautical-meteorology"
+      ]
+    },
+    {
+      "id": "aircraft-systems-avionics",
+      "nodeId": "aircraft-systems-avionics",
+      "title": "Aircraft Systems & Glass Cockpit Avionics",
+      "description": "Master Piston/Turbine engines, electrical systems, hydraulics, fuel systems, pitot-static instruments, and Garmin G1000 Glass Cockpit.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "aerodynamics-flight-principles"
+      ]
+    },
+    {
+      "id": "atc-radio-communications",
+      "nodeId": "atc-radio-communications",
+      "title": "ATC Radio Communications & Phraseology",
+      "description": "Master standard aviation radio phraseology, ATC clearances, readbacks, transponder squawk codes, and tower communications.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "aviation-regulations-faa"
+      ]
+    },
+    {
+      "id": "performance-weight-balance",
+      "nodeId": "performance-weight-balance",
+      "title": "Aircraft Performance, Weight & Balance",
+      "description": "Calculate takeoff/landing distances, density altitude, Center of Gravity (CG) envelopes, and fuel consumption charts.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "aerodynamics-flight-principles",
+        "vfr-flight-navigation"
+      ]
+    },
+    {
+      "id": "ppl-flight-operations",
+      "nodeId": "ppl-flight-operations",
+      "title": "Private Pilot License (PPL) Flight Operations",
+      "description": "Execute pre-flight inspection, taxiing, takeoff, steep turns, slow flight, stalls, emergency landings, solo flight, and PPL checkride.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "aerodynamics-flight-principles",
+        "aircraft-systems-avionics",
+        "atc-radio-communications",
+        "performance-weight-balance"
+      ]
+    },
+    {
+      "id": "ifr-instrument-rating",
+      "nodeId": "ifr-instrument-rating",
+      "title": "Instrument Flight Rules (IFR) & Rating",
+      "description": "Fly solely by reference to flight instruments, IFR flight plans, holding patterns, ILS approaches, RNAV/GPS, and IFR checkride.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "ppl-flight-operations",
+        "aeronautical-meteorology"
+      ]
+    },
+    {
+      "id": "cpl-advanced-maneuvers",
+      "nodeId": "cpl-advanced-maneuvers",
+      "title": "Commercial Pilot License (CPL) Maneuvers",
+      "description": "Master commercial precision maneuvers (Chandelles, Lazy Eights, Eights-on-Pylons, Power-off 180s), CPL cross-country, and CPL checkride.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "ppl-flight-operations",
+        "performance-weight-balance"
+      ]
+    },
+    {
+      "id": "multi-engine-rating",
+      "nodeId": "multi-engine-rating",
+      "title": "Multi-Engine Aircraft Operations",
+      "description": "Master asymmetric thrust aerodynamics, Vmc speed, engine-out procedures in flight, feathering propellers, and single-engine landings.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "cpl-advanced-maneuvers",
+        "aircraft-systems-avionics"
+      ]
+    },
+    {
+      "id": "crm-human-factors",
+      "nodeId": "crm-human-factors",
+      "title": "Crew Resource Management (CRM) & Human Factors",
+      "description": "Master multi-crew situational awareness, pilot fatigue management, Aeronautical Decision Making (ADM), and Threat/Error Management.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "ppl-flight-operations",
+        "atc-radio-communications"
+      ]
+    },
+    {
+      "id": "high-altitude-jet-systems",
+      "nodeId": "high-altitude-jet-systems",
+      "title": "High-Altitude Operations & Jet Turbine Systems",
+      "description": "Master cabin pressurization, high-altitude aerodynamics (Mach number, Coffin Corner), oxygen systems, and jet turbine engine theory.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "multi-engine-rating",
+        "ifr-instrument-rating"
+      ]
+    },
+    {
+      "id": "atp-type-rating-prep",
+      "nodeId": "atp-type-rating-prep",
+      "title": "Airline Transport Pilot (ATP) & Type Rating",
+      "description": "Master Airline Flight Operations, multi-crew flight deck checklists, B737 / A320 Type Rating ground school, and ATP CTP requirements.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "multi-engine-rating",
+        "crm-human-factors",
+        "high-altitude-jet-systems"
+      ]
+    },
+    {
+      "id": "pilot-capstone-simulator",
+      "nodeId": "pilot-capstone-simulator",
+      "title": "Commercial Airline Pilot Simulator Checkride",
+      "description": "Execute Full Flight Simulator (FFS) checkride: Pre-flight briefing ➔ Line Oriented Flight Training (LOFT) ➔ Engine failure on takeoff (EFATO).",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "ifr-instrument-rating",
+        "multi-engine-rating",
+        "atp-type-rating-prep"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "Pilot Logbook & Airline Career Showcase",
+      "description": "Package flight hours logbook (PPL ➔ CPL ➔ Multi-Engine ➔ 1500h ATP), Class 1 Medical certification, endorsements, and interview prep.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "pilot-capstone-simulator"
+      ]
+    }
   ],
-  "recommended_skills": ["Private Pilot License (PPL)", "Commercial Pilot License (CPL)", "Class 1 Medical"],
-  "interests": ["Aviation", "Flight Operations", "Navigation"],
-  "education": ["Aviation Science", "Commercial Pilot Certification"],
-  "experience_levels": ["Junior", "Mid", "Senior"],
-  "typical_duration_months": 18
+  "edges": [
+    {
+      "source": "aerodynamics-flight-principles",
+      "target": "vfr-flight-navigation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "aeronautical-meteorology",
+      "target": "vfr-flight-navigation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "aerodynamics-flight-principles",
+      "target": "aircraft-systems-avionics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "aviation-regulations-faa",
+      "target": "atc-radio-communications",
+      "type": "prerequisite"
+    },
+    {
+      "source": "aerodynamics-flight-principles",
+      "target": "performance-weight-balance",
+      "type": "prerequisite"
+    },
+    {
+      "source": "vfr-flight-navigation",
+      "target": "performance-weight-balance",
+      "type": "prerequisite"
+    },
+    {
+      "source": "aerodynamics-flight-principles",
+      "target": "ppl-flight-operations",
+      "type": "prerequisite"
+    },
+    {
+      "source": "aircraft-systems-avionics",
+      "target": "ppl-flight-operations",
+      "type": "prerequisite"
+    },
+    {
+      "source": "atc-radio-communications",
+      "target": "ppl-flight-operations",
+      "type": "prerequisite"
+    },
+    {
+      "source": "performance-weight-balance",
+      "target": "ppl-flight-operations",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ppl-flight-operations",
+      "target": "ifr-instrument-rating",
+      "type": "prerequisite"
+    },
+    {
+      "source": "aeronautical-meteorology",
+      "target": "ifr-instrument-rating",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ppl-flight-operations",
+      "target": "cpl-advanced-maneuvers",
+      "type": "prerequisite"
+    },
+    {
+      "source": "performance-weight-balance",
+      "target": "cpl-advanced-maneuvers",
+      "type": "prerequisite"
+    },
+    {
+      "source": "cpl-advanced-maneuvers",
+      "target": "multi-engine-rating",
+      "type": "prerequisite"
+    },
+    {
+      "source": "aircraft-systems-avionics",
+      "target": "multi-engine-rating",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ppl-flight-operations",
+      "target": "crm-human-factors",
+      "type": "prerequisite"
+    },
+    {
+      "source": "atc-radio-communications",
+      "target": "crm-human-factors",
+      "type": "prerequisite"
+    },
+    {
+      "source": "multi-engine-rating",
+      "target": "high-altitude-jet-systems",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ifr-instrument-rating",
+      "target": "high-altitude-jet-systems",
+      "type": "prerequisite"
+    },
+    {
+      "source": "multi-engine-rating",
+      "target": "atp-type-rating-prep",
+      "type": "prerequisite"
+    },
+    {
+      "source": "crm-human-factors",
+      "target": "atp-type-rating-prep",
+      "type": "prerequisite"
+    },
+    {
+      "source": "high-altitude-jet-systems",
+      "target": "atp-type-rating-prep",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ifr-instrument-rating",
+      "target": "pilot-capstone-simulator",
+      "type": "prerequisite"
+    },
+    {
+      "source": "multi-engine-rating",
+      "target": "pilot-capstone-simulator",
+      "type": "prerequisite"
+    },
+    {
+      "source": "atp-type-rating-prep",
+      "target": "pilot-capstone-simulator",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pilot-capstone-simulator",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
+  ]
 }

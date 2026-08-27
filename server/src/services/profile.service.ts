@@ -45,19 +45,26 @@ export class ProfileService {
       });
     }
 
-    // Recalculate % AI fit and career recommendations in real time for updated skills
+    // Recalculate % AI fit and career recommendations in real time for updated skills & target career
     try {
       const { recommendationService } = await import('./recommendation.service');
+      const { roadmapService } = await import('./roadmap.service');
       const { emitProgressEvent, PROGRESS_EVENTS } = await import('../socket');
       const { progressService } = await import('./progress.service');
 
       await recommendationService.getRecommendations(userId);
+
+      const targetCareer = normalizedData.targetCareer || normalizedData.targetCareerGoal || profile.targetCareer;
+      if (targetCareer) {
+        await roadmapService.generateRoadmap(userId, targetCareer);
+      }
+
       const summary = await progressService.getProgressSummary(userId);
 
       emitProgressEvent(userId, PROGRESS_EVENTS.UPDATED, { userId, timestamp: new Date().toISOString() });
       emitProgressEvent(userId, PROGRESS_EVENTS.SUMMARY_UPDATED, { summary });
     } catch (err) {
-      console.warn('[ProfileService] Real-time AI fit & socket emission skipped:', err);
+      console.warn('[ProfileService] Real-time AI fit & roadmap sync skipped:', err);
     }
 
     return profile;

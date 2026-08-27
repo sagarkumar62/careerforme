@@ -1,0 +1,377 @@
+{
+  "id": "civil-engineer",
+  "careerId": "civil-engineer",
+  "career_id": "civil-engineer",
+  "title": "Civil Engineer",
+  "domain": "engineering",
+  "description": "Plan, design, and manage infrastructure projects including buildings, bridges, highways, water supply systems, and soil structures using AutoCAD, Civil 3D, STAAD Pro, and BIM Revit.",
+  "aliases": [
+    "civil engineer",
+    "structural engineer",
+    "site engineer",
+    "transportation engineer",
+    "geotechnical engineer"
+  ],
+  "estimatedMonths": 12,
+  "estimatedHours": 320,
+  "nodes": [
+    {
+      "id": "engineering-math-statics",
+      "nodeId": "engineering-math-statics",
+      "title": "Engineering Mathematics & Statics",
+      "description": "Master linear algebra, differential equations, force equilibrium, free-body diagrams, centroids, and moment of inertia.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "structural-analysis-mechanics",
+      "nodeId": "structural-analysis-mechanics",
+      "title": "Structural Mechanics & Analysis",
+      "description": "Master stress-strain, shear force & bending moment diagrams, truss analysis, beam deflections, and moment distribution methods.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-math-statics"
+      ]
+    },
+    {
+      "id": "surveying-geomatics",
+      "nodeId": "surveying-geomatics",
+      "title": "Surveying & Geomatics Engineering",
+      "description": "Master leveling, Total Station operations, GPS positioning, topographic mapping, land surveying calculations, and contouring.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "autocad-civil-drafting",
+      "nodeId": "autocad-civil-drafting",
+      "title": "2D Civil Drafting & AutoCAD",
+      "description": "Master AutoCAD 2D civil drafting, architectural plan drawings, structural elevations, detailing, and plotting standards.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "reinforced-concrete-design",
+      "nodeId": "reinforced-concrete-design",
+      "title": "Reinforced Concrete Design (RCC)",
+      "description": "Design RCC beams, slabs, columns, footings, and retaining walls using Limit State Method (IS 456 / ACI 318 standards).",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "structural-analysis-mechanics"
+      ]
+    },
+    {
+      "id": "steel-structure-design",
+      "nodeId": "steel-structure-design",
+      "title": "Design of Steel Structures (STAAD Pro)",
+      "description": "Design steel trusses, columns, welded/bolted connections, plate girders, and analyze structural frames in STAAD Pro or ETABS.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "structural-analysis-mechanics"
+      ]
+    },
+    {
+      "id": "geotechnical-soil-mechanics",
+      "nodeId": "geotechnical-soil-mechanics",
+      "title": "Geotechnical Engineering & Soil Mechanics",
+      "description": "Master soil classification, compaction, shear strength, bearing capacity of shallow/deep foundations, and slope stability analysis.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-math-statics"
+      ]
+    },
+    {
+      "id": "transportation-highway-engineering",
+      "nodeId": "transportation-highway-engineering",
+      "title": "Transportation & Highway Engineering",
+      "description": "Design geometric highway alignments, flexible/rigid pavement layers, traffic flow theory, intersections, and signal design.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "surveying-geomatics",
+        "geotechnical-soil-mechanics"
+      ]
+    },
+    {
+      "id": "fluid-hydraulics-water-resources",
+      "nodeId": "fluid-hydraulics-water-resources",
+      "title": "Hydraulics & Water Resources Engineering",
+      "description": "Master open channel flow, pipe network analysis (EPANET), stormwater drainage design, hydrology runoff, and dams/spillways.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-math-statics"
+      ]
+    },
+    {
+      "id": "construction-management-estimation",
+      "nodeId": "construction-management-estimation",
+      "title": "Construction Management & Cost Estimation",
+      "description": "Master Quantity Surveying, Rate Analysis, Bill of Quantities (BOQ), Primavera P6 / MS Project scheduling, and site safety.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "autocad-civil-drafting",
+        "reinforced-concrete-design"
+      ]
+    },
+    {
+      "id": "environmental-waste-water-engineering",
+      "nodeId": "environmental-waste-water-engineering",
+      "title": "Environmental Engineering & Wastewater Treatment",
+      "description": "Design water treatment plants, sewage treatment processes, solid waste management, and environmental impact assessments (EIA).",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "fluid-hydraulics-water-resources"
+      ]
+    },
+    {
+      "id": "gis-spatial-analysis-qgis",
+      "nodeId": "gis-spatial-analysis-qgis",
+      "title": "GIS & Spatial Data Analysis (QGIS / ArcGIS)",
+      "description": "Master Geographic Information Systems (GIS), spatial data overlay analysis, digital elevation models (DEM), and remote sensing.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "surveying-geomatics"
+      ]
+    },
+    {
+      "id": "civil-3d-infrastructure-modeling",
+      "nodeId": "civil-3d-infrastructure-modeling",
+      "title": "AutoCAD Civil 3D Infrastructure Modeling",
+      "description": "Model 3D terrain surfaces, road corridors, earthwork volume calculations (cut & fill), and pipe network modeling in Civil 3D.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "autocad-civil-drafting",
+        "transportation-highway-engineering"
+      ]
+    },
+    {
+      "id": "building-codes-structural-safety",
+      "nodeId": "building-codes-structural-safety",
+      "title": "Building Codes, Seismic & Wind Load Design",
+      "description": "Apply International Building Code (IBC / Eurocodes), earthquake resistant design (IS 1893 / ASCE 7), and wind load structural safety.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "reinforced-concrete-design",
+        "steel-structure-design"
+      ]
+    },
+    {
+      "id": "bim-revit-structure",
+      "nodeId": "bim-revit-structure",
+      "title": "Building Information Modeling (BIM Revit)",
+      "description": "Create 3D structural BIM models in Autodesk Revit, clash detection (Navisworks), and 4D/5D construction simulation.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "autocad-civil-drafting",
+        "reinforced-concrete-design"
+      ]
+    },
+    {
+      "id": "civil-engineering-capstone",
+      "nodeId": "civil-engineering-capstone",
+      "title": "Enterprise Civil Engineering Capstone Project",
+      "description": "Design an integrated infrastructure project: Topographic Surveying ➔ Soil Foundation Design ➔ STAAD Structural Analysis ➔ Civil 3D Corridors ➔ BOQ Estimate.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "reinforced-concrete-design",
+        "geotechnical-soil-mechanics",
+        "civil-3d-infrastructure-modeling",
+        "construction-management-estimation",
+        "bim-revit-structure"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "Civil Engineering Portfolio & Structural Showcase",
+      "description": "Package AutoCAD/Civil 3D drawings, STAAD Pro structural reports, BIM Revit models, Quantity Estimates (BOQ), and site project plans.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "civil-engineering-capstone"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "engineering-math-statics",
+      "target": "structural-analysis-mechanics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "structural-analysis-mechanics",
+      "target": "reinforced-concrete-design",
+      "type": "prerequisite"
+    },
+    {
+      "source": "structural-analysis-mechanics",
+      "target": "steel-structure-design",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-math-statics",
+      "target": "geotechnical-soil-mechanics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "surveying-geomatics",
+      "target": "transportation-highway-engineering",
+      "type": "prerequisite"
+    },
+    {
+      "source": "geotechnical-soil-mechanics",
+      "target": "transportation-highway-engineering",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-math-statics",
+      "target": "fluid-hydraulics-water-resources",
+      "type": "prerequisite"
+    },
+    {
+      "source": "autocad-civil-drafting",
+      "target": "construction-management-estimation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "reinforced-concrete-design",
+      "target": "construction-management-estimation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "fluid-hydraulics-water-resources",
+      "target": "environmental-waste-water-engineering",
+      "type": "prerequisite"
+    },
+    {
+      "source": "surveying-geomatics",
+      "target": "gis-spatial-analysis-qgis",
+      "type": "prerequisite"
+    },
+    {
+      "source": "autocad-civil-drafting",
+      "target": "civil-3d-infrastructure-modeling",
+      "type": "prerequisite"
+    },
+    {
+      "source": "transportation-highway-engineering",
+      "target": "civil-3d-infrastructure-modeling",
+      "type": "prerequisite"
+    },
+    {
+      "source": "reinforced-concrete-design",
+      "target": "building-codes-structural-safety",
+      "type": "prerequisite"
+    },
+    {
+      "source": "steel-structure-design",
+      "target": "building-codes-structural-safety",
+      "type": "prerequisite"
+    },
+    {
+      "source": "autocad-civil-drafting",
+      "target": "bim-revit-structure",
+      "type": "prerequisite"
+    },
+    {
+      "source": "reinforced-concrete-design",
+      "target": "bim-revit-structure",
+      "type": "prerequisite"
+    },
+    {
+      "source": "reinforced-concrete-design",
+      "target": "civil-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "geotechnical-soil-mechanics",
+      "target": "civil-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "civil-3d-infrastructure-modeling",
+      "target": "civil-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "construction-management-estimation",
+      "target": "civil-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "bim-revit-structure",
+      "target": "civil-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "civil-engineering-capstone",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
+  ]
+}

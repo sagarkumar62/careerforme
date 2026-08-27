@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { LearnerProfile, ILearnerProfile } from '../models/LearnerProfile';
+import { Roadmap } from '../models/Roadmap';
+import { Progress } from '../models/Progress';
 import { progressService } from './progress.service';
 import { emitProgressEvent, PROGRESS_EVENTS } from '../socket';
 import { logger } from '../utils/logger';
@@ -48,33 +50,30 @@ export class LearnerStateAdapterService {
       }
     }
 
-    const completedCourses: string[] = [];
-    if (Array.isArray(profile?.completedCourses)) {
-      for (const c of profile.completedCourses) {
-        if (c.title) completedCourses.push(c.title);
-        if (c.url) completedCourses.push(c.url);
-        if ((c as any).id) completedCourses.push((c as any).id);
-        if ((c as any).course_id) completedCourses.push((c as any).course_id);
-      }
-    }
-
-    const completedProjects: string[] = Array.isArray(profile?.projects)
-      ? profile.projects.map((p) => p.title || (p as any).id || (p as any).project_id).filter(Boolean)
+    const completedCourses = Array.isArray(profile?.completedCourses)
+      ? profile.completedCourses.map((c) => c.title || c.url).filter(Boolean)
       : [];
 
-    const completedAssessments: string[] = Array.isArray(profile?.certifications)
-      ? profile.certifications.map((c) => c.title || (c as any).id || (c as any).assessment_id).filter(Boolean)
+    const completedProjects = Array.isArray(profile?.projects)
+      ? profile.projects.map((p) => p.title).filter(Boolean)
       : [];
+
+    const completedAssessments = Array.isArray(profile?.certifications)
+      ? profile.certifications.map((c) => c.title).filter(Boolean)
+      : [];
+
+    const weeklyHoursVal = (profile as any)?.weeklyLearningHours || (profile as any)?.weeklyHoursCommitment || (profile as any)?.weeklyHours || (profile as any)?.weekly_hours || 10;
 
     return {
       id: userId,
       user_id: userId,
-      target_career: profile?.targetCareer || 'Software Engineer',
+      target_career: profile?.targetCareerGoal || profile?.targetCareer || 'Full Stack Developer',
       experience_level: profile?.experienceLevel || 'Beginner',
       education_level: profile?.educationLevel || 'Bachelor',
-      weekly_learning_hours: profile?.weeklyLearningHours || 10,
+      weekly_hours: weeklyHoursVal,
+      weekly_learning_hours: weeklyHoursVal,
       skills: skillsMap,
-      completed_courses: Array.from(new Set(completedCourses)),
+      completed_courses: completedCourses,
       completed_projects: completedProjects,
       completed_assessments: completedAssessments,
     };
@@ -82,12 +81,13 @@ export class LearnerStateAdapterService {
 
   async syncFastAPILearnerResponse(
     userId: string,
-    responseData: any
-  ): Promise<{ profile: ILearnerProfile | null; newlyAcquiredSkills: string[] }> {
+    responseData: Record<string, any>,
+    fallbackItem?: { type: 'course' | 'project' | 'assessment'; id: string; score?: number }
+  ): Promise<{ profile: ILearnerProfile; newlyAcquiredSkills: string[] }> {
     const isValidObjectId = mongoose.Types.ObjectId.isValid(userId);
     if (!isValidObjectId) {
       logger.info(`[LearnerStateAdapter] Skipping MongoDB persistence for non-ObjectId userId: '${userId}'`);
-      return { profile: null, newlyAcquiredSkills: [] };
+      return { profile: null as any, newlyAcquiredSkills: [] };
     }
 
     let profile = await LearnerProfile.findOne({ userId });
@@ -99,6 +99,7 @@ export class LearnerStateAdapterService {
         completedCourses: [],
         projects: [],
         certifications: [],
+        baselineSkills: [],
       });
     }
 
@@ -107,25 +108,11 @@ export class LearnerStateAdapterService {
     }
 
     const newlyAcquiredSkills: string[] = [];
-    const returnedLearner = responseData?.learner || {};
-    const returnedSkills = returnedLearner.skills || {};
-
-    // 1. Synchronize & merge skills without downgrading existing levels
-    let incomingSkillsEntries: Array<[string, any]> = [];
-
-    if (Array.isArray(returnedSkills)) {
-      for (const item of returnedSkills) {
-        if (typeof item === 'string') {
-          incomingSkillsEntries.push([item, 3.0]);
-        } else if (item && typeof item === 'object') {
-          const sName = item.name || item.skill || item.skill_id || item.skillId;
-          const sLvl = item.level ?? item.current_level ?? item.target_level ?? 3.0;
-          if (sName) incomingSkillsEntries.push([sName, sLvl]);
-        }
-      }
-    } else if (returnedSkills && typeof returnedSkills === 'object') {
-      incomingSkillsEntries = Object.entries(returnedSkills);
-    }
+    const incomingLearner = responseData?.learner || {};
+    const incomingSkillsObj = incomingLearner.skills || responseData?.updated_skills || responseData?.skills || {};
+    const incomingSkillsEntries = typeof incomingSkillsObj === 'object' && incomingSkillsObj !== null
+      ? Object.entries(incomingSkillsObj)
+      : [];
 
     for (const [rawName, rawLevel] of incomingSkillsEntries) {
       if (!rawName || typeof rawName !== 'string') continue;
@@ -168,7 +155,16 @@ export class LearnerStateAdapterService {
     }
 
     // 2. Synchronize completed courses
-    const courseCompletion = responseData?.course_completion;
+    let courseCompletion = responseData?.course_completion;
+    if (!courseCompletion && fallbackItem?.type === 'course') {
+      courseCompletion = {
+        course_id: fallbackItem.id,
+        title: fallbackItem.id,
+        status: 'completed',
+        completed_at: new Date().toISOString()
+      };
+    }
+
     if (courseCompletion && (courseCompletion.title || courseCompletion.course_id)) {
       const courseTitle = courseCompletion.title || courseCompletion.course_id;
       const courseId = courseCompletion.course_id || courseCompletion.id || '';
@@ -186,7 +182,16 @@ export class LearnerStateAdapterService {
     }
 
     // 3. Synchronize completed projects
-    const projectCompletion = responseData?.project_completion;
+    let projectCompletion = responseData?.project_completion;
+    if (!projectCompletion && fallbackItem?.type === 'project') {
+      projectCompletion = {
+        project_id: fallbackItem.id,
+        title: fallbackItem.id,
+        status: 'completed',
+        completed_at: new Date().toISOString()
+      };
+    }
+
     if (projectCompletion && (projectCompletion.title || projectCompletion.project_id)) {
       const projectTitle = projectCompletion.title || projectCompletion.project_id;
       const alreadySaved = profile.projects.some(
@@ -204,7 +209,19 @@ export class LearnerStateAdapterService {
     }
 
     // 4. Synchronize assessment evidence
-    const assessmentResult = responseData?.assessment_result;
+    let assessmentResult = responseData?.assessment_result;
+    if (!assessmentResult && fallbackItem?.type === 'assessment') {
+      const passed = (fallbackItem.score ?? 80) >= 70;
+      assessmentResult = {
+        assessment_id: fallbackItem.id,
+        title: fallbackItem.id,
+        score: fallbackItem.score ?? 80,
+        success: true,
+        passed,
+        submitted_at: new Date().toISOString()
+      };
+    }
+
     if (assessmentResult && assessmentResult.success && assessmentResult.passed) {
       const assessmentTitle =
         assessmentResult.title || assessmentResult.assessment_id || 'Adaptive Assessment';
@@ -221,6 +238,60 @@ export class LearnerStateAdapterService {
     }
 
     await profile.save();
+
+    // 4.5. Synchronize completed item with active Roadmap & Progress documents in MongoDB
+    try {
+      const activeRoadmap = (await Roadmap.findOne({ userId, status: 'active' })) || (await Roadmap.findOne({ userId }).sort({ updatedAt: -1 }));
+      if (activeRoadmap && Array.isArray(activeRoadmap.phases)) {
+        let roadmapModified = false;
+        const completedKeys = [
+          courseCompletion?.course_id,
+          courseCompletion?.title,
+          projectCompletion?.project_id,
+          projectCompletion?.title,
+          assessmentResult?.assessment_id,
+          assessmentResult?.title,
+          ...newlyAcquiredSkills
+        ]
+          .filter(Boolean)
+          .map((k) => String(k).toLowerCase().trim());
+
+        for (const phase of activeRoadmap.phases) {
+          if (!Array.isArray(phase.milestones)) continue;
+          for (const m of phase.milestones) {
+            if (m.completed) continue;
+            const mTitle = (m.title || '').toLowerCase();
+            const mId = (m.milestoneId || '').toLowerCase();
+            const mSkill = (m.targetSkill || '').toLowerCase();
+
+            const isMatch = completedKeys.some(
+              (key) => key && (mTitle.includes(key) || key.includes(mTitle) || mId.includes(key) || (mSkill && key.includes(mSkill)))
+            );
+
+            if (isMatch) {
+              m.completed = true;
+              roadmapModified = true;
+
+              // Synchronize Progress record for this milestone
+              await progressService.createProgressItem(userId, activeRoadmap._id.toString(), phase.phaseId, m.milestoneId);
+              await Progress.updateOne(
+                { userId, milestoneId: m.milestoneId },
+                { $set: { status: 'completed', completionPercentage: 100, completedAt: new Date() } }
+              );
+            }
+          }
+        }
+
+        if (roadmapModified) {
+          const totalM = activeRoadmap.phases.reduce((acc, p) => acc + (p.milestones ? p.milestones.length : 0), 0);
+          const compM = activeRoadmap.phases.reduce((acc, p) => acc + (p.milestones ? p.milestones.filter((m) => m.completed).length : 0), 0);
+          activeRoadmap.overallCompletionPercent = totalM > 0 ? Math.round((compM / totalM) * 100) : 0;
+          await activeRoadmap.save();
+        }
+      }
+    } catch (rmSyncErr: any) {
+      logger.warn(`[LearnerStateAdapter] Roadmap/Progress cross-sync warning: ${rmSyncErr.message}`);
+    }
 
     // 5. Emit real-time Socket.IO progress events
     try {
@@ -245,8 +316,8 @@ export class LearnerStateAdapterService {
           completionType: courseCompletion
             ? 'course'
             : projectCompletion
-            ? 'project'
-            : 'assessment',
+              ? 'project'
+              : 'assessment',
           details: courseCompletion || projectCompletion || assessmentResult,
         });
       }

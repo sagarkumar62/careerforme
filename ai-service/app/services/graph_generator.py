@@ -32,6 +32,18 @@ def generate_career_graph(role_name: str) -> Dict[str, Any]:
         g_data = res["graph_data"]
         raw_nodes = g_data.get("nodes", [])
         raw_edges = g_data.get("edges", [])
+
+        if not raw_nodes and g_data.get("skills"):
+            raw_nodes = []
+            for index, s in enumerate(g_data["skills"]):
+                s_id = s.get("id") or f"node_{index + 1}"
+                s_title = s.get("name") or s.get("title") or s_id
+                raw_nodes.append({
+                    "id": s_id,
+                    "title": s_title,
+                    "type": "foundation" if index == 0 else "core",
+                    "description": f"Master {s_title}."
+                })
         
         formatted_nodes = []
         for n in raw_nodes:

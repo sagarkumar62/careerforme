@@ -85,6 +85,8 @@ export interface IRoadmap extends Document {
   adaptiveEvents?: IAdaptiveEvent[];
   aiEnrichment?: IRoadmapEnrichment;
   status: 'active' | 'completed' | 'archived';
+  profileVersion?: number;
+  isStale?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -102,7 +104,7 @@ const milestoneSchema = new Schema<IMilestone>({
     },
   ],
   skills: { type: [String], default: [] },
-  order: { type: Number, required: true },
+  order: { type: Number, default: 1 },
   completed: { type: Boolean, default: false },
 });
 
@@ -144,6 +146,8 @@ const roadmapSchema = new Schema<IRoadmap>(
     prerequisites: { type: [String], default: [] },
     phases: [phaseSchema],
     adaptiveEvents: [adaptiveEventSchema],
+    profileVersion: { type: Number, default: 1 },
+    isStale: { type: Boolean, default: false },
     aiEnrichment: {
       projects: [{ type: Schema.Types.Mixed }],
       documentation: [{ type: Schema.Types.Mixed }],

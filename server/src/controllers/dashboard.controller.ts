@@ -27,7 +27,20 @@ export const getDashboardData = async (
         progressService.getProgressSummary(userId),
       ]);
 
-    const targetCareer = (profileDoc as any)?.targetCareerGoal || profileDoc?.targetCareer || activeRoadmapDoc?.targetCareer || 'AI Engineer';
+    let targetCareer = (profileDoc as any)?.targetCareerGoal || profileDoc?.targetCareer || activeRoadmapDoc?.targetCareer;
+    if (!targetCareer) {
+      try {
+        const recs = await recommendationService.getRecommendations(userId);
+        if (recs && recs.length > 0) {
+          targetCareer = recs[0].career;
+        }
+      } catch {
+        // fallback
+      }
+    }
+    if (!targetCareer) {
+      targetCareer = 'Frontend Developer';
+    }
 
     // Skill gap analysis
     let skillGapData = null;

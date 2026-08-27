@@ -100,6 +100,12 @@ def get_course_skill_levels(
     result: Dict[str, float] = {}
 
     for skill in course.get("skills") or []:
+        if isinstance(skill, str):
+            normalized = normalize_skill_id(skill)
+            if normalized:
+                result[normalized] = max(result.get(normalized, 0.0), 4.0)
+            continue
+
         if not isinstance(skill, dict):
             continue
 
@@ -788,10 +794,57 @@ def find_courses_for_target_skills(
             get_course_skill_levels(course).keys()
         )
 
-        if taught_skills & norm_targets:
+        if (taught_skills & norm_targets) or any(
+            t in ts or ts in t
+            for ts in taught_skills
+            for t in norm_targets
+            if len(t) > 3 and len(ts) > 3
+        ):
             result.add(course_id)
 
     return result
+
+
+def select_best_target_courses(
+    courses: List[Dict[str, Any]],
+    target_skills: Set[str],
+    learner: Dict[str, Any] = None,
+    skill_gaps: List[Dict[str, Any]] = None,
+    goal: str = "",
+) -> Set[str]:
+    """
+    Select the single best course per target skill based on similarity and quality.
+    """
+    norm_targets = {normalize_skill_id(s) for s in target_skills if s}
+    by_skill: Dict[str, List[Dict[str, Any]]] = {}
+
+    for course in courses:
+        cid = course.get("id")
+        if not cid:
+            continue
+        taught = set(get_course_skill_levels(course).keys())
+        norm_taught = {normalize_skill_id(sk) for sk in taught if sk}
+        matched = (norm_taught & norm_targets)
+        if not matched:
+            matched = {
+                t for ts in norm_taught for t in norm_targets if (len(t) >= 3 and len(ts) >= 3 and (t in ts or ts in t))
+            }
+        for m_skill in matched:
+            by_skill.setdefault(m_skill, []).append(course)
+
+    selected_ids = set()
+    for m_skill, c_list in by_skill.items():
+        c_list.sort(
+            key=lambda c: (
+                float(c.get("semantic_similarity") or c.get("similarity") or 0.5),
+                float(c.get("rating") or 4.5),
+                -len(c.get("prerequisites") or []),
+            ),
+            reverse=True,
+        )
+        selected_ids.add(c_list[0]["id"])
+
+    return selected_ids
 
 
 def collect_prerequisite_closure(
@@ -876,6 +929,18 @@ def select_personalized_course_sequence(
             norm_sid = normalize_skill_id(gap)
             if norm_sid:
                 target_skills.add(norm_sid)
+
+    if not target_skills and goal:
+        from app.services.skill_gap_engine import parse_goal_requirements
+        goal_reqs = parse_goal_requirements(goal)
+        for req in goal_reqs:
+            if isinstance(req, dict) and req.get("skillId"):
+                sid = req["skillId"]
+                norm_sid = normalize_skill_id(sid)
+                target_lvl = float(req.get("targetLevel") or req.get("requiredLevel") or 4)
+                curr_lvl = max([float(v) for k, v in learner_skills.items() if normalize_skill_id(k) == norm_sid], default=0.0)
+                if curr_lvl < target_lvl:
+                    target_skills.add(norm_sid)
 
     target_course_ids = select_best_target_courses(
         courses=courses,
@@ -1310,6 +1375,60 @@ def generate_personalized_learning_path(
         skill_gaps=effective_skill_gaps,
     )
 
+    has_remaining_gaps = any(
+        (isinstance(g, dict) and g.get("gap", 0) > 0) or (isinstance(g, str))
+        for g in effective_skill_gaps
+    )
+
+    if not ordered_courses and goal and has_remaining_gaps:
+        try:
+            from app.services.career_resolver import resolve_target_career
+            c_res = resolve_target_career(goal)
+            if c_res.get("success") and c_res.get("graph_data"):
+                nodes = c_res["graph_data"].get("nodes") or c_res["graph_data"].get("skills") or []
+                synthetic_courses = []
+                for idx, n in enumerate(nodes):
+                    if isinstance(n, dict):
+                        nid = str(n.get("id") or n.get("nodeId") or f"node_{idx+1}").strip()
+                        title = str(n.get("title") or n.get("label") or n.get("name") or nid).strip()
+                        desc = str(n.get("description") or f"Master {title} for {goal}.").strip()
+                        prereqs = list(n.get("prerequisites") or [])
+                        req_lvl = int(n.get("requiredLevel") or n.get("recommended_level") or 4)
+                        est_hrs = int(n.get("estimatedHours") or n.get("duration_hours") or 20)
+                        phase_type = str(n.get("type") or "core").lower()
+                        depth = 0 if phase_type == "foundation" else (1 if phase_type == "core" else (2 if phase_type in ("intermediate", "advanced") else 3))
+
+                        synthetic_courses.append({
+                            "id": f"course-{nid}",
+                            "title": title,
+                            "description": desc,
+                            "skills_taught": [nid, title.lower()],
+                            "skills": [{"skill_id": nid, "level": req_lvl, "name": title}],
+                            "prerequisites": [{"skill_id": str(p), "minimum_level": 1} for p in prereqs],
+                            "duration_hours": est_hrs,
+                            "difficulty": n.get("difficulty", "intermediate"),
+                            "dependency_depth": depth,
+                        })
+                    elif isinstance(n, str):
+                        nid = normalize_skill_id(n)
+                        title = n
+                        synthetic_courses.append({
+                            "id": f"course-{nid}",
+                            "title": title,
+                            "description": f"Master {title} competencies for {goal}.",
+                            "skills_taught": [nid, title.lower()],
+                            "skills": [{"skill_id": nid, "level": 4, "name": title}],
+                            "prerequisites": [],
+                            "duration_hours": 20,
+                            "difficulty": "intermediate",
+                            "dependency_depth": 1,
+                        })
+
+                if synthetic_courses:
+                    ordered_courses = synthetic_courses
+        except Exception as err:
+            print(f"[LearningPathGenerator] Warning synthesizing courses for '{goal}': {err}")
+
     completed_course_ids = parse_completed_courses(
         learner.get("completed_courses")
         or learner.get("completed_topics")
@@ -1341,21 +1460,12 @@ def generate_personalized_learning_path(
         milestones
     )
 
-    has_remaining_gaps = any(
-        (isinstance(g, dict) and g.get("gap", 0) > 0) or (isinstance(g, str))
-        for g in effective_skill_gaps
-    )
-
-    if len(ordered_courses) > 0:
-        if overall_progress.get("completed_courses", 0) == len(ordered_courses) and len(ordered_courses) > 0:
-            path_status = "completed"
-            path_reason = f"Learner has satisfied all target skill requirements for '{goal}'."
-        else:
-            path_status = "active"
-            path_reason = None
-    elif goal_requirements_found and not has_remaining_gaps:
+    if not has_remaining_gaps and len(effective_skill_gaps) > 0:
         path_status = "completed"
         path_reason = f"Learner has satisfied all target skill requirements for '{goal}'."
+    elif len(ordered_courses) > 0 or len(effective_skill_gaps) > 0:
+        path_status = "active"
+        path_reason = None
     else:
         path_status = "no_recommendations"
         path_reason = f"No skill gaps or matching courses could be resolved for '{goal}'."

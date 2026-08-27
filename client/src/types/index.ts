@@ -40,18 +40,101 @@ export interface SkillGapItem {
   category: 'Strong' | 'Needs Improvement' | 'Missing';
 }
 
+export interface ScoreBreakdown {
+  skill?: number;
+  interest?: number;
+  goal?: number;
+  experience?: number;
+  education?: number;
+  semantic?: number;
+  skill_match?: number;
+  interest_match?: number;
+  goal_match?: number;
+  experience_match?: number;
+  education_match?: number;
+  semantic_similarity?: number;
+}
+
 export interface CareerRecommendation {
   id: string;
+  career_id?: string;
   title: string;
+  career?: string;
+  finalScore?: number;
   matchScore: number;
-  difficulty: 'Entry' | 'Intermediate' | 'Advanced';
+  confidence?: 'HIGH' | 'MEDIUM' | 'LOW';
+  difficulty: 'Entry' | 'Intermediate' | 'Advanced' | string;
   estimatedTransition: string;
+  transition_estimate?: string;
   description: string;
   whyMatches: string[];
+  strengths?: string[];
   skillGaps: string[];
-  keyResponsibilities: string[];
+  skill_gaps?: string[];
+  keyResponsibilities?: string[];
   averageSalary?: string;
+  reasoning?: string;
+  nextBestAction?: string;
+  next_best_action?: string;
+  scoreBreakdown?: ScoreBreakdown;
+  score_breakdown?: any;
 }
+
+export interface CareerComparison {
+  careerId: string;
+  careerTitle: string;
+  score: number;
+  matchScore: number;
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW';
+  transitionEffort: string;
+  missingSkills: string[];
+  overlapSkills: string[];
+  overlapCount: number;
+  estimatedLearningHours: number;
+  careerRisks: string[];
+  bestFitExplanation: string;
+  difficulty: string;
+  scoreBreakdown: ScoreBreakdown;
+}
+
+export interface AIProject {
+  title: string;
+  difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  description: string;
+  skillsPracticed: string[];
+  prerequisites: string[];
+  estimatedHours: number;
+  expectedOutcome: string;
+  suggestedTechStack: string[];
+}
+
+export interface AIResource {
+  title: string;
+  type: 'Documentation' | 'Course' | 'Article' | 'Video' | 'Tutorial';
+  skill: string;
+  difficulty?: string;
+  reason: string;
+  url: string | null;
+}
+
+export interface FlowchartNode {
+  id: string;
+  label: string;
+  category?: string;
+  description?: string;
+}
+
+export interface FlowchartEdge {
+  id: string;
+  source: string;
+  target: string;
+}
+
+export interface FlowchartData {
+  nodes: FlowchartNode[];
+  edges: FlowchartEdge[];
+}
+
 
 export interface SkillGapDetail {
   name: string;
@@ -165,6 +248,8 @@ export interface Roadmap {
   edges?: RoadmapGraphEdge[];
   phases: RoadmapPhase[];
   adaptiveEvents?: AdaptiveEvent[];
+  profileVersion?: number;
+  isStale?: boolean;
   updatedAt: string;
 }
 

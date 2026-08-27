@@ -2,17 +2,22 @@ from fastapi import APIRouter, Request
 from app.config.settings import settings
 from app.services.recommendation_engine import CAREERS
 
+from app.services.career_resolver import get_registered_careers
+
 router = APIRouter()
 
 
 @router.get("/health")
 async def health():
-    """Lightweight service health check endpoint for Render health probes."""
+    """Lightweight service health check endpoint reporting loaded dataset careers."""
+    registered = get_registered_careers()
     return {
         "status": "ok",
         "service": "career-pathfinder-ai",
         "gemini": "mock" if settings.AI_MOCK_MODE else ("available" if settings.GEMINI_API_KEY else "unavailable"),
         "embedding_model": "all-MiniLM-L6-v2 (ONNX CPU)",
+        "loadedCareersCount": len(registered),
+        "loadedCareers": registered
     }
 
 

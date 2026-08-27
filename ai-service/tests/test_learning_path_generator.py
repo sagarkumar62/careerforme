@@ -2863,16 +2863,15 @@ def test_regression_learner_all_target_skills_satisfied():
     courses = load_courses_catalog()
     learner = {
         "skills": {
-            "python": 10.0,
-            "machine learning": 10.0,
-            "statistics": 10.0,
-            "deep learning": 10.0,
-            "nlp": 10.0,
-            "transformers": 10.0,
-            "data science": 10.0,
-            "databases": 10.0,
-            "data analysis": 10.0,
-            "machine learning projects": 10.0,
+            "python": 10.0, "git & github": 10.0, "linux / cli": 10.0, "numpy": 10.0, "pandas": 10.0,
+            "sql": 10.0, "linear algebra": 10.0, "probability & statistics": 10.0, "data analysis": 10.0,
+            "data preprocessing": 10.0, "machine learning": 10.0, "supervised learning": 10.0,
+            "unsupervised learning": 10.0, "feature engineering": 10.0, "model evaluation": 10.0,
+            "scikit-learn": 10.0, "deep learning": 10.0, "neural networks": 10.0, "pytorch": 10.0,
+            "nlp": 10.0, "computer vision": 10.0, "transformers": 10.0, "llm fundamentals": 10.0,
+            "embeddings": 10.0, "rag": 10.0, "vector databases": 10.0, "ai agents": 10.0,
+            "fine-tuning": 10.0, "fastapi model serving": 10.0, "docker": 10.0, "mlops": 10.0,
+            "cloud deployment": 10.0, "production ai project": 10.0, "portfolio": 10.0
         }
     }
     res = generate_personalized_learning_path(
@@ -2889,6 +2888,22 @@ def test_regression_learner_all_target_skills_satisfied():
     assert res["milestones"] == []
     assert res["reason"] is not None
     assert "satisfied all target skill requirements" in res["reason"]
+
+
+def test_occupational_careers_generate_learning_path_milestones():
+    courses = load_courses_catalog()
+    for career_goal in ["Commercial Pilot", "pilot", "Civil Engineer", "civil-engineer"]:
+        res = generate_personalized_learning_path(
+            courses=courses,
+            learner={"skills": {}, "completed_courses": []},
+            goal=career_goal,
+            skill_gaps=[],
+        )
+        assert res["success"] is True
+        assert res["status"] == "active"
+        assert res["total_courses"] > 0
+        assert res["total_milestones"] > 0
+        assert len(res["milestones"]) > 0
 
 
 

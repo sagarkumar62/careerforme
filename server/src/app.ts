@@ -16,6 +16,7 @@ import conversationRoutes from './routes/conversation.routes';
 import assistantRoutes from './routes/assistant.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import learningPathRoutes from './routes/learning-path.routes';
+import aiRoutes from './routes/ai.routes';
 
 import { notFoundMiddleware } from './middleware/notFound.middleware';
 import { errorMiddleware } from './middleware/error.middleware';
@@ -71,6 +72,9 @@ app.use('/api/v1/feedback', feedbackRoutes);
 app.use('/api/v1/conversation', conversationRoutes);
 app.use('/api/v1/assistant', assistantRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/ai', aiRoutes);
+app.use('/ai', aiRoutes);
+
 
 // Root endpoint redirect / simple info
 app.get('/', (req, res) => {

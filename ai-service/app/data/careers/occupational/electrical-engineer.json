@@ -1,0 +1,389 @@
+{
+  "id": "electrical-engineer",
+  "careerId": "electrical-engineer",
+  "career_id": "electrical-engineer",
+  "title": "Electrical Engineer",
+  "domain": "engineering",
+  "description": "Design, analyze, and test electrical systems, circuit boards (Altium/KiCAD), power distribution grids, digital logic (Verilog/FPGA), embedded microcontrollers, power electronics, and control systems.",
+  "aliases": [
+    "electrical engineer",
+    "power systems engineer",
+    "electronics engineer",
+    "hardware engineer",
+    "control engineer"
+  ],
+  "estimatedMonths": 12,
+  "estimatedHours": 320,
+  "nodes": [
+    {
+      "id": "circuit-theory-ohms-law",
+      "nodeId": "circuit-theory-ohms-law",
+      "title": "Electric Circuit Theory & Analysis",
+      "description": "Master Ohm's Law, Kirchhoff's Laws (KCL/KVL), Thevenin/Norton equivalents, RLC transient analysis, and AC steady-state phasors.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "engineering-math-calculus",
+      "nodeId": "engineering-math-calculus",
+      "title": "Engineering Mathematics & Complex Variables",
+      "description": "Master differential equations, Laplace transforms, Fourier analysis, complex numbers, and linear algebra for circuit modeling.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "electromagnetics-maxwells-equations",
+      "nodeId": "electromagnetics-maxwells-equations",
+      "title": "Electromagnetics & Maxwell's Equations",
+      "description": "Master electrostatics, magnetostatics, Maxwell's equations, wave propagation, transmission lines, and electromagnetic compatibility (EMC).",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-math-calculus"
+      ]
+    },
+    {
+      "id": "c-cpp-programming-embedded",
+      "nodeId": "c-cpp-programming-embedded",
+      "title": "C / C++ Programming for Engineers",
+      "description": "Master C/C++ syntax, memory pointers, bitwise operations, data structures, and hardware interface programming.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "analog-electronics-opamps",
+      "nodeId": "analog-electronics-opamps",
+      "title": "Analog Electronics & Op-Amp Circuit Design",
+      "description": "Design diode circuits, BJT / MOSFET transistor amplifiers, operational amplifiers (Op-Amps), active filters, and oscillators.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "circuit-theory-ohms-law"
+      ]
+    },
+    {
+      "id": "digital-logic-fpga-verilog",
+      "nodeId": "digital-logic-fpga-verilog",
+      "title": "Digital Logic Design & Verilog / FPGA",
+      "description": "Master Boolean algebra, logic gates, combinational/sequential circuits, state machines (FSM), Verilog HDL, and FPGA synthesis.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "circuit-theory-ohms-law"
+      ]
+    },
+    {
+      "id": "signals-and-systems-dsp",
+      "nodeId": "signals-and-systems-dsp",
+      "title": "Signals & Systems & Digital Signal Processing (DSP)",
+      "description": "Master continuous/discrete time signals, Z-transforms, FIR/IIR filter design, Fast Fourier Transform (FFT), and MATLAB signal processing.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-math-calculus",
+        "circuit-theory-ohms-law"
+      ]
+    },
+    {
+      "id": "power-systems-three-phase",
+      "nodeId": "power-systems-three-phase",
+      "title": "Power Systems & 3-Phase Power Distribution",
+      "description": "Master 3-phase AC power circuits, transformers, transmission lines, power factor correction, fault analysis, and grid protection.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "circuit-theory-ohms-law",
+        "engineering-math-calculus"
+      ]
+    },
+    {
+      "id": "microcontrollers-embedded-c",
+      "nodeId": "microcontrollers-embedded-c",
+      "title": "Microcontrollers & Embedded Firmware (STM32 / ESP32)",
+      "description": "Program ARM Cortex-M microcontrollers (STM32/ESP32) in Embedded C, peripherals (GPIO, Timers, ADC, UART, SPI, I2C), and interrupts.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "c-cpp-programming-embedded",
+        "digital-logic-fpga-verilog"
+      ]
+    },
+    {
+      "id": "power-electronics-inverters",
+      "nodeId": "power-electronics-inverters",
+      "title": "Power Electronics & Converters (Buck/Boost/Inverters)",
+      "description": "Design DC-DC Buck/Boost converters, AC-DC rectifiers, DC-AC inverters, PWM switching control, and MOSFET/IGBT gate drivers.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "analog-electronics-opamps",
+        "power-systems-three-phase"
+      ]
+    },
+    {
+      "id": "control-systems-pid",
+      "nodeId": "control-systems-pid",
+      "title": "Control Systems Engineering & PID Control",
+      "description": "Master feedback control systems, transfer functions, Root Locus, Bode plots, Nyquist stability criterion, and PID controller tuning.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "engineering-math-calculus",
+        "signals-and-systems-dsp"
+      ]
+    },
+    {
+      "id": "pcb-design-altium-kicad",
+      "nodeId": "pcb-design-altium-kicad",
+      "title": "Printed Circuit Board (PCB) Design (Altium / KiCAD)",
+      "description": "Design schematic captures, multi-layer PCB layout, signal integrity routing, component footprint creation, and Gerber manufacturing files.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "analog-electronics-opamps",
+        "digital-logic-fpga-verilog"
+      ]
+    },
+    {
+      "id": "electric-drives-motors",
+      "nodeId": "electric-drives-motors",
+      "title": "Electric Motors & Motor Drives (BLDC / Induction)",
+      "description": "Master DC motors, AC induction motors, Brushless DC (BLDC) motors, stepper motors, Field-Oriented Control (FOC), and motor drives.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "power-systems-three-phase",
+        "power-electronics-inverters"
+      ]
+    },
+    {
+      "id": "renewable-energy-solar-wind",
+      "nodeId": "renewable-energy-solar-wind",
+      "title": "Renewable Energy Systems (Solar PV & Wind)",
+      "description": "Design Photovoltaic (PV) solar systems, MPPT tracking algorithms, grid-tied solar inverters, energy storage battery systems, and wind power.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "power-electronics-inverters",
+        "power-systems-three-phase"
+      ]
+    },
+    {
+      "id": "electrical-safety-codes-nec",
+      "nodeId": "electrical-safety-codes-nec",
+      "title": "Electrical Safety, Grounding & Codes (NEC)",
+      "description": "Master National Electrical Code (NEC standards), circuit breakers, grounding & bonding systems, arc flash hazards, and safety isolation.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "power-systems-three-phase"
+      ]
+    },
+    {
+      "id": "electrical-engineering-capstone",
+      "nodeId": "electrical-engineering-capstone",
+      "title": "Enterprise Electrical Engineering Capstone Project",
+      "description": "Design an integrated electrical hardware product: Schematic & Multi-layer PCB in Altium ➔ Power Converter Design ➔ STM32 Embedded Firmware ➔ Prototype Test.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "analog-electronics-opamps",
+        "microcontrollers-embedded-c",
+        "power-electronics-inverters",
+        "pcb-design-altium-kicad"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "Electrical Engineer Portfolio & Hardware Showcase",
+      "description": "Package Altium/KiCAD PCB schematics, Embedded C repositories, MATLAB simulation files, prototype hardware demos, and test validation reports.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "electrical-engineering-capstone"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "engineering-math-calculus",
+      "target": "electromagnetics-maxwells-equations",
+      "type": "prerequisite"
+    },
+    {
+      "source": "circuit-theory-ohms-law",
+      "target": "analog-electronics-opamps",
+      "type": "prerequisite"
+    },
+    {
+      "source": "circuit-theory-ohms-law",
+      "target": "digital-logic-fpga-verilog",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-math-calculus",
+      "target": "signals-and-systems-dsp",
+      "type": "prerequisite"
+    },
+    {
+      "source": "circuit-theory-ohms-law",
+      "target": "signals-and-systems-dsp",
+      "type": "prerequisite"
+    },
+    {
+      "source": "circuit-theory-ohms-law",
+      "target": "power-systems-three-phase",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-math-calculus",
+      "target": "power-systems-three-phase",
+      "type": "prerequisite"
+    },
+    {
+      "source": "c-cpp-programming-embedded",
+      "target": "microcontrollers-embedded-c",
+      "type": "prerequisite"
+    },
+    {
+      "source": "digital-logic-fpga-verilog",
+      "target": "microcontrollers-embedded-c",
+      "type": "prerequisite"
+    },
+    {
+      "source": "analog-electronics-opamps",
+      "target": "power-electronics-inverters",
+      "type": "prerequisite"
+    },
+    {
+      "source": "power-systems-three-phase",
+      "target": "power-electronics-inverters",
+      "type": "prerequisite"
+    },
+    {
+      "source": "engineering-math-calculus",
+      "target": "control-systems-pid",
+      "type": "prerequisite"
+    },
+    {
+      "source": "signals-and-systems-dsp",
+      "target": "control-systems-pid",
+      "type": "prerequisite"
+    },
+    {
+      "source": "analog-electronics-opamps",
+      "target": "pcb-design-altium-kicad",
+      "type": "prerequisite"
+    },
+    {
+      "source": "digital-logic-fpga-verilog",
+      "target": "pcb-design-altium-kicad",
+      "type": "prerequisite"
+    },
+    {
+      "source": "power-systems-three-phase",
+      "target": "electric-drives-motors",
+      "type": "prerequisite"
+    },
+    {
+      "source": "power-electronics-inverters",
+      "target": "electric-drives-motors",
+      "type": "prerequisite"
+    },
+    {
+      "source": "power-electronics-inverters",
+      "target": "renewable-energy-solar-wind",
+      "type": "prerequisite"
+    },
+    {
+      "source": "power-systems-three-phase",
+      "target": "renewable-energy-solar-wind",
+      "type": "prerequisite"
+    },
+    {
+      "source": "power-systems-three-phase",
+      "target": "electrical-safety-codes-nec",
+      "type": "prerequisite"
+    },
+    {
+      "source": "analog-electronics-opamps",
+      "target": "electrical-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "microcontrollers-embedded-c",
+      "target": "electrical-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "power-electronics-inverters",
+      "target": "electrical-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pcb-design-altium-kicad",
+      "target": "electrical-engineering-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "electrical-engineering-capstone",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
+  ]
+}

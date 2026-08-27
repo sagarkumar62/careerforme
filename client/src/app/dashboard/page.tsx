@@ -67,7 +67,7 @@ export default function DashboardPage() {
       email: authUser?.email || dashboard.user?.email || ''
     },
     activeGoal: {
-      title: authProfile?.targetCareerGoal || (authProfile as any)?.targetCareer || dashboard.activeGoal?.title || 'AI Engineer',
+      title: authProfile?.targetCareerGoal || (authProfile as any)?.targetCareer || dashboard.activeGoal?.title || 'Target Career',
       matchScore: dashboard.activeGoal?.matchScore ?? 0,
       estimatedMonths: dashboard.activeGoal?.estimatedMonths ?? 6
     },

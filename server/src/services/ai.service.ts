@@ -507,6 +507,234 @@ Provide actionable, concise guidance formatted as JSON:
     };
   }
 
+  async explainCareerMatch(profile: any, careerTitle: string, scoreBreakdown: any): Promise<any> {
+    if (env.GEMINI_API_KEY || env.LLM_API_KEY) {
+      try {
+        const prompt = `You are an expert AI Career Guidance System.
+Explain why "${careerTitle}" is a great match for this user based on their profile and Python-calculated scores:
+Score Breakdown: ${JSON.stringify(scoreBreakdown)}
+User Profile: ${JSON.stringify(profile)}
+
+Return JSON strictly matching this schema:
+{
+  "whyMatches": ["Reason 1", "Reason 2", "Reason 3"],
+  "scoreExplanation": "Human friendly explanation of the score breakdown",
+  "skillGapAnalysis": "Concise summary of top skill gaps to bridge"
+}`;
+        const result = await this.callGeminiAPI(prompt);
+        if (result && Array.isArray(result.whyMatches)) {
+          return result;
+        }
+      } catch (err: any) {
+        logger.info(`[AIService] explainCareerMatch fallback used: ${err.message}`);
+      }
+    }
+    return {
+      whyMatches: [
+        `Strong alignment with your recorded skills and background in ${profile?.education || 'software development'}.`,
+        `High demand and career growth potential in ${careerTitle}.`,
+        `Structured transition path tailored to your current proficiency levels.`
+      ],
+      scoreExplanation: `Your profile achieved a high match based on skill alignment, domain interest, and experience level.`,
+      skillGapAnalysis: `Focus on mastering required core skills to complete your transition.`
+    };
+  }
+
+  async recommendProjects(data: {
+    selectedCareer: string;
+    learnerSkills?: any[];
+    missingSkills?: string[];
+    completedSkills?: string[];
+    currentRoadmapPhase?: string;
+  }): Promise<any> {
+    if (env.GEMINI_API_KEY || env.LLM_API_KEY) {
+      try {
+        const prompt = `You are a Senior Technical Project Architect.
+Recommend 3 practical hands-on projects (BEGINNER, INTERMEDIATE, ADVANCED) for a learner aspiring to become a "${data.selectedCareer}".
+Learner Skills: ${JSON.stringify(data.learnerSkills || [])}
+Missing Skills: ${JSON.stringify(data.missingSkills || [])}
+Current Phase: ${data.currentRoadmapPhase || 'Foundations'}
+
+Return JSON strictly matching this schema:
+{
+  "projects": [
+    {
+      "title": "Project Title",
+      "difficulty": "BEGINNER",
+      "description": "Clear description of what to build",
+      "skillsPracticed": ["Skill 1", "Skill 2"],
+      "prerequisites": ["Prereq 1"],
+      "estimatedHours": 20,
+      "expectedOutcome": "What the learner achieves or deploys",
+      "suggestedTechStack": ["Tech 1", "Tech 2"]
+    },
+    {
+      "title": "Project Title 2",
+      "difficulty": "INTERMEDIATE",
+      "description": "Clear description",
+      "skillsPracticed": ["Skill 1"],
+      "prerequisites": ["Prereq 1"],
+      "estimatedHours": 35,
+      "expectedOutcome": "Outcome",
+      "suggestedTechStack": ["Tech 1"]
+    },
+    {
+      "title": "Project Title 3",
+      "difficulty": "ADVANCED",
+      "description": "Clear description",
+      "skillsPracticed": ["Skill 1"],
+      "prerequisites": ["Prereq 1"],
+      "estimatedHours": 50,
+      "expectedOutcome": "Outcome",
+      "suggestedTechStack": ["Tech 1"]
+    }
+  ]
+}`;
+        const result = await this.callGeminiAPI(prompt);
+        if (result && Array.isArray(result.projects)) {
+          return result;
+        }
+      } catch (err: any) {
+        logger.info(`[AIService] recommendProjects fallback used: ${err.message}`);
+      }
+    }
+
+    const career = data.selectedCareer || 'AI Engineer';
+    return {
+      projects: [
+        {
+          title: `Basic ${career} Starter Project`,
+          difficulty: 'BEGINNER',
+          description: `Build a foundational practical tool implementing core concepts of ${career}.`,
+          skillsPracticed: data.missingSkills?.slice(0, 2) || ['Foundations'],
+          prerequisites: ['Basic Programming'],
+          estimatedHours: 15,
+          expectedOutcome: 'Functional working code repository with basic automated tests.',
+          suggestedTechStack: ['Python', 'Git']
+        },
+        {
+          title: `Full-Stack ${career} Application`,
+          difficulty: 'INTERMEDIATE',
+          description: `Construct an end-to-end interactive application with database integration and APIs.`,
+          skillsPracticed: data.missingSkills || ['REST APIs', 'Database Design'],
+          prerequisites: [`Basic ${career} Starter Project`],
+          estimatedHours: 35,
+          expectedOutcome: 'Deployed web service with user interface and backend API.',
+          suggestedTechStack: ['Next.js', 'Node.js', 'Docker']
+        },
+        {
+          title: `Production ${career} Capstone & Infrastructure`,
+          difficulty: 'ADVANCED',
+          description: `Architect a scalable production-grade system with CI/CD pipeline, monitoring, and live deployment.`,
+          skillsPracticed: ['System Design', 'CI/CD', 'Cloud Deployment'],
+          prerequisites: [`Full-Stack ${career} Application`],
+          estimatedHours: 50,
+          expectedOutcome: 'Live production capstone serving real-world requests.',
+          suggestedTechStack: ['Kubernetes', 'FastAPI', 'PostgreSQL']
+        }
+      ]
+    };
+  }
+
+  async recommendResources(data: {
+    skills?: string[];
+    selectedCareer?: string;
+  }): Promise<any> {
+    if (env.GEMINI_API_KEY || env.LLM_API_KEY) {
+      try {
+        const skillsList = data.skills && data.skills.length > 0 ? data.skills : ['Programming', 'System Architecture'];
+        const prompt = `You are an expert Technical Content Curator.
+Recommend high-quality learning resources (Documentation, Courses, Articles, Videos, Tutorials) mapped directly to these target skills: ${JSON.stringify(skillsList)} for career "${data.selectedCareer || 'Technology'}".
+
+CRITICAL RULE:
+Do NOT fabricate broken or imaginary URLs.
+If an official verified URL (like MDN, Official Python/FastAPI docs, YouTube freeCodeCamp) is known, provide it. Otherwise, set "url": null.
+
+Return JSON strictly matching this schema:
+{
+  "resources": [
+    {
+      "title": "Resource Title",
+      "type": "Documentation",
+      "skill": "Skill Name",
+      "difficulty": "Beginner",
+      "reason": "Why this resource helps master this skill",
+      "url": "https://official-url-if-verified-otherwise-null"
+    }
+  ]
+}`;
+        const result = await this.callGeminiAPI(prompt);
+        if (result && Array.isArray(result.resources)) {
+          return result;
+        }
+      } catch (err: any) {
+        logger.info(`[AIService] recommendResources fallback used: ${err.message}`);
+      }
+    }
+
+    const target = data.selectedCareer || 'Technology';
+    return {
+      resources: [
+        {
+          title: `${target} Official Guide & Documentation`,
+          type: 'Documentation',
+          skill: data.skills?.[0] || 'Core Syntax',
+          difficulty: 'Beginner',
+          reason: 'Authoritative documentation providing standard syntax reference.',
+          url: null
+        },
+        {
+          title: `Hands-on ${target} Masterclass Video Course`,
+          type: 'Video',
+          skill: data.skills?.[0] || 'Core Practice',
+          difficulty: 'Intermediate',
+          reason: 'Comprehensive visual walkthrough with real-world coding examples.',
+          url: null
+        }
+      ]
+    };
+  }
+
+  async generateFlowchartData(roleName: string): Promise<any> {
+    if (env.GEMINI_API_KEY || env.LLM_API_KEY) {
+      try {
+        const prompt = `You are a Curriculum Graph Architect.
+Generate structured flowchart DAG data for career role: "${roleName}".
+
+Return JSON strictly matching this schema without markdown formatting:
+{
+  "nodes": [
+    { "id": "node-1", "label": "Topic Name", "category": "Fundamentals", "description": "Short explanation" }
+  ],
+  "edges": [
+    { "id": "e-1", "source": "node-1", "target": "node-2" }
+  ]
+}`;
+        const result = await this.callGeminiAPI(prompt);
+        if (result && Array.isArray(result.nodes) && Array.isArray(result.edges)) {
+          return result;
+        }
+      } catch (err: any) {
+        logger.info(`[AIService] generateFlowchartData fallback used: ${err.message}`);
+      }
+    }
+
+    const cleanRole = roleName || 'Career Path';
+    return {
+      nodes: [
+        { id: 'n1', label: `${cleanRole} Foundations`, category: 'Fundamentals', description: 'Core foundational principles' },
+        { id: 'n2', label: 'Core Methodologies', category: 'Intermediate', description: 'Essential technical skills' },
+        { id: 'n3', label: 'Advanced Specialization', category: 'Advanced', description: 'Specialized domain workflows' },
+        { id: 'n4', label: 'Capstone Project', category: 'Tools', description: 'Production capstone execution' }
+      ],
+      edges: [
+        { id: 'e1', source: 'n1', target: 'n2' },
+        { id: 'e2', source: 'n2', target: 'n3' },
+        { id: 'e3', source: 'n3', target: 'n4' }
+      ]
+    };
+  }
+
   async enrichRoadmap(data: {
     roadmapStructure: any;
     profile: any;
@@ -628,3 +856,4 @@ DO NOT fabricate fake URLs. Prefer official documentation names or search querie
 }
 
 export const aiService = new AIService();
+

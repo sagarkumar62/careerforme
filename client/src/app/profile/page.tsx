@@ -37,10 +37,12 @@ import { useAuth } from '@/context/AuthContext';
 import { ConfirmSaveModal } from '@/components/profile/ConfirmSaveModal';
 import { Skill, SkillProficiency } from '@/types';
 import { getInitials } from '@/lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
 import { getSkillSuggestions, SuggestedSkill } from '@/lib/skill-suggestions';
 
 export default function ProfilePage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, profile, loading: authLoading, updateUserAndProfile, changePassword } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -90,7 +92,7 @@ export default function ProfilePage() {
       setExperienceLevel(profile.experienceLevel || 'Mid');
       setCurrentRole((profile as any).currentRole || '');
       setLocation((profile as any).location || '');
-      setTargetCareerGoal(profile.targetCareerGoal || (profile as any).targetCareer || 'AI Engineer');
+      setTargetCareerGoal(profile.targetCareerGoal || (profile as any).targetCareer || '');
       setGoalReason(profile.goalReason || '');
       setWeeklyHours(profile.learningPreferences?.weeklyHours || (profile as any).weeklyLearningHours || 10);
       setPreferredLearningStyle((profile as any).preferredLearningStyle || 'Projects & Interactive');
@@ -151,6 +153,14 @@ export default function ProfilePage() {
       };
 
       await updateUserAndProfile(updatedUserData, updatedProfileData as any);
+
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
+      queryClient.invalidateQueries({ queryKey: ['career'] });
+      queryClient.invalidateQueries({ queryKey: ['skill-gap'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmap'] });
+      queryClient.invalidateQueries({ queryKey: ['progress'] });
 
       setShowConfirmModal(false);
       setIsEditing(false);
@@ -335,7 +345,7 @@ export default function ProfilePage() {
               </p>
               <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-indigo-100/90 font-medium">
                 <span className="flex items-center gap-1">
-                  <Target className="h-3.5 w-3.5 text-indigo-400" /> Goal: <strong className="text-white">{targetCareerGoal || 'AI Engineer'}</strong>
+                  <Target className="h-3.5 w-3.5 text-indigo-400" /> Goal: <strong className="text-white">{targetCareerGoal || 'Not Set'}</strong>
                 </span>
                 {location && (
                   <span className="flex items-center gap-1">

@@ -72,15 +72,19 @@ export default function RoadmapPage() {
   const { data: roadmaps = [], isLoading: loadingList } = useQuery<Roadmap[]>({
     queryKey: ['roadmaps'],
     queryFn: () => api.getRoadmaps(),
+    staleTime: 0,
+    refetchOnMount: true
   });
 
-  const activeRoadmapId = selectedId || (roadmaps.length > 0 ? roadmaps[0].id : undefined);
+  const activeRoadmapObj = roadmaps.find((r) => (r as any).status === 'active') || roadmaps[0];
+  const activeRoadmapId = selectedId || activeRoadmapObj?.id;
 
   // Fetch selected roadmap details
   const { data: currentRoadmap = null, isLoading: loadingDetails } = useQuery<Roadmap | null>({
-    queryKey: ['roadmap', activeRoadmapId],
-    queryFn: () => api.getRoadmap(activeRoadmapId),
-    enabled: !!activeRoadmapId,
+    queryKey: ['roadmap', activeRoadmapId || 'active'],
+    queryFn: () => api.getRoadmap(selectedId ? selectedId : 'active'),
+    staleTime: 0,
+    refetchOnMount: true
   });
 
   // Generate Roadmap Mutation
@@ -289,9 +293,6 @@ export default function RoadmapPage() {
                 <Trash2 className="h-4 w-4" /> Delete
               </Button>
             )}
-            <Button variant="ai" size="md" onClick={() => setShowModal(true)} className="gap-1.5 font-bold text-xs">
-              <Plus className="h-4 w-4" /> New Roadmap
-            </Button>
           </div>
         </div>
 

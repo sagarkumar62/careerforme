@@ -64,3 +64,43 @@ export const authenticate = async (
     }
   }
 };
+
+export const optionalAuth = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  let token: string | undefined = undefined;
+
+  try {
+    if (req.headers.authorization?.startsWith('Bearer ')) {
+      token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies?.accessToken) {
+      token = req.cookies.accessToken;
+    }
+
+    if (token) {
+      const decoded = verifyAccessToken(token);
+      const userExists = await User.findById(decoded.userId).lean();
+      if (userExists) {
+        req.user = {
+          ...decoded,
+          _id: decoded.userId,
+        };
+        return next();
+      }
+    }
+  } catch (error: any) {
+    // Ignore token validation failure in optionalAuth and proceed to guest fallback
+  }
+
+  const DEFAULT_GUEST_ID = '6a8fcd23ea40b7b492ba5cee';
+  req.user = {
+    userId: DEFAULT_GUEST_ID,
+    _id: DEFAULT_GUEST_ID,
+    email: 'guest@pathfinder.ai',
+    role: 'user',
+  };
+
+  next();
+};

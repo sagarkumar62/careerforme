@@ -1,82 +1,408 @@
 {
+  "id": "ux-designer",
   "careerId": "ux-designer",
-  "title": "UX/Product Designer",
+  "career_id": "ux-designer",
+  "title": "UX / Product Designer",
   "domain": "design",
-  "description": "Design intuitive user experiences, conduct user research, create interactive wireframes and prototypes, and build scalable design systems.",
-  "aliases": ["ux designer", "ui ux designer", "product designer"],
+  "description": "Design intuitive user experiences, conduct user research, structure information architecture, build high-fidelity interactive Figma prototypes, develop scalable design systems, and perform usability testing.",
+  "aliases": [
+    "ux designer",
+    "ui ux designer",
+    "product designer",
+    "user experience designer",
+    "interaction designer"
+  ],
+  "estimatedMonths": 6,
+  "estimatedHours": 200,
   "nodes": [
     {
-      "id": "ui_fundamentals",
-      "title": "UI & Visual Fundamentals",
+      "id": "design-thinking-process",
+      "nodeId": "design-thinking-process",
+      "title": "Design Thinking & Human-Centered Design",
+      "description": "Master Design Thinking frameworks (Empathize, Define, Ideate, Prototype, Test), Human-Centered Design (HCD), and Double-Diamond problem solving.",
       "type": "foundation",
-      "description": "Master typography, color theory, grid systems, layout balance, and visual hierarchy.",
-      "topics": ["Typography & Pairings", "Color Theory & Contrast", "Grid Systems & Spacing", "Visual Hierarchy"],
       "difficulty": "beginner",
       "importance": 1.0,
+      "recommended_level": 4,
       "requiredLevel": 4,
       "prerequisites": []
     },
     {
-      "id": "user_research",
-      "title": "User Research & Personas",
+      "id": "user-research-personas",
+      "nodeId": "user-research-personas",
+      "title": "User Research & Persona Synthesis",
+      "description": "Conduct qualitative user interviews, quantitative surveys, empathy mapping, user persona creation, and target audience journey maps.",
       "type": "foundation",
-      "description": "Conduct user interviews, synthesize research data, build user personas, and map customer journey maps.",
-      "topics": ["User Interviews & Surveys", "User Personas", "Empathy Mapping", "Customer Journey Maps"],
       "difficulty": "beginner",
-      "importance": 0.95,
+      "importance": 1.0,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["ui_fundamentals"]
+      "prerequisites": [
+        "design-thinking-process"
+      ]
     },
     {
-      "id": "information_arch",
+      "id": "ui-visual-fundamentals",
+      "nodeId": "ui-visual-fundamentals",
+      "title": "UI & Visual Design Fundamentals",
+      "description": "Master typography pairings, grid systems (8pt grid), color theory, visual hierarchy, spacing, contrast ratios, and WCAG accessibility standards.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "figma-fundamentals",
+      "nodeId": "figma-fundamentals",
+      "title": "Figma Core & Auto Layout Mastery",
+      "description": "Master Figma interface, vector tools, frame management, Auto Layout 5.0, constraints, text/color styles, and component creation.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "ui-visual-fundamentals"
+      ]
+    },
+    {
+      "id": "information-architecture",
+      "nodeId": "information-architecture",
       "title": "Information Architecture & Card Sorting",
+      "description": "Master content hierarchy, sitemaps, open/closed card sorting techniques, tree testing, and navigation pattern design.",
       "type": "core",
-      "description": "Structure navigation flows, sitemaps, information hierarchy, and card sorting exercises.",
-      "topics": ["Sitemaps & User Flows", "Card Sorting", "Navigation Patterns", "Content Hierarchy"],
       "difficulty": "intermediate",
-      "importance": 0.90,
-      "requiredLevel": 3,
-      "prerequisites": ["user_research"]
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "user-research-personas"
+      ]
     },
     {
-      "id": "wireframing_figma",
-      "title": "Wireframing & Figma Mastery",
+      "id": "user-flows-wireframing",
+      "nodeId": "user-flows-wireframing",
+      "title": "User Flows & Low-to-Mid Fi Wireframing",
+      "description": "Map user journeys, task flows, low-fidelity paper sketches, and mid-fidelity digital wireframes to validate interaction logic.",
       "type": "core",
-      "description": "Create low-fidelity and high-fidelity wireframes using Figma, auto-layout, components, and variant sets.",
-      "topics": ["Low-Fi & High-Fi Wireframes", "Figma Auto Layout", "Component Variants", "Interactive Prototypes"],
       "difficulty": "intermediate",
       "importance": 0.98,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["information_arch"]
+      "prerequisites": [
+        "information-architecture",
+        "figma-fundamentals"
+      ]
     },
     {
-      "id": "usability_testing",
-      "title": "Usability Testing & Feedback Loops",
-      "type": "advanced",
-      "description": "Conduct moderated and unmoderated usability tests, analyze heatmaps, and iterate based on feedback.",
-      "topics": ["Usability Scripting", "Heatmap Analysis", "A/B Testing Basics", "Design Iteration"],
-      "difficulty": "advanced",
-      "importance": 0.90,
-      "requiredLevel": 3,
-      "prerequisites": ["wireframing_figma"]
+      "id": "hifi-responsive-ui",
+      "nodeId": "hifi-responsive-ui",
+      "title": "High-Fidelity Responsive Web & Mobile UI",
+      "description": "Design polished high-fidelity web (desktop) and mobile interfaces following iOS Human Interface Guidelines and Android Material Design 3.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "ui-visual-fundamentals",
+        "user-flows-wireframing"
+      ]
     },
     {
-      "id": "design_systems",
-      "title": "Design Systems & Capstone Portfolio",
+      "id": "prototyping-microinteractions",
+      "nodeId": "prototyping-microinteractions",
+      "title": "Interactive Prototyping & Micro-Interactions",
+      "description": "Master interactive prototyping in Figma, Smart Animate transitions, component hover/active states, and subtle micro-animations.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "figma-fundamentals",
+        "hifi-responsive-ui"
+      ]
+    },
+    {
+      "id": "design-systems-variables",
+      "nodeId": "design-systems-variables",
+      "title": "Design Systems & Tokenized Variables",
+      "description": "Build scalable tokenized design systems in Figma (Color, Typography, Spacing tokens), component variants, properties, and library publishing.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "hifi-responsive-ui",
+        "figma-fundamentals"
+      ]
+    },
+    {
+      "id": "usability-testing-analytics",
+      "nodeId": "usability-testing-analytics",
+      "title": "Usability Testing & Feedback Synthesis",
+      "description": "Conduct moderated/unmoderated usability tests, write test scripts, analyze System Usability Scale (SUS) scores, and read Heatmaps.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "prototyping-microinteractions",
+        "user-research-personas"
+      ]
+    },
+    {
+      "id": "accessibility-inclusive-design",
+      "nodeId": "accessibility-inclusive-design",
+      "title": "Accessibility (a11y) & Inclusive Design",
+      "description": "Implement WCAG 2.2 AA/AAA guidelines, screen reader navigation compatibility, keyboard focus states, and colorblind contrast checking.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "ui-visual-fundamentals",
+        "hifi-responsive-ui"
+      ]
+    },
+    {
+      "id": "ux-writing-microcopy",
+      "nodeId": "ux-writing-microcopy",
+      "title": "UX Writing & Microcopy Design",
+      "description": "Craft clear microcopy, CTA labels, error states, empty states, onboarding tooltips, brand tone of voice, and content design guidelines.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "user-flows-wireframing"
+      ]
+    },
+    {
+      "id": "product-analytics-abtesting",
+      "nodeId": "product-analytics-abtesting",
+      "title": "Product Metrics & A/B Testing",
+      "description": "Analyze UX metrics (HEART framework, CSAT, Conversion rates), design A/B test variations, and drive data-informed design iterations.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "usability-testing-analytics"
+      ]
+    },
+    {
+      "id": "developer-handoff-specs",
+      "nodeId": "developer-handoff-specs",
+      "title": "Developer Handoff & Specification Docs",
+      "description": "Prepare design handoffs in Figma/Zeplin, redline specs, CSS property inspect, token mapping for frontend devs, and engineering alignment.",
       "type": "capstone",
-      "description": "Build tokenized design systems, component libraries, design handoff documentation, and present a portfolio.",
-      "topics": ["Design Tokens & Variables", "Component Libraries", "Developer Handoff", "Design Portfolio Presentation"],
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "design-systems-variables",
+        "hifi-responsive-ui"
+      ]
+    },
+    {
+      "id": "design-strategy-vision",
+      "nodeId": "design-strategy-vision",
+      "title": "Design Strategy & Product Vision",
+      "description": "Align UX design strategy with business goals, competitive benchmarking, feature prioritization matrix, and MVP roadmap scoping.",
+      "type": "capstone",
       "difficulty": "advanced",
       "importance": 0.92,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["usability_testing"]
+      "prerequisites": [
+        "user-research-personas",
+        "product-analytics-abtesting"
+      ]
+    },
+    {
+      "id": "ux-capstone-project",
+      "nodeId": "ux-capstone-project",
+      "title": "Enterprise Product UX Capstone Project",
+      "description": "Execute a full UX Case Study: User Research ➔ IA & User Flows ➔ Design System Tokens ➔ Hi-Fi Prototype ➔ Usability Testing ➔ Handoff.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "user-research-personas",
+        "user-flows-wireframing",
+        "hifi-responsive-ui",
+        "design-systems-variables",
+        "usability-testing-analytics"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "UX Portfolio, Case Study & Interview Showcase",
+      "description": "Package end-to-end UX Case Studies (Problem, Process, Prototype, Impact), build a portfolio site, and prepare for design interviews.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "ux-capstone-project",
+        "developer-handoff-specs"
+      ]
     }
   ],
   "edges": [
-    { "source": "ui_fundamentals", "target": "user_research", "type": "prerequisite" },
-    { "source": "user_research", "target": "information_arch", "type": "prerequisite" },
-    { "source": "information_arch", "target": "wireframing_figma", "type": "prerequisite" },
-    { "source": "wireframing_figma", "target": "usability_testing", "type": "prerequisite" },
-    { "source": "usability_testing", "target": "design_systems", "type": "prerequisite" }
+    {
+      "source": "design-thinking-process",
+      "target": "user-research-personas",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ui-visual-fundamentals",
+      "target": "figma-fundamentals",
+      "type": "prerequisite"
+    },
+    {
+      "source": "user-research-personas",
+      "target": "information-architecture",
+      "type": "prerequisite"
+    },
+    {
+      "source": "information-architecture",
+      "target": "user-flows-wireframing",
+      "type": "prerequisite"
+    },
+    {
+      "source": "figma-fundamentals",
+      "target": "user-flows-wireframing",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ui-visual-fundamentals",
+      "target": "hifi-responsive-ui",
+      "type": "prerequisite"
+    },
+    {
+      "source": "user-flows-wireframing",
+      "target": "hifi-responsive-ui",
+      "type": "prerequisite"
+    },
+    {
+      "source": "figma-fundamentals",
+      "target": "prototyping-microinteractions",
+      "type": "prerequisite"
+    },
+    {
+      "source": "hifi-responsive-ui",
+      "target": "prototyping-microinteractions",
+      "type": "prerequisite"
+    },
+    {
+      "source": "hifi-responsive-ui",
+      "target": "design-systems-variables",
+      "type": "prerequisite"
+    },
+    {
+      "source": "figma-fundamentals",
+      "target": "design-systems-variables",
+      "type": "prerequisite"
+    },
+    {
+      "source": "prototyping-microinteractions",
+      "target": "usability-testing-analytics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "user-research-personas",
+      "target": "usability-testing-analytics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ui-visual-fundamentals",
+      "target": "accessibility-inclusive-design",
+      "type": "prerequisite"
+    },
+    {
+      "source": "hifi-responsive-ui",
+      "target": "accessibility-inclusive-design",
+      "type": "prerequisite"
+    },
+    {
+      "source": "user-flows-wireframing",
+      "target": "ux-writing-microcopy",
+      "type": "prerequisite"
+    },
+    {
+      "source": "usability-testing-analytics",
+      "target": "product-analytics-abtesting",
+      "type": "prerequisite"
+    },
+    {
+      "source": "design-systems-variables",
+      "target": "developer-handoff-specs",
+      "type": "prerequisite"
+    },
+    {
+      "source": "hifi-responsive-ui",
+      "target": "developer-handoff-specs",
+      "type": "prerequisite"
+    },
+    {
+      "source": "user-research-personas",
+      "target": "design-strategy-vision",
+      "type": "prerequisite"
+    },
+    {
+      "source": "product-analytics-abtesting",
+      "target": "design-strategy-vision",
+      "type": "prerequisite"
+    },
+    {
+      "source": "user-research-personas",
+      "target": "ux-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "user-flows-wireframing",
+      "target": "ux-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "hifi-responsive-ui",
+      "target": "ux-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "design-systems-variables",
+      "target": "ux-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "usability-testing-analytics",
+      "target": "ux-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ux-capstone-project",
+      "target": "portfolio",
+      "type": "prerequisite"
+    },
+    {
+      "source": "developer-handoff-specs",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
   ]
 }

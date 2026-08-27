@@ -1,70 +1,660 @@
 {
+  "id": "ai-engineer",
   "careerId": "ai-engineer",
+  "career_id": "ai-engineer",
   "title": "AI Engineer",
   "domain": "technology",
-  "description": "Design, build, and deploy production-grade Artificial Intelligence and LLM applications using PyTorch, vector databases, and RAG architectures.",
-  "aliases": ["ai engineer", "artificial intelligence engineer", "ai/ml engineer"],
+  "description": "Design, build, and deploy production-grade Artificial Intelligence and LLM applications using PyTorch, vector databases, RAG architectures, and MLOps.",
+  "aliases": [
+    "ai engineer",
+    "artificial intelligence engineer",
+    "ai/ml engineer"
+  ],
+  "estimatedMonths": 6,
+  "estimatedHours": 200,
   "nodes": [
     {
       "id": "python",
-      "title": "Python Programming",
+      "nodeId": "python",
+      "title": "Python",
+      "description": "Master Python fundamentals, control flow, data structures, OOP, and virtual environments.",
       "type": "foundation",
-      "description": "Master Python fundamentals, OOP, data structures, and virtual environments.",
-      "topics": ["Python Syntax & Data Structures", "OOP & Design Patterns", "Virtual Environments"],
       "difficulty": "beginner",
       "importance": 1.0,
+      "recommended_level": 4,
       "requiredLevel": 4,
       "prerequisites": []
     },
     {
-      "id": "machine_learning",
-      "title": "Machine Learning Fundamentals",
-      "type": "core",
-      "description": "Train regression, classification, and clustering models using Scikit-Learn.",
-      "topics": ["Supervised & Unsupervised Learning", "Scikit-Learn Models", "Feature Engineering"],
-      "difficulty": "intermediate",
-      "importance": 0.98,
+      "id": "git-github",
+      "nodeId": "git-github",
+      "title": "Git & GitHub",
+      "description": "Master version control, repository management, branching, and pull request workflows.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["python"]
+      "prerequisites": []
     },
     {
-      "id": "deep_learning",
-      "title": "Deep Learning & PyTorch",
+      "id": "linux-cli",
+      "nodeId": "linux-cli",
+      "title": "Linux / CLI",
+      "description": "Master command line navigation, shell scripting, process management, and file permissions.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "numpy",
+      "nodeId": "numpy",
+      "title": "NumPy",
+      "description": "Master high-performance N-dimensional array manipulation and mathematical operations.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "python"
+      ]
+    },
+    {
+      "id": "pandas",
+      "nodeId": "pandas",
+      "title": "Pandas",
+      "description": "Master tabular data manipulation, dataframes, indexing, cleaning, and aggregation.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "numpy"
+      ]
+    },
+    {
+      "id": "sql",
+      "nodeId": "sql",
+      "title": "SQL",
+      "description": "Master relational database querying, joins, aggregations, indexing, and data retrieval.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "linear-algebra",
+      "nodeId": "linear-algebra",
+      "title": "Linear Algebra",
+      "description": "Master vectors, matrices, dot products, matrix multiplication, and eigenvalues for AI models.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.88,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "probability-statistics",
+      "nodeId": "probability-statistics",
+      "title": "Probability & Statistics",
+      "description": "Master probability distributions, hypothesis testing, Bayes theorem, and statistical inference.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "data-analysis",
+      "nodeId": "data-analysis",
+      "title": "Data Analysis",
+      "description": "Perform exploratory data analysis (EDA), data visualization, and statistical insights.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "pandas",
+        "sql"
+      ]
+    },
+    {
+      "id": "data-preprocessing",
+      "nodeId": "data-preprocessing",
+      "title": "Data Preprocessing",
+      "description": "Master data cleaning, scaling, handling missing values, and categorical encoding.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "data-analysis"
+      ]
+    },
+    {
+      "id": "machine-learning",
+      "nodeId": "machine-learning",
+      "title": "Machine Learning",
+      "description": "Understand machine learning paradigms, model fitting, loss functions, and optimization.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "probability-statistics",
+        "data-preprocessing"
+      ]
+    },
+    {
+      "id": "supervised-learning",
+      "nodeId": "supervised-learning",
+      "title": "Supervised Learning",
+      "description": "Train and evaluate regression (Linear, Ridge) and classification (Logistic, Decision Trees) models.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "machine-learning"
+      ]
+    },
+    {
+      "id": "unsupervised-learning",
+      "nodeId": "unsupervised-learning",
+      "title": "Unsupervised Learning",
+      "description": "Master clustering algorithms (K-Means, DBSCAN) and dimensionality reduction (PCA, t-SNE).",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "machine-learning"
+      ]
+    },
+    {
+      "id": "feature-engineering",
+      "nodeId": "feature-engineering",
+      "title": "Feature Engineering",
+      "description": "Create domain features, polynomial features, automated feature selection, and transformation.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "supervised-learning"
+      ]
+    },
+    {
+      "id": "model-evaluation",
+      "nodeId": "model-evaluation",
+      "title": "Model Evaluation",
+      "description": "Master cross-validation, precision-recall curves, ROC-AUC, confusion matrices, and bias-variance tradeoff.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "supervised-learning"
+      ]
+    },
+    {
+      "id": "scikit-learn",
+      "nodeId": "scikit-learn",
+      "title": "Scikit-learn",
+      "description": "Master the Scikit-learn API, pipelines, GridSearchCV, and model persistence.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "feature-engineering",
+        "model-evaluation"
+      ]
+    },
+    {
+      "id": "deep-learning",
+      "nodeId": "deep-learning",
+      "title": "Deep Learning",
+      "description": "Understand artificial neural network architectures, backpropagation, and gradient descent.",
       "type": "advanced",
-      "description": "Construct neural networks, backpropagation, and custom PyTorch modules.",
-      "topics": ["Neural Net Architecture", "Backpropagation", "PyTorch Modules"],
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "scikit-learn"
+      ]
+    },
+    {
+      "id": "neural-networks",
+      "nodeId": "neural-networks",
+      "title": "Neural Networks",
+      "description": "Design multilayer perceptrons (MLP), custom activation functions, and regularization (Dropout, BatchNorm).",
+      "type": "advanced",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "deep-learning"
+      ]
+    },
+    {
+      "id": "pytorch",
+      "nodeId": "pytorch",
+      "title": "PyTorch",
+      "description": "Construct neural net modules, custom Dataset/DataLoader pipelines, and autograd in PyTorch.",
+      "type": "advanced",
+      "difficulty": "advanced",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "neural-networks"
+      ]
+    },
+    {
+      "id": "nlp",
+      "nodeId": "nlp",
+      "title": "NLP",
+      "description": "Master Natural Language Processing, text tokenization, TF-IDF, Word2Vec, and RNNs/LSTMs.",
+      "type": "advanced",
       "difficulty": "advanced",
       "importance": 0.92,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["machine_learning"]
+      "prerequisites": [
+        "pytorch"
+      ]
+    },
+    {
+      "id": "computer-vision",
+      "nodeId": "computer-vision",
+      "title": "Computer Vision",
+      "description": "Master Convolutional Neural Networks (CNNs), image classification, object detection, and OpenCV.",
+      "type": "advanced",
+      "difficulty": "advanced",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "pytorch"
+      ]
     },
     {
       "id": "transformers",
-      "title": "Transformers & LLMs",
+      "nodeId": "transformers",
+      "title": "Transformers",
+      "description": "Understand Self-Attention mechanisms, Encoder-Decoder architectures, and HuggingFace Transformers.",
       "type": "advanced",
-      "description": "Understand Self-Attention mechanisms, Encoder-Decoder architectures, and HuggingFace Hub.",
-      "topics": ["Self-Attention", "LLM Models", "HuggingFace Transformers"],
       "difficulty": "advanced",
-      "importance": 0.90,
-      "requiredLevel": 3,
-      "prerequisites": ["deep_learning"]
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "nlp"
+      ]
+    },
+    {
+      "id": "llm-fundamentals",
+      "nodeId": "llm-fundamentals",
+      "title": "LLM Fundamentals",
+      "description": "Understand Large Language Model architecture, prompt engineering, context windows, and tokenization.",
+      "type": "advanced",
+      "difficulty": "advanced",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "transformers"
+      ]
+    },
+    {
+      "id": "embeddings",
+      "nodeId": "embeddings",
+      "title": "Embeddings",
+      "description": "Generate high-dimensional vector embeddings for semantic search, text, and multimodal data.",
+      "type": "advanced",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "transformers"
+      ]
+    },
+    {
+      "id": "rag",
+      "nodeId": "rag",
+      "title": "RAG",
+      "description": "Build Retrieval-Augmented Generation systems connecting LLMs with external knowledge stores.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "llm-fundamentals",
+        "embeddings"
+      ]
+    },
+    {
+      "id": "vector-databases",
+      "nodeId": "vector-databases",
+      "title": "Vector Databases",
+      "description": "Master vector search engines (Pinecone, ChromaDB, Weaviate, Qdrant) and ANN index indexing.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "rag"
+      ]
+    },
+    {
+      "id": "ai-agents",
+      "nodeId": "ai-agents",
+      "title": "AI Agents",
+      "description": "Build autonomous AI Agents with tool calling, memory management, and multi-agent workflows (LangChain, LlamaIndex).",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "rag"
+      ]
+    },
+    {
+      "id": "fine-tuning",
+      "nodeId": "fine-tuning",
+      "title": "Fine-tuning",
+      "description": "Perform Parameter-Efficient Fine-Tuning (PEFT, LoRA, QLoRA) on open-weights LLMs.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "llm-fundamentals"
+      ]
+    },
+    {
+      "id": "fastapi-model-serving",
+      "nodeId": "fastapi-model-serving",
+      "title": "FastAPI Model Serving",
+      "description": "Build asynchronous production REST & WebSocket APIs for LLM inference using FastAPI and Pydantic.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "rag"
+      ]
+    },
+    {
+      "id": "docker",
+      "nodeId": "docker",
+      "title": "Docker",
+      "description": "Containerize AI applications, multi-stage Dockerfiles, GPU container runtime, and docker-compose.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "fastapi-model-serving"
+      ]
     },
     {
       "id": "mlops",
-      "title": "MLOps & Model Deployment Capstone",
+      "nodeId": "mlops",
+      "title": "MLOps",
+      "description": "Master model registry, experiment tracking (MLflow, Weights & Biases), and automated pipeline monitoring.",
       "type": "capstone",
-      "description": "Deploy LLM APIs using FastAPI, Docker, and cloud infrastructure.",
-      "topics": ["FastAPI Model Serving", "Docker Containerization", "Production Capstone Project"],
       "difficulty": "advanced",
-      "importance": 0.85,
+      "importance": 0.96,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["transformers"]
+      "prerequisites": [
+        "docker"
+      ]
+    },
+    {
+      "id": "cloud-deployment",
+      "nodeId": "cloud-deployment",
+      "title": "Cloud Deployment",
+      "description": "Deploy containerized AI services to cloud infrastructure (AWS ECS/Lambda, GCP Cloud Run, Kubernetes).",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "mlops"
+      ]
+    },
+    {
+      "id": "production-ai-project",
+      "nodeId": "production-ai-project",
+      "title": "Production AI Project",
+      "description": "Build an end-to-end production-grade LLM application with RAG, vector search, streaming, and UI.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "cloud-deployment",
+        "ai-agents"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "Portfolio",
+      "description": "Package and showcase production AI projects, GitHub codebases, system design docs, and live demos.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "production-ai-project"
+      ]
     }
   ],
   "edges": [
-    { "source": "python", "target": "machine_learning", "type": "prerequisite" },
-    { "source": "machine_learning", "target": "deep_learning", "type": "prerequisite" },
-    { "source": "deep_learning", "target": "transformers", "type": "prerequisite" },
-    { "source": "transformers", "target": "mlops", "type": "prerequisite" }
+    {
+      "source": "python",
+      "target": "numpy",
+      "type": "prerequisite"
+    },
+    {
+      "source": "numpy",
+      "target": "pandas",
+      "type": "prerequisite"
+    },
+    {
+      "source": "linear-algebra",
+      "target": "probability-statistics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pandas",
+      "target": "data-analysis",
+      "type": "prerequisite"
+    },
+    {
+      "source": "sql",
+      "target": "data-analysis",
+      "type": "prerequisite"
+    },
+    {
+      "source": "data-analysis",
+      "target": "data-preprocessing",
+      "type": "prerequisite"
+    },
+    {
+      "source": "probability-statistics",
+      "target": "machine-learning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "data-preprocessing",
+      "target": "machine-learning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "machine-learning",
+      "target": "supervised-learning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "machine-learning",
+      "target": "unsupervised-learning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "supervised-learning",
+      "target": "feature-engineering",
+      "type": "prerequisite"
+    },
+    {
+      "source": "supervised-learning",
+      "target": "model-evaluation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "feature-engineering",
+      "target": "scikit-learn",
+      "type": "prerequisite"
+    },
+    {
+      "source": "model-evaluation",
+      "target": "scikit-learn",
+      "type": "prerequisite"
+    },
+    {
+      "source": "scikit-learn",
+      "target": "deep-learning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "deep-learning",
+      "target": "neural-networks",
+      "type": "prerequisite"
+    },
+    {
+      "source": "neural-networks",
+      "target": "pytorch",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pytorch",
+      "target": "nlp",
+      "type": "prerequisite"
+    },
+    {
+      "source": "pytorch",
+      "target": "computer-vision",
+      "type": "prerequisite"
+    },
+    {
+      "source": "nlp",
+      "target": "transformers",
+      "type": "prerequisite"
+    },
+    {
+      "source": "transformers",
+      "target": "llm-fundamentals",
+      "type": "prerequisite"
+    },
+    {
+      "source": "transformers",
+      "target": "embeddings",
+      "type": "prerequisite"
+    },
+    {
+      "source": "llm-fundamentals",
+      "target": "rag",
+      "type": "prerequisite"
+    },
+    {
+      "source": "embeddings",
+      "target": "rag",
+      "type": "prerequisite"
+    },
+    {
+      "source": "rag",
+      "target": "vector-databases",
+      "type": "prerequisite"
+    },
+    {
+      "source": "rag",
+      "target": "ai-agents",
+      "type": "prerequisite"
+    },
+    {
+      "source": "llm-fundamentals",
+      "target": "fine-tuning",
+      "type": "prerequisite"
+    },
+    {
+      "source": "rag",
+      "target": "fastapi-model-serving",
+      "type": "prerequisite"
+    },
+    {
+      "source": "fastapi-model-serving",
+      "target": "docker",
+      "type": "prerequisite"
+    },
+    {
+      "source": "docker",
+      "target": "mlops",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mlops",
+      "target": "cloud-deployment",
+      "type": "prerequisite"
+    },
+    {
+      "source": "cloud-deployment",
+      "target": "production-ai-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ai-agents",
+      "target": "production-ai-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "production-ai-project",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
   ]
 }

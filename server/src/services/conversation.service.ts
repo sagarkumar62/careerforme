@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Conversation, IConversation, IMessage } from '../models/Conversation';
 import { careerContextService } from './ai/career-context.service';
 import { geminiService, GeminiMessage } from './ai/gemini.service';
@@ -50,9 +51,15 @@ export class ConversationService {
   }
 
   async getConversationById(id: string, userId: string): Promise<IConversation> {
-    const conversation = await Conversation.findOne({ _id: id, userId });
+    let conversation: IConversation | null = null;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      conversation = await Conversation.findOne({ _id: id, userId });
+    }
     if (!conversation) {
-      throw ApiError.notFound('Conversation not found or unauthorized.');
+      conversation = await Conversation.findOne({ userId }).sort({ updatedAt: -1 });
+    }
+    if (!conversation) {
+      conversation = await this.createConversation(userId);
     }
     return this.normalizeConversation(conversation);
   }
@@ -98,7 +105,7 @@ export class ConversationService {
     }
 
     let conversation: IConversation | null = null;
-    if (conversationId && conversationId !== 'new') {
+    if (conversationId && conversationId !== 'new' && mongoose.Types.ObjectId.isValid(conversationId)) {
       conversation = await Conversation.findOne({ _id: conversationId, userId });
     }
     if (!conversation) {
@@ -181,7 +188,7 @@ export class ConversationService {
 
     let conversation: IConversation | null = null;
 
-    if (conversationId && conversationId !== 'new') {
+    if (conversationId && conversationId !== 'new' && mongoose.Types.ObjectId.isValid(conversationId)) {
       conversation = await Conversation.findOne({ _id: conversationId, userId });
     }
 

@@ -29,7 +29,7 @@ Non-Goals / Scope Boundaries:
 import re
 from typing import Dict, List, Any, Optional, Union
 from app.utils.normalization import normalize_skill_name, normalize_skill_id, _parse_level
-from app.services.career_resolver import resolve_target_career
+from app.services.career_resolver import resolve_target_career, normalize_career_input
 from app.ingestion.unified_loader import load_unified_careers
 
 
@@ -42,8 +42,8 @@ def parse_learner_skill_levels(learner_skills: Any) -> Dict[str, int]:
     level_map: Dict[str, int] = {}
 
     if isinstance(learner_skills, dict):
-        # Check if wrapped in profile dict e.g. {"skills": [...]}
-        if "skills" in learner_skills and isinstance(learner_skills["skills"], list):
+        # Check if wrapped in profile dict e.g. {"skills": [...]} or {"skills": {...}}
+        if "skills" in learner_skills and (isinstance(learner_skills["skills"], list) or isinstance(learner_skills["skills"], dict)):
             return parse_learner_skill_levels(learner_skills["skills"])
 
         for k, v in learner_skills.items():
@@ -85,18 +85,28 @@ def parse_goal_requirements(goal_requirements: Any) -> List[Dict[str, Any]]:
     if isinstance(goal_requirements, str) and goal_requirements.strip():
         career_res = resolve_target_career(goal_requirements)
         if career_res.get("success") and career_res.get("graph_data"):
-            nodes = career_res["graph_data"].get("nodes", [])
+            g_data = career_res["graph_data"]
+            nodes = g_data.get("nodes") or g_data.get("skills") or g_data.get("required_skills") or g_data.get("requiredSkills") or []
             for node in nodes:
-                title = node.get("title") or node.get("name") or "Skill"
-                canon = normalize_skill_name(title)
-                slug = normalize_skill_id(canon)
-                target_lvl = node.get("requiredLevel") or node.get("recommended_level") or 4
-                requirements.append({
-                    "skillId": slug,
-                    "skillName": title,
-                    "targetLevel": int(target_lvl),
-                    "importance": 0.8 if node.get("type") == "core" else 0.6
-                })
+                if isinstance(node, dict):
+                    title = node.get("title") or node.get("label") or node.get("name") or "Skill"
+                    canon = normalize_skill_name(title)
+                    slug = str(node.get("id") or node.get("nodeId") or normalize_skill_id(canon)).strip()
+                    target_lvl = node.get("requiredLevel") or node.get("recommended_level") or node.get("required_level") or 4
+                    requirements.append({
+                        "skillId": slug,
+                        "skillName": title,
+                        "targetLevel": int(target_lvl),
+                        "importance": float(node.get("importance") or (0.8 if node.get("type") == "core" else 0.6))
+                    })
+                elif isinstance(node, str):
+                    canon = normalize_skill_name(node)
+                    requirements.append({
+                        "skillId": normalize_skill_id(canon),
+                        "skillName": node,
+                        "targetLevel": 4,
+                        "importance": 0.7
+                    })
         else:
             # Fallback to searching unified careers catalog
             unified = load_unified_careers()
@@ -208,59 +218,111 @@ def calculate_single_skill_gap(
     """
     Computes skill gap metrics for a single required skill against learner skills.
     
-    Output item schema:
+    Returns:
     {
+        "skill": "statistics",
         "skillId": "statistics",
         "skillName": "Statistics",
         "currentLevel": 3,
-        "targetLevel": 7,
-        "gap": 4,
-        "priority": 0.91,
-        "status": "needs_work"
+        "requiredLevel": 4,
+        "gap": 1,
+        "priority": "HIGH",
+        "priorityScore": 0.85,
+        "classification": "NEEDS_WORK",
+        "status": "needs_work",
+        "reason": "Prerequisite for Machine Learning with high career relevance.",
+        "prerequisites": ["Python", "Algebra"],
+        "estimatedHours": 30
     }
     """
     skill_id = required_skill.get("skillId") or "unknown"
-    skill_name = required_skill.get("skillName") or skill_id.replace("-", " ").title()
-    target_level = int(required_skill.get("targetLevel") or 4)
+    skill_name = required_skill.get("skillName") or required_skill.get("name") or skill_id.replace("-", " ").title()
+    target_level = int(required_skill.get("targetLevel") or required_skill.get("requiredLevel") or required_skill.get("required_level") or 4)
     importance = float(required_skill.get("importance") or 0.8)
 
-    # Resolve learner's current level
     canon_name = normalize_skill_name(skill_name)
     canon_lower = canon_name.lower()
-    
-    current_level = learner_skills_map.get(
-        skill_id,
-        learner_skills_map.get(canon_lower, 0)
-    )
+    norm_skill_id = normalize_skill_id(skill_id)
+    current_level = 0
+    sid_clean = skill_id.lower().replace("-", " ").replace("_", " ")
+    canon_clean = canon_lower.replace("-", " ").replace("_", " ")
+
+    for lk, lv in learner_skills_map.items():
+        norm_lk = normalize_skill_id(lk)
+        lk_clean = lk.lower().replace("-", " ").replace("_", " ")
+        if (
+            norm_lk == norm_skill_id
+            or lk_clean == sid_clean
+            or lk_clean == canon_clean
+            or (len(lk_clean) >= 3 and (lk_clean in sid_clean or sid_clean in lk_clean or lk_clean in canon_clean))
+            or (len(norm_lk) >= 3 and (norm_lk in norm_skill_id or norm_skill_id in norm_lk))
+        ):
+            try:
+                current_level = max(current_level, int(float(lv)))
+            except (TypeError, ValueError):
+                pass
 
     # Compute raw gap
     gap = max(0, target_level - current_level)
 
-    # Compute priority score (0.0 to 1.0)
-    if gap == 0:
-        priority = 0.0
+    # Classifications
+    if current_level >= target_level:
+        classification = "STRONG"
         status = "mastered"
+    elif current_level > 0:
+        classification = "NEEDS_WORK"
+        status = "needs_work"
     else:
-        # Priority increases with gap size, target level urgency, and skill importance
+        classification = "MISSING"
+        status = "missing"
+
+    # Compute priority score (0.0 to 1.0)
+    if classification == "STRONG":
+        priority_label = "LOW"
+        priority_val = 0.0
+        reason = f"Mastered skill ({current_level}/{target_level}). Meets career requirements."
+    else:
         raw_ratio = gap / max(target_level, 1)
-        # Weighted scale giving priority values aligned with prompt expectations
-        priority_val = min(max(0.5 * raw_ratio + 0.5 * importance, 0.05), 1.0)
-        priority = round(priority_val, 2)
-        
-        if current_level > 0:
-            status = "needs_work"
+        priority_val = round(min(max(0.5 * raw_ratio + 0.5 * importance, 0.1), 1.0), 2)
+        if priority_val >= 0.7:
+            priority_label = "HIGH"
+        elif priority_val >= 0.4:
+            priority_label = "MEDIUM"
         else:
-            status = "missing" if gap == target_level else "needs_work"
+            priority_label = "LOW"
+
+        if classification == "MISSING":
+            reason = f"Essential missing competency for role. High priority to unlock dependent advanced topics."
+        else:
+            reason = f"Needs level-up from level {current_level} to required level {target_level}."
+
+    prereqs = required_skill.get("prerequisites") or []
+    if not prereqs and "python" in skill_id or "pandas" in skill_id:
+        prereqs = ["Programming Foundations"]
+    elif not prereqs and ("machine-learning" in skill_id or "deep-learning" in skill_id):
+        prereqs = ["Python", "Linear Algebra", "Statistics"]
+
+    estimated_hours = gap * 25 if gap > 0 else 0
 
     return {
+        "skill": skill_name,
         "skillId": skill_id,
         "skillName": skill_name,
         "currentLevel": current_level,
+        "requiredLevel": target_level,
         "targetLevel": target_level,
         "gap": gap,
-        "priority": priority,
-        "status": status
+        "priority": priority_val,
+        "priorityLabel": priority_label,
+        "priority_label": priority_label,
+        "priorityScore": priority_val,
+        "classification": classification,
+        "status": status,
+        "reason": reason,
+        "prerequisites": prereqs,
+        "estimatedHours": estimated_hours
     }
+
 
 
 def compute_skill_gaps(

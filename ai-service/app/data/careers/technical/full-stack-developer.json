@@ -1,35 +1,460 @@
 {
   "id": "full-stack-developer",
+  "careerId": "full-stack-developer",
+  "career_id": "full-stack-developer",
   "title": "Full Stack Developer",
   "domain": "technology",
-  "career_type": "technical",
-  "source": {
-    "provider": "roadmap.sh",
-    "source_id": "full-stack",
-    "url": "https://roadmap.sh/full-stack"
-  },
-  "description": "Architect and deploy end-to-end web applications, from responsive modern frontend interfaces to scalable backend APIs and database infrastructure.",
-  "skills": [
-    { "id": "html_css", "name": "HTML5 & Modern CSS", "importance": 0.95, "required_level": 4, "phase": 1 },
-    { "id": "javascript", "name": "JavaScript (ES6+)", "importance": 0.98, "required_level": 4, "phase": 1 },
-    { "id": "react", "name": "React.js", "importance": 0.95, "required_level": 4, "phase": 2 },
-    { "id": "nodejs", "name": "Node.js & Express.js", "importance": 0.95, "required_level": 4, "phase": 2 },
-    { "id": "databases", "name": "SQL & NoSQL Databases (PostgreSQL / MongoDB)", "importance": 0.90, "required_level": 3, "phase": 2 },
-    { "id": "typescript", "name": "TypeScript", "importance": 0.88, "required_level": 3, "phase": 3 },
-    { "id": "nextjs", "name": "Next.js Framework", "importance": 0.85, "required_level": 3, "phase": 3 },
-    { "id": "deployment", "name": "System Security, JWT Auth & Cloud Deployment", "importance": 0.82, "required_level": 3, "phase": 4 }
+  "description": "Architect and deploy end-to-end production web applications using the MERN stack (MongoDB, Express.js, React.js, Node.js), TypeScript, Next.js, Docker, and Cloud CI/CD pipelines.",
+  "aliases": [
+    "full stack developer",
+    "full stack engineer",
+    "fullstack developer",
+    "mern stack developer",
+    "fullstack"
   ],
-  "prerequisites": [
-    ["html_css", "javascript"],
-    ["javascript", "react"],
-    ["javascript", "nodejs"],
-    ["nodejs", "databases"],
-    ["react", "nextjs"],
-    ["typescript", "nextjs"]
+  "estimatedMonths": 6,
+  "estimatedHours": 220,
+  "nodes": [
+    {
+      "id": "internet-web",
+      "nodeId": "internet-web",
+      "title": "Internet & Web Architecture",
+      "description": "Understand HTTP/HTTPS protocols, DNS resolution, client-server architecture, web browsers, and REST principles.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.9,
+      "recommended_level": 3,
+      "requiredLevel": 3,
+      "prerequisites": []
+    },
+    {
+      "id": "html5",
+      "nodeId": "html5",
+      "title": "HTML5 & Semantic Web",
+      "description": "Master semantic markup, forms, inputs, DOM tree structure, web accessibility (a11y), and SEO fundamentals.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "internet-web"
+      ]
+    },
+    {
+      "id": "css3",
+      "nodeId": "css3",
+      "title": "CSS3 & Responsive Layouts",
+      "description": "Master CSS Box Model, Flexbox layout, CSS Grid, media queries, CSS variables, and mobile-first responsive design.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "html5"
+      ]
+    },
+    {
+      "id": "git-github",
+      "nodeId": "git-github",
+      "title": "Git & GitHub Version Control",
+      "description": "Master Git workflows, branching, commits, pull requests, merge conflict resolution, and GitHub team collaboration.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "javascript-es6",
+      "nodeId": "javascript-es6",
+      "title": "Modern JavaScript (ES6+)",
+      "description": "Master JavaScript fundamentals, DOM manipulation, Async/Await, Promises, Closures, ES Modules, and Fetch API.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "html5",
+        "css3"
+      ]
+    },
+    {
+      "id": "tailwind-css",
+      "nodeId": "tailwind-css",
+      "title": "Tailwind CSS & UI Styling",
+      "description": "Build modern responsive web interfaces using Tailwind CSS utility classes, custom themes, and component styling.",
+      "type": "core",
+      "difficulty": "beginner",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "css3"
+      ]
+    },
+    {
+      "id": "reactjs",
+      "nodeId": "reactjs",
+      "title": "React.js Component Architecture",
+      "description": "Build interactive single-page applications using JSX, React Hooks (useState, useEffect, useMemo), and Custom Hooks.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "javascript-es6"
+      ]
+    },
+    {
+      "id": "react-router",
+      "nodeId": "react-router",
+      "title": "React Router & SPA Routing",
+      "description": "Implement client-side Single Page Application routing, dynamic URL parameters, nested routes, and protected routes.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "reactjs"
+      ]
+    },
+    {
+      "id": "nodejs",
+      "nodeId": "nodejs",
+      "title": "Node.js Core Runtime",
+      "description": "Understand asynchronous JavaScript runtime, Event Loop, native modules (fs, http, path), NPM ecosystem, and environment variables.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "javascript-es6"
+      ]
+    },
+    {
+      "id": "expressjs",
+      "nodeId": "expressjs",
+      "title": "Express.js REST API Server",
+      "description": "Architect scalable backend RESTful APIs, custom middleware, request/response handlers, routing, and error handling.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "nodejs"
+      ]
+    },
+    {
+      "id": "mongodb-mongoose",
+      "nodeId": "mongodb-mongoose",
+      "title": "MongoDB & Mongoose ODM",
+      "description": "Design NoSQL document databases, collections, CRUD operations, Mongoose schemas, data validation, indexing, and populate relations.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "expressjs"
+      ]
+    },
+    {
+      "id": "jwt-security",
+      "nodeId": "jwt-security",
+      "title": "JWT Authentication & API Security",
+      "description": "Implement Secure JWT authentication, password hashing (bcrypt), HTTP-only cookies, CORS, Rate Limiting, and Helmet headers.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "expressjs",
+        "mongodb-mongoose"
+      ]
+    },
+    {
+      "id": "state-management",
+      "nodeId": "state-management",
+      "title": "Global State Management (Redux / Zustand)",
+      "description": "Manage global application state, asynchronous data fetching, and caching using Redux Toolkit or Zustand.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "reactjs"
+      ]
+    },
+    {
+      "id": "typescript",
+      "nodeId": "typescript",
+      "title": "Full Stack TypeScript",
+      "description": "Apply static typing, interfaces, generics, and strict type checking across frontend React components and backend Express routes.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "javascript-es6"
+      ]
+    },
+    {
+      "id": "nextjs",
+      "nodeId": "nextjs",
+      "title": "Next.js & Server Components",
+      "description": "Build full-stack production web apps with Next.js App Router, Server-Side Rendering (SSR), Static Site Generation (SSG), and Server Actions.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "reactjs",
+        "typescript",
+        "expressjs"
+      ]
+    },
+    {
+      "id": "sql-postgresql",
+      "nodeId": "sql-postgresql",
+      "title": "Relational Databases & SQL (PostgreSQL)",
+      "description": "Master SQL query writing, relational database models, PostgreSQL, and ORM integration (Prisma / TypeORM).",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.88,
+      "recommended_level": 3,
+      "requiredLevel": 3,
+      "prerequisites": [
+        "expressjs"
+      ]
+    },
+    {
+      "id": "docker",
+      "nodeId": "docker",
+      "title": "Docker & Containerization",
+      "description": "Containerize Node/Express backend microservices and React frontend apps using multi-stage Dockerfiles and docker-compose.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "expressjs",
+        "mongodb-mongoose"
+      ]
+    },
+    {
+      "id": "testing",
+      "nodeId": "testing",
+      "title": "Full Stack Testing (Vitest & Supertest)",
+      "description": "Write component unit tests with Vitest / React Testing Library and REST API integration tests with Supertest.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "reactjs",
+        "expressjs"
+      ]
+    },
+    {
+      "id": "deployment-cicd",
+      "nodeId": "deployment-cicd",
+      "title": "Production Deployment & CI/CD",
+      "description": "Automate GitHub Actions CI/CD deployment pipelines, deploy frontends to Vercel and backend microservices to Render/AWS.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "docker",
+        "nextjs"
+      ]
+    },
+    {
+      "id": "mstack-capstone",
+      "nodeId": "mstack-capstone",
+      "title": "Production MERN Capstone Project",
+      "description": "Build and deploy a full-featured MERN application (E-commerce / SaaS) with Auth, Stripe Payments, Real-time WebSockets, and Cloud DB.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "jwt-security",
+        "state-management",
+        "deployment-cicd"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "Full Stack Portfolio & System Design",
+      "description": "Package live deployed applications, GitHub codebases, API documentation, and system design architecture diagrams.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "mstack-capstone"
+      ]
+    }
   ],
-  "recommended_skills": ["Tailwind CSS", "Docker", "GraphQL", "REST APIs"],
-  "interests": ["Web Development", "Software Engineering"],
-  "education": ["Computer Science", "Bootcamp / Self-Taught"],
-  "experience_levels": ["Junior", "Mid", "Senior"],
-  "typical_duration_months": 6
+  "edges": [
+    {
+      "source": "internet-web",
+      "target": "html5",
+      "type": "prerequisite"
+    },
+    {
+      "source": "html5",
+      "target": "css3",
+      "type": "prerequisite"
+    },
+    {
+      "source": "html5",
+      "target": "javascript-es6",
+      "type": "prerequisite"
+    },
+    {
+      "source": "css3",
+      "target": "javascript-es6",
+      "type": "prerequisite"
+    },
+    {
+      "source": "css3",
+      "target": "tailwind-css",
+      "type": "prerequisite"
+    },
+    {
+      "source": "javascript-es6",
+      "target": "reactjs",
+      "type": "prerequisite"
+    },
+    {
+      "source": "reactjs",
+      "target": "react-router",
+      "type": "prerequisite"
+    },
+    {
+      "source": "javascript-es6",
+      "target": "nodejs",
+      "type": "prerequisite"
+    },
+    {
+      "source": "nodejs",
+      "target": "expressjs",
+      "type": "prerequisite"
+    },
+    {
+      "source": "expressjs",
+      "target": "mongodb-mongoose",
+      "type": "prerequisite"
+    },
+    {
+      "source": "expressjs",
+      "target": "jwt-security",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mongodb-mongoose",
+      "target": "jwt-security",
+      "type": "prerequisite"
+    },
+    {
+      "source": "reactjs",
+      "target": "state-management",
+      "type": "prerequisite"
+    },
+    {
+      "source": "javascript-es6",
+      "target": "typescript",
+      "type": "prerequisite"
+    },
+    {
+      "source": "reactjs",
+      "target": "nextjs",
+      "type": "prerequisite"
+    },
+    {
+      "source": "typescript",
+      "target": "nextjs",
+      "type": "prerequisite"
+    },
+    {
+      "source": "expressjs",
+      "target": "nextjs",
+      "type": "prerequisite"
+    },
+    {
+      "source": "expressjs",
+      "target": "sql-postgresql",
+      "type": "prerequisite"
+    },
+    {
+      "source": "expressjs",
+      "target": "docker",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mongodb-mongoose",
+      "target": "docker",
+      "type": "prerequisite"
+    },
+    {
+      "source": "reactjs",
+      "target": "testing",
+      "type": "prerequisite"
+    },
+    {
+      "source": "expressjs",
+      "target": "testing",
+      "type": "prerequisite"
+    },
+    {
+      "source": "docker",
+      "target": "deployment-cicd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "nextjs",
+      "target": "deployment-cicd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "jwt-security",
+      "target": "mstack-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "state-management",
+      "target": "mstack-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "deployment-cicd",
+      "target": "mstack-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "mstack-capstone",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
+  ]
 }

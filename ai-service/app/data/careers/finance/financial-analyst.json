@@ -1,70 +1,414 @@
 {
+  "id": "financial-analyst",
   "careerId": "financial-analyst",
+  "career_id": "financial-analyst",
   "title": "Financial Analyst",
   "domain": "finance",
-  "description": "Analyze financial data, build 3-statement financial models in Excel, evaluate corporate valuations, and prepare financial reports.",
-  "aliases": ["financial analyst", "finance analyst"],
+  "description": "Analyze corporate financial data, build 3-statement financial models in Excel, perform DCF & Trading Comps valuations, model M&A and LBO transactions, and deliver executive financial reports.",
+  "aliases": [
+    "financial analyst",
+    "finance analyst",
+    "corporate finance analyst",
+    "fp&a analyst",
+    "investment research analyst"
+  ],
+  "estimatedMonths": 6,
+  "estimatedHours": 200,
   "nodes": [
     {
-      "id": "financial_accounting",
-      "title": "Financial Accounting Fundamentals",
+      "id": "financial-accounting-standards",
+      "nodeId": "financial-accounting-standards",
+      "title": "Financial Accounting & Standards (GAAP / IFRS)",
+      "description": "Master GAAP vs IFRS accounting standards, double-entry bookkeeping, general ledger, trial balance, and accrual vs cash accounting.",
       "type": "foundation",
-      "description": "Understand double-entry bookkeeping, GAAP & IFRS accounting standards, debit/credit rules, and ledger accounts.",
-      "topics": ["GAAP vs IFRS Standards", "Double-Entry Bookkeeping", "General Ledger & Trial Balance", "Accrual Accounting"],
       "difficulty": "beginner",
       "importance": 1.0,
+      "recommended_level": 4,
       "requiredLevel": 4,
       "prerequisites": []
     },
     {
-      "id": "financial_statements",
-      "title": "Three-Statement Analysis",
+      "id": "three-financial-statements",
+      "nodeId": "three-financial-statements",
+      "title": "Three Financial Statements Analysis",
+      "description": "Analyze Income Statements, Balance Sheets, and Cash Flow Statements, understanding revenues, expenses, assets, liabilities, and operating cash flows.",
       "type": "foundation",
-      "description": "Analyze Income Statements, Balance Sheets, and Cash Flow Statements and understand inter-statement linkages.",
-      "topics": ["Income Statement Analysis", "Balance Sheet Structure", "Cash Flow Waterfall", "Three-Statement Integration"],
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "financial-accounting-standards"
+      ]
+    },
+    {
+      "id": "financial-ratios-linkages",
+      "nodeId": "financial-ratios-linkages",
+      "title": "Financial Ratio Analysis & Inter-Statement Linkages",
+      "description": "Master liquidity ratios, profitability metrics (ROIC/ROE), leverage ratios, DuPont analysis, and inter-statement connection logic.",
+      "type": "foundation",
       "difficulty": "beginner",
       "importance": 0.95,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["financial_accounting"]
+      "prerequisites": [
+        "three-financial-statements"
+      ]
     },
     {
-      "id": "excel_modeling",
-      "title": "Financial Modeling in Excel",
+      "id": "excel-financial-modeling",
+      "nodeId": "excel-financial-modeling",
+      "title": "Excel Financial Modeling & Shortcuts",
+      "description": "Master advanced Excel formulas (INDEX/MATCH, XLOOKUP, Dynamic Arrays), financial formatting, Data Tables, Goal Seek, and keyboard shortcuts.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "three-statement-excel-model",
+      "nodeId": "three-statement-excel-model",
+      "title": "Integrated 3-Statement Financial Modeling",
+      "description": "Build dynamic, fully integrated 3-statement financial models from scratch in Excel, including debt schedules, interest, and working capital.",
       "type": "core",
-      "description": "Master Excel financial formulas (VLOOKUP, INDEX/MATCH, XLOOKUP), scenario analysis, dynamic formatting, and DCF modeling.",
-      "topics": ["Advanced Excel Formulas", "Dynamic Financial Models", "Scenario & Sensitivity Analysis", "DCF Valuation Modeling"],
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "three-financial-statements",
+        "excel-financial-modeling"
+      ]
+    },
+    {
+      "id": "corporate-finance-capital",
+      "nodeId": "corporate-finance-capital",
+      "title": "Corporate Finance & Capital Structure (WACC)",
+      "description": "Master Weighted Average Cost of Capital (WACC), Capital Asset Pricing Model (CAPM), Beta calculation, debt vs equity, and capital structure.",
+      "type": "core",
       "difficulty": "intermediate",
       "importance": 0.98,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["financial_statements"]
+      "prerequisites": [
+        "financial-ratios-linkages"
+      ]
     },
     {
-      "id": "valuation_methods",
-      "title": "Corporate Valuation & Multiples",
-      "type": "advanced",
-      "description": "Evaluate companies using Comparable Company Analysis (Comps), Precedent Transactions, and LBO models.",
-      "topics": ["Comparable Company Analysis (Comps)", "Precedent Transactions", "LBO Valuation Basics", "WACC & Enterprise Value"],
-      "difficulty": "advanced",
-      "importance": 0.90,
-      "requiredLevel": 3,
-      "prerequisites": ["excel_modeling"]
+      "id": "dcf-valuation",
+      "nodeId": "dcf-valuation",
+      "title": "Discounted Cash Flow (DCF) Valuation",
+      "description": "Master Free Cash Flow to Firm (FCFF), Free Cash Flow to Equity (FCFE), Terminal Value methods (Perpetual Growth/Exit Multiple), and Enterprise Value.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "three-statement-excel-model",
+        "corporate-finance-capital"
+      ]
     },
     {
-      "id": "financial_reporting",
-      "title": "Financial Reporting & Capstone Case Studies",
-      "type": "capstone",
-      "description": "Prepare executive financial slide decks, variance analysis, investment committee memos, and equity research reports.",
-      "topics": ["Variance Analysis (Actual vs Budget)", "Executive Slide Decks", "Equity Research Reports", "Investment Committee Capstone Case"],
+      "id": "comps-valuation",
+      "nodeId": "comps-valuation",
+      "title": "Comparable Company & Precedent Transaction Comps",
+      "description": "Master Trading Multiples (EV/EBITDA, P/E, EV/Revenue), Precedent Transactions, equity research consensus, and Football Field valuation charts.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "financial-ratios-linkages",
+        "corporate-finance-capital"
+      ]
+    },
+    {
+      "id": "financial-forecasting-scenarios",
+      "nodeId": "financial-forecasting-scenarios",
+      "title": "Financial Forecasting & Scenario Analysis",
+      "description": "Build revenue driver forecasts, operating cost projections, sensitivity tables, and scenario analysis (Base, Bull, Bear cases).",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "three-statement-excel-model"
+      ]
+    },
+    {
+      "id": "fpa-budgeting-variance",
+      "nodeId": "fpa-budgeting-variance",
+      "title": "FP&A Budgeting, Forecasting & Variance Analysis",
+      "description": "Master corporate budgeting cycles, rolling forecasts, variance analysis (Actuals vs Budget), OpEx tracking, and executive KPI dashboards.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "financial-forecasting-scenarios",
+        "three-financial-statements"
+      ]
+    },
+    {
+      "id": "capital-budgeting-npv",
+      "nodeId": "capital-budgeting-npv",
+      "title": "Capital Budgeting & Investment Decisions",
+      "description": "Calculate Net Present Value (NPV), Internal Rate of Return (IRR), Payback Period, Profitability Index, and corporate capital allocation.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "corporate-finance-capital",
+        "excel-financial-modeling"
+      ]
+    },
+    {
+      "id": "ma-accretion-dilution",
+      "nodeId": "ma-accretion-dilution",
+      "title": "Mergers & Acquisitions (M&A) Modeling",
+      "description": "Master M&A deal structures, Accretion/Dilution analysis, synergy modeling, goodwill calculation, and purchase price allocation.",
+      "type": "intermediate",
       "difficulty": "advanced",
       "importance": 0.92,
+      "recommended_level": 4,
       "requiredLevel": 4,
-      "prerequisites": ["valuation_methods"]
+      "prerequisites": [
+        "three-statement-excel-model",
+        "comps-valuation"
+      ]
+    },
+    {
+      "id": "lbo-modeling-basics",
+      "nodeId": "lbo-modeling-basics",
+      "title": "Leveraged Buyout (LBO) Modeling",
+      "description": "Understand LBO deal mechanics, debt tranche structure (Senior/Subordinated), debt paydown schedules, sponsor returns (IRR / MoIC), and exits.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "three-statement-excel-model",
+        "corporate-finance-capital"
+      ]
+    },
+    {
+      "id": "financial-python-powerbi",
+      "nodeId": "financial-python-powerbi",
+      "title": "Financial Data Analytics (Python & Power BI)",
+      "description": "Extract financial data (yfinance/SEC EDGAR APIs), automate financial data cleaning in Python (Pandas), and build Power BI financial dashboards.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "excel-financial-modeling",
+        "financial-ratios-linkages"
+      ]
+    },
+    {
+      "id": "financial-reporting-pitchbook",
+      "nodeId": "financial-reporting-pitchbook",
+      "title": "Financial Reporting, Presentation & Pitchbooks",
+      "description": "Prepare executive financial reporting decks, investment pitchbooks, data visualization charts, and board-level financial commentary.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "fpa-budgeting-variance",
+        "dcf-valuation"
+      ]
+    },
+    {
+      "id": "financial-analyst-capstone",
+      "nodeId": "financial-analyst-capstone",
+      "title": "Enterprise Corporate Valuation Capstone",
+      "description": "Build an integrated Corporate Valuation: 3-Statement Model ➔ Revenue Projections ➔ DCF & Comps Valuation ➔ Scenario Analysis ➔ Pitchbook Memo.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "three-statement-excel-model",
+        "dcf-valuation",
+        "comps-valuation",
+        "financial-forecasting-scenarios",
+        "ma-accretion-dilution"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "Financial Analyst Portfolio & Case Studies",
+      "description": "Package Excel 3-statement models, DCF valuation workbooks, equity research reports, pitchbooks, and Python financial dashboards.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "financial-analyst-capstone",
+        "financial-reporting-pitchbook"
+      ]
     }
   ],
   "edges": [
-    { "source": "financial_accounting", "target": "financial_statements", "type": "prerequisite" },
-    { "source": "financial_statements", "target": "excel_modeling", "type": "prerequisite" },
-    { "source": "excel_modeling", "target": "valuation_methods", "type": "prerequisite" },
-    { "source": "valuation_methods", "target": "financial_reporting", "type": "prerequisite" }
+    {
+      "source": "financial-accounting-standards",
+      "target": "three-financial-statements",
+      "type": "prerequisite"
+    },
+    {
+      "source": "three-financial-statements",
+      "target": "financial-ratios-linkages",
+      "type": "prerequisite"
+    },
+    {
+      "source": "three-financial-statements",
+      "target": "three-statement-excel-model",
+      "type": "prerequisite"
+    },
+    {
+      "source": "excel-financial-modeling",
+      "target": "three-statement-excel-model",
+      "type": "prerequisite"
+    },
+    {
+      "source": "financial-ratios-linkages",
+      "target": "corporate-finance-capital",
+      "type": "prerequisite"
+    },
+    {
+      "source": "three-statement-excel-model",
+      "target": "dcf-valuation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "corporate-finance-capital",
+      "target": "dcf-valuation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "financial-ratios-linkages",
+      "target": "comps-valuation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "corporate-finance-capital",
+      "target": "comps-valuation",
+      "type": "prerequisite"
+    },
+    {
+      "source": "three-statement-excel-model",
+      "target": "financial-forecasting-scenarios",
+      "type": "prerequisite"
+    },
+    {
+      "source": "financial-forecasting-scenarios",
+      "target": "fpa-budgeting-variance",
+      "type": "prerequisite"
+    },
+    {
+      "source": "three-financial-statements",
+      "target": "fpa-budgeting-variance",
+      "type": "prerequisite"
+    },
+    {
+      "source": "corporate-finance-capital",
+      "target": "capital-budgeting-npv",
+      "type": "prerequisite"
+    },
+    {
+      "source": "excel-financial-modeling",
+      "target": "capital-budgeting-npv",
+      "type": "prerequisite"
+    },
+    {
+      "source": "three-statement-excel-model",
+      "target": "ma-accretion-dilution",
+      "type": "prerequisite"
+    },
+    {
+      "source": "comps-valuation",
+      "target": "ma-accretion-dilution",
+      "type": "prerequisite"
+    },
+    {
+      "source": "three-statement-excel-model",
+      "target": "lbo-modeling-basics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "corporate-finance-capital",
+      "target": "lbo-modeling-basics",
+      "type": "prerequisite"
+    },
+    {
+      "source": "excel-financial-modeling",
+      "target": "financial-python-powerbi",
+      "type": "prerequisite"
+    },
+    {
+      "source": "financial-ratios-linkages",
+      "target": "financial-python-powerbi",
+      "type": "prerequisite"
+    },
+    {
+      "source": "fpa-budgeting-variance",
+      "target": "financial-reporting-pitchbook",
+      "type": "prerequisite"
+    },
+    {
+      "source": "dcf-valuation",
+      "target": "financial-reporting-pitchbook",
+      "type": "prerequisite"
+    },
+    {
+      "source": "three-statement-excel-model",
+      "target": "financial-analyst-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "dcf-valuation",
+      "target": "financial-analyst-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "comps-valuation",
+      "target": "financial-analyst-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "financial-forecasting-scenarios",
+      "target": "financial-analyst-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "ma-accretion-dilution",
+      "target": "financial-analyst-capstone",
+      "type": "prerequisite"
+    },
+    {
+      "source": "financial-analyst-capstone",
+      "target": "portfolio",
+      "type": "prerequisite"
+    },
+    {
+      "source": "financial-reporting-pitchbook",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
   ]
 }

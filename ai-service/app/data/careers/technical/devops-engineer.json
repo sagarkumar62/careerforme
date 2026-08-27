@@ -1,35 +1,452 @@
 {
   "id": "devops-engineer",
+  "careerId": "devops-engineer",
+  "career_id": "devops-engineer",
   "title": "DevOps Engineer",
   "domain": "technology",
-  "career_type": "technical",
-  "source": {
-    "provider": "roadmap.sh",
-    "source_id": "devops",
-    "url": "https://roadmap.sh/devops"
-  },
-  "description": "Automate infrastructure provisioning, CI/CD pipelines, container orchestration, and system observability for production cloud environments.",
-  "skills": [
-    { "id": "linux", "name": "Linux & Bash Administration", "importance": 0.95, "required_level": 4, "phase": 1 },
-    { "id": "networking", "name": "Networking & Protocols", "importance": 0.90, "required_level": 3, "phase": 1 },
-    { "id": "git", "name": "Git & Source Control", "importance": 0.90, "required_level": 3, "phase": 1 },
-    { "id": "docker", "name": "Docker & Containerization", "importance": 0.95, "required_level": 4, "phase": 2 },
-    { "id": "cicd", "name": "CI/CD Pipelines (GitHub Actions / Jenkins)", "importance": 0.92, "required_level": 4, "phase": 2 },
-    { "id": "kubernetes", "name": "Kubernetes Orchestration", "importance": 0.90, "required_level": 4, "phase": 3 },
-    { "id": "terraform", "name": "Infrastructure as Code (Terraform)", "importance": 0.88, "required_level": 3, "phase": 3 },
-    { "id": "observability", "name": "Monitoring & Observability (Prometheus / Grafana)", "importance": 0.85, "required_level": 3, "phase": 4 }
+  "description": "Automate cloud infrastructure provisioning, CI/CD pipelines, container orchestration, GitOps, system security, and real-time observability using Docker, Kubernetes, Terraform, AWS/GCP, Helm, and Prometheus/Grafana.",
+  "aliases": [
+    "devops engineer",
+    "devops",
+    "cloud devops engineer",
+    "sre",
+    "site reliability engineer",
+    "cloud engineer"
   ],
-  "prerequisites": [
-    ["linux", "docker"],
-    ["networking", "docker"],
-    ["git", "cicd"],
-    ["docker", "kubernetes"],
-    ["docker", "terraform"],
-    ["kubernetes", "observability"]
+  "estimatedMonths": 7,
+  "estimatedHours": 220,
+  "nodes": [
+    {
+      "id": "linux-shell",
+      "nodeId": "linux-shell",
+      "title": "Linux System Administration & Shell Scripting",
+      "description": "Master Linux CLI, file permissions, systemd process management, SSH keys, Bash scripting, and system performance monitoring.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "networking-security",
+      "nodeId": "networking-security",
+      "title": "Networking & Security Fundamentals",
+      "description": "Understand OSI Model, TCP/IP, DNS, HTTP/HTTPS protocols, SSL/TLS certificates, firewalls (iptables/ufw), and CIDR subnetting.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "git-github",
+      "nodeId": "git-github",
+      "title": "Git & GitHub Version Control",
+      "description": "Master Git branching strategies (GitFlow/Trunk-based), pull requests, merge conflict resolution, and GitHub collaboration.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": []
+    },
+    {
+      "id": "cloud-fundamentals",
+      "nodeId": "cloud-fundamentals",
+      "title": "Cloud Computing Fundamentals (AWS / GCP)",
+      "description": "Master cloud infrastructure concepts (IaaS, PaaS), EC2/Compute Engine, S3/Cloud Storage, IAM access management, and VPC networks.",
+      "type": "foundation",
+      "difficulty": "beginner",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "linux-shell",
+        "networking-security"
+      ]
+    },
+    {
+      "id": "scripting-python-go",
+      "nodeId": "scripting-python-go",
+      "title": "Python / Go for DevOps Automation",
+      "description": "Write automation scripts, interact with cloud SDKs (boto3), REST APIs, and CLI tooling using Python or Go.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "linux-shell"
+      ]
+    },
+    {
+      "id": "docker-core",
+      "nodeId": "docker-core",
+      "title": "Docker & Containerization Engine",
+      "description": "Master Docker CLI, multi-stage Dockerfiles, image optimization, container networking, volumes, and Docker Compose.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "linux-shell",
+        "networking-security"
+      ]
+    },
+    {
+      "id": "cicd-pipelines",
+      "nodeId": "cicd-pipelines",
+      "title": "CI/CD Automation (GitHub Actions / Jenkins)",
+      "description": "Architect continuous integration and continuous deployment pipelines using GitHub Actions, GitLab CI, or Jenkins.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.98,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "git-github",
+        "docker-core"
+      ]
+    },
+    {
+      "id": "webservers-reverse-proxy",
+      "nodeId": "webservers-reverse-proxy",
+      "title": "Web Servers & Reverse Proxies (Nginx)",
+      "description": "Configure Nginx / HAProxy for load balancing, reverse proxying, SSL termination, and static asset delivery.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "linux-shell",
+        "networking-security"
+      ]
+    },
+    {
+      "id": "terraform-iac",
+      "nodeId": "terraform-iac",
+      "title": "Infrastructure as Code (Terraform)",
+      "description": "Provision declarative cloud infrastructure with Terraform HCL syntax, state management, modules, and providers.",
+      "type": "core",
+      "difficulty": "intermediate",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "cloud-fundamentals"
+      ]
+    },
+    {
+      "id": "ansible-config-mgmt",
+      "nodeId": "ansible-config-mgmt",
+      "title": "Configuration Management (Ansible)",
+      "description": "Automate server configuration and software installation using Ansible playbooks, roles, inventories, and SSH-agentless orchestration.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "linux-shell",
+        "terraform-iac"
+      ]
+    },
+    {
+      "id": "kubernetes-core",
+      "nodeId": "kubernetes-core",
+      "title": "Kubernetes Cluster & Container Orchestration",
+      "description": "Master Pods, Deployments, ReplicaSets, Services (ClusterIP/LoadBalancer), Ingress, Namespaces, ConfigMaps, and Secrets.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "docker-core",
+        "cloud-fundamentals"
+      ]
+    },
+    {
+      "id": "helm-package-manager",
+      "nodeId": "helm-package-manager",
+      "title": "Kubernetes Package Management (Helm)",
+      "description": "Template Kubernetes manifests into reusable Helm charts, manage values files, chart repositories, and release upgrades.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "kubernetes-core"
+      ]
+    },
+    {
+      "id": "cloud-networking-security",
+      "nodeId": "cloud-networking-security",
+      "title": "Cloud VPC & Security Architecture",
+      "description": "Design AWS/GCP VPC networks, Public/Private subnets, NAT Gateways, Security Groups, IAM policies, and KMS data encryption.",
+      "type": "intermediate",
+      "difficulty": "advanced",
+      "importance": 0.94,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "cloud-fundamentals",
+        "networking-security"
+      ]
+    },
+    {
+      "id": "container-security",
+      "nodeId": "container-security",
+      "title": "Container Registries & Vulnerability Scanning",
+      "description": "Manage Docker Registries (ECR/Docker Hub), image security scanning (Trivy), secret scanning, and container runtime security.",
+      "type": "intermediate",
+      "difficulty": "intermediate",
+      "importance": 0.9,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "docker-core"
+      ]
+    },
+    {
+      "id": "prometheus-grafana",
+      "nodeId": "prometheus-grafana",
+      "title": "Metrics & Monitoring (Prometheus & Grafana)",
+      "description": "Collect infrastructure and application metrics, write PromQL queries, configure Node Exporter, Grafana dashboards, and Alertmanager.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.96,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "kubernetes-core",
+        "linux-shell"
+      ]
+    },
+    {
+      "id": "logging-loki-elk",
+      "nodeId": "logging-loki-elk",
+      "title": "Centralized Logging (Loki / ELK Stack)",
+      "description": "Aggregate logs using Fluentd/Promtail, configure Grafana Loki or Elasticsearch/Logstash/Kibana (ELK), and build log search dashboards.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.92,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "kubernetes-core",
+        "prometheus-grafana"
+      ]
+    },
+    {
+      "id": "gitops-argocd",
+      "nodeId": "gitops-argocd",
+      "title": "GitOps & Continuous Delivery (ArgoCD)",
+      "description": "Implement GitOps practices, continuous delivery with ArgoCD or FluxCD, and automated Kubernetes state synchronization from Git repositories.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 0.95,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "kubernetes-core",
+        "helm-package-manager",
+        "cicd-pipelines"
+      ]
+    },
+    {
+      "id": "devops-capstone-project",
+      "nodeId": "devops-capstone-project",
+      "title": "Production Cloud DevOps Capstone",
+      "description": "Provision an EKS/GKE Kubernetes cluster with Terraform, deploy microservices with Helm, setup GitHub Actions CI/CD, and configure Prometheus/Grafana.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "terraform-iac",
+        "kubernetes-core",
+        "helm-package-manager",
+        "prometheus-grafana",
+        "gitops-argocd"
+      ]
+    },
+    {
+      "id": "portfolio",
+      "nodeId": "portfolio",
+      "title": "DevOps Portfolio & Architecture Showcase",
+      "description": "Package Terraform codebases, GitHub Actions CI/CD workflows, Helm charts, architecture diagrams, and live monitoring dashboards.",
+      "type": "capstone",
+      "difficulty": "advanced",
+      "importance": 1.0,
+      "recommended_level": 4,
+      "requiredLevel": 4,
+      "prerequisites": [
+        "devops-capstone-project"
+      ]
+    }
   ],
-  "recommended_skills": ["AWS / GCP", "Ansible", "Helm", "Service Mesh"],
-  "interests": ["Infrastructure", "Cloud Computing", "DevOps"],
-  "education": ["Computer Science", "Information Technology"],
-  "experience_levels": ["Junior", "Mid", "Senior"],
-  "typical_duration_months": 7
+  "edges": [
+    {
+      "source": "linux-shell",
+      "target": "cloud-fundamentals",
+      "type": "prerequisite"
+    },
+    {
+      "source": "networking-security",
+      "target": "cloud-fundamentals",
+      "type": "prerequisite"
+    },
+    {
+      "source": "linux-shell",
+      "target": "scripting-python-go",
+      "type": "prerequisite"
+    },
+    {
+      "source": "linux-shell",
+      "target": "docker-core",
+      "type": "prerequisite"
+    },
+    {
+      "source": "networking-security",
+      "target": "docker-core",
+      "type": "prerequisite"
+    },
+    {
+      "source": "git-github",
+      "target": "cicd-pipelines",
+      "type": "prerequisite"
+    },
+    {
+      "source": "docker-core",
+      "target": "cicd-pipelines",
+      "type": "prerequisite"
+    },
+    {
+      "source": "linux-shell",
+      "target": "webservers-reverse-proxy",
+      "type": "prerequisite"
+    },
+    {
+      "source": "networking-security",
+      "target": "webservers-reverse-proxy",
+      "type": "prerequisite"
+    },
+    {
+      "source": "cloud-fundamentals",
+      "target": "terraform-iac",
+      "type": "prerequisite"
+    },
+    {
+      "source": "linux-shell",
+      "target": "ansible-config-mgmt",
+      "type": "prerequisite"
+    },
+    {
+      "source": "terraform-iac",
+      "target": "ansible-config-mgmt",
+      "type": "prerequisite"
+    },
+    {
+      "source": "docker-core",
+      "target": "kubernetes-core",
+      "type": "prerequisite"
+    },
+    {
+      "source": "cloud-fundamentals",
+      "target": "kubernetes-core",
+      "type": "prerequisite"
+    },
+    {
+      "source": "kubernetes-core",
+      "target": "helm-package-manager",
+      "type": "prerequisite"
+    },
+    {
+      "source": "cloud-fundamentals",
+      "target": "cloud-networking-security",
+      "type": "prerequisite"
+    },
+    {
+      "source": "networking-security",
+      "target": "cloud-networking-security",
+      "type": "prerequisite"
+    },
+    {
+      "source": "docker-core",
+      "target": "container-security",
+      "type": "prerequisite"
+    },
+    {
+      "source": "kubernetes-core",
+      "target": "prometheus-grafana",
+      "type": "prerequisite"
+    },
+    {
+      "source": "linux-shell",
+      "target": "prometheus-grafana",
+      "type": "prerequisite"
+    },
+    {
+      "source": "kubernetes-core",
+      "target": "logging-loki-elk",
+      "type": "prerequisite"
+    },
+    {
+      "source": "prometheus-grafana",
+      "target": "logging-loki-elk",
+      "type": "prerequisite"
+    },
+    {
+      "source": "kubernetes-core",
+      "target": "gitops-argocd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "helm-package-manager",
+      "target": "gitops-argocd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "cicd-pipelines",
+      "target": "gitops-argocd",
+      "type": "prerequisite"
+    },
+    {
+      "source": "terraform-iac",
+      "target": "devops-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "kubernetes-core",
+      "target": "devops-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "helm-package-manager",
+      "target": "devops-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "prometheus-grafana",
+      "target": "devops-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "gitops-argocd",
+      "target": "devops-capstone-project",
+      "type": "prerequisite"
+    },
+    {
+      "source": "devops-capstone-project",
+      "target": "portfolio",
+      "type": "prerequisite"
+    }
+  ]
 }

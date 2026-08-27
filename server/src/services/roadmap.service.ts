@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Roadmap, IRoadmap } from '../models/Roadmap';
 import { Progress } from '../models/Progress';
 import { LearnerProfile } from '../models/LearnerProfile';
@@ -83,9 +84,20 @@ export class RoadmapService {
       throw ApiError.badRequest('Learner profile is required to generate a learning roadmap.');
     }
 
-    const targetCareer = (targetCareerInput || profile.targetCareer || '').trim();
+    let targetCareer = (targetCareerInput || profile.targetCareer || (profile as any).targetCareerGoal || '').trim();
     if (!targetCareer) {
-      throw ApiError.badRequest('Target career is required to generate a learning roadmap.');
+      try {
+        const topRecs = await recommendationService.getRecommendations(userId);
+        if (topRecs && topRecs.length > 0) {
+          targetCareer = topRecs[0].career;
+        }
+      } catch {
+        // fallback
+      }
+    }
+
+    if (!targetCareer) {
+      targetCareer = 'Frontend Developer';
     }
 
     console.log(`[ROADMAP] requested career: ${targetCareerInput || profile.targetCareer}`);
@@ -130,10 +142,10 @@ export class RoadmapService {
     try {
       pythonRoadmap = await pythonAIService.generateRoadmapStructure(profile.toObject(), targetCareer);
       if (pythonRoadmap && pythonRoadmap.success === false) {
-        throw ApiError.badRequest(pythonRoadmap.message || pythonRoadmap.error || `No dataset coverage found for career '${targetCareer}'.`);
+        console.warn(`[RoadmapService] Python service returned success=false for '${targetCareer}', engaging Gemini dynamic fallback.`);
+        pythonRoadmap = null;
       }
     } catch (err: any) {
-      if (err.statusCode || err.status || err.isOperational) throw err;
       console.warn(`[RoadmapService] Python microservice fallback: ${err.message}`);
     }
 
@@ -170,7 +182,7 @@ export class RoadmapService {
     const lowerTarget = targetCareer.toLowerCase();
     const isNonTech = nonTechRoles.some(r => lowerTarget.includes(r));
     const allSkillsStr = JSON.stringify(pythonRoadmap.phases).toLowerCase();
-    
+
     if (isNonTech && (allSkillsStr.includes('pytorch') || allSkillsStr.includes('linear algebra') || allSkillsStr.includes('react.js'))) {
       throw ApiError.badRequest(`CAREER_ROADMAP_MISMATCH: Non-tech career '${targetCareer}' erroneously contains software development skills.`);
     }
@@ -191,9 +203,9 @@ export class RoadmapService {
 
     console.log(`[ROADMAP] final roadmap career: ${pythonRoadmap.careerTitle || targetCareer}`);
 
-    // Deactivate previous active roadmaps for this target career
+    // Deactivate all previous active roadmaps for this user so only the new career roadmap is active
     await Roadmap.updateMany(
-      { userId, targetCareer, status: 'active' },
+      { userId, status: 'active' },
       { $set: { status: 'archived' } }
     );
 
@@ -230,14 +242,23 @@ export class RoadmapService {
             rating: r.rating || 4.8,
           }));
 
+        const rawMilestones = Array.isArray(phase.milestones) ? phase.milestones : [];
+        const cleanMilestones = rawMilestones.map((m: any, mIdx: number) => ({
+          ...m,
+          order: typeof m.order === 'number' ? m.order : mIdx + 1,
+        }));
+
         return {
           ...phase,
+          milestones: cleanMilestones,
           resources: cleanRes,
         };
       });
     };
 
     const sanitizedPhases = sanitizeVerifiedResources(pythonRoadmap.phases || []);
+
+    console.log(`[ROADMAP_GENERATION] careerId=${pythonRoadmap.career_id || targetCareer} profileVersion=${profile.profileVersion || 1} masteredSkills=${(pythonRoadmap.masteredSkills || []).length} missingSkills=${(pythonRoadmap.missingSkills || []).length}`);
 
     // Create new Roadmap
     const roadmap = await Roadmap.create({
@@ -258,8 +279,17 @@ export class RoadmapService {
       edges: pythonRoadmap.edges || [],
       phases: sanitizedPhases,
       aiEnrichment: enrichment,
+      profileVersion: profile.profileVersion || 1,
+      isStale: false,
       status: 'active',
     });
+
+    console.log(`[ROADMAP_SAVED] roadmapId=${roadmap._id} careerId=${roadmap.careerId} profileVersion=${roadmap.profileVersion}`);
+
+    // Synchronize active career in LearnerProfile
+    profile.targetCareer = pythonRoadmap.careerTitle || targetCareer;
+    profile.targetCareerId = pythonRoadmap.career_id || targetCareer.toLowerCase();
+    await profile.save();
 
     // Auto-create initial Progress documents for milestones
     if (roadmap.phases && Array.isArray(roadmap.phases)) {
@@ -288,21 +318,72 @@ export class RoadmapService {
   }
 
   async getUserRoadmaps(userId: string): Promise<IRoadmap[]> {
+    const profile = await LearnerProfile.findOne({ userId });
+    let userTargetCareer = (profile?.targetCareer || (profile as any)?.targetCareerGoal || '').trim();
+
+    if (!userTargetCareer) {
+      try {
+        const topRecs = await recommendationService.getRecommendations(userId);
+        if (topRecs && topRecs.length > 0) {
+          userTargetCareer = topRecs[0].career;
+        }
+      } catch {
+        // fallback
+      }
+    }
+
+    const normalizeCareerKey = (str: string): string => {
+      return (str || '').toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
+    };
+
     let roadmaps = await Roadmap.find({ userId }).sort({ createdAt: -1 });
+
+    if (userTargetCareer) {
+      const normTarget = normalizeCareerKey(userTargetCareer);
+
+      let matchingRoadmap: any = roadmaps.find((r) => {
+        const rTitle = normalizeCareerKey(r.targetCareer || r.title || '');
+        const rResolved = normalizeCareerKey((r as any).resolvedCareer || '');
+        const rCareerId = normalizeCareerKey((r as any).careerId || '');
+        const rReq = normalizeCareerKey((r as any).requestedCareer || '');
+        return rTitle === normTarget || rResolved === normTarget || rCareerId === normTarget || rReq === normTarget || rTitle.includes(normTarget) || normTarget.includes(rTitle);
+      });
+
+      if (!matchingRoadmap) {
+        try {
+          matchingRoadmap = await this.generateRoadmap(userId, userTargetCareer);
+          roadmaps = await Roadmap.find({ userId }).sort({ createdAt: -1 });
+        } catch (err) {
+          console.warn('[RoadmapService] Error auto-generating roadmap for userTargetCareer:', err);
+        }
+      }
+
+      if (matchingRoadmap) {
+        if (matchingRoadmap.status !== 'active') {
+          await Roadmap.updateMany({ userId }, { $set: { status: 'archived' } });
+          matchingRoadmap.status = 'active';
+          await matchingRoadmap.save();
+
+          roadmaps.forEach((r) => {
+            if (r._id.toString() === matchingRoadmap!._id.toString()) {
+              r.status = 'active';
+            } else {
+              r.status = 'archived';
+            }
+          });
+        }
+      }
+    }
+
     if (roadmaps.length === 0) {
       try {
-        const generated = await this.generateRoadmap(userId);
+        const generated = await this.generateRoadmap(userId, userTargetCareer || undefined);
         return [generated];
       } catch (err) {
         console.warn('[RoadmapService] Auto-generating roadmap error:', err);
         return [];
       }
     }
-
-    // Deduplicate roadmaps by normalized career key so only 1 roadmap per field is displayed
-    const normalizeCareerKey = (str: string): string => {
-      return (str || '').toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-    };
 
     const seenCareers = new Set<string>();
     const uniqueRoadmaps: typeof roadmaps = [];
@@ -315,6 +396,8 @@ export class RoadmapService {
       }
     }
 
+    // Sort active roadmap to top so active goal is selected first
+    uniqueRoadmaps.sort((a, b) => (b.status === 'active' ? 1 : 0) - (a.status === 'active' ? 1 : 0));
     roadmaps = uniqueRoadmaps;
 
     // Ensure graph nodes and edges are populated for stored roadmaps
@@ -331,17 +414,76 @@ export class RoadmapService {
   }
 
   async getRoadmapById(id: string, userId: string): Promise<IRoadmap> {
-    const roadmap = id === 'active'
-      ? await Roadmap.findOne({ userId, status: 'active' }).sort({ createdAt: -1 })
-      : await Roadmap.findOne({ _id: id, userId });
+    const profile = await LearnerProfile.findOne({ userId });
+    let userTargetCareer = (profile?.targetCareer || (profile as any)?.targetCareerGoal || '').trim();
 
-    let result = roadmap;
+    if (!userTargetCareer) {
+      try {
+        const topRecs = await recommendationService.getRecommendations(userId);
+        if (topRecs && topRecs.length > 0) {
+          userTargetCareer = topRecs[0].career;
+        }
+      } catch {
+        // fallback
+      }
+    }
+
+    const normTarget = userTargetCareer ? userTargetCareer.toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim() : '';
+    const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
+
+    let result: IRoadmap | null = null;
+
+    if (id === 'active') {
+      result = await Roadmap.findOne({ userId, status: 'active' }).sort({ updatedAt: -1, createdAt: -1 });
+
+      if (userTargetCareer) {
+        const activeTarget = (result?.targetCareer || result?.title || result?.careerId || '').toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
+
+        if (!result || (!activeTarget.includes(normTarget) && !normTarget.includes(activeTarget))) {
+          const targetMatch = await Roadmap.findOne({
+            userId,
+            $or: [
+              { targetCareer: new RegExp(`^${userTargetCareer}$`, 'i') },
+              { careerId: normTarget.replace(/\s+/g, '-') },
+              { title: new RegExp(userTargetCareer, 'i') }
+            ]
+          }).sort({ updatedAt: -1 });
+
+          if (targetMatch) {
+            await Roadmap.updateMany({ userId }, { $set: { status: 'archived' } });
+            targetMatch.status = 'active';
+            await targetMatch.save();
+            result = targetMatch;
+          } else {
+            result = await this.generateRoadmap(userId, userTargetCareer);
+          }
+        }
+      }
+    } else if (isValidObjectId) {
+      result = await Roadmap.findOne({ _id: id, userId });
+    }
+
     if (!result) {
-      result = await Roadmap.findOne({ userId }).sort({ createdAt: -1 });
+      result = await Roadmap.findOne({ userId, $or: [{ careerId: id }, { targetCareer: id }] }).sort({ updatedAt: -1 });
+    }
+
+    if (!result) {
+      result = await Roadmap.findOne({ userId, status: 'active' }).sort({ updatedAt: -1, createdAt: -1 });
+    }
+
+    if (!result) {
+      result = await Roadmap.findOne({ userId }).sort({ updatedAt: -1, createdAt: -1 });
     }
 
     if (!result) {
       throw ApiError.notFound('Roadmap not found.');
+    }
+
+    // Check if roadmap is stale due to profile update
+    if (profile && (result.profileVersion || 1) < (profile.profileVersion || 1)) {
+      result.isStale = true;
+    } else {
+      result.isStale = false;
     }
 
     // Ensure graph nodes and edges are populated for stored roadmap

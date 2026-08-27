@@ -1,6 +1,8 @@
 import { Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
 import { pythonAIService } from '../services/python-ai.service';
 import { learnerStateAdapterService } from '../services/learner-state-adapter.service';
+import { LearnerProfile } from '../models/LearnerProfile';
 import { ApiResponse } from '../utils/ApiResponse';
 import { ApiError } from '../utils/ApiError';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
@@ -29,6 +31,22 @@ export const generateLearningPath = async (
 
     if (!goal || typeof goal !== 'string' || !goal.trim()) {
       throw ApiError.badRequest('A valid goal string is required.');
+    }
+
+    const cleanGoal = goal.trim();
+
+    // Synchronize target career into MongoDB LearnerProfile if user is authenticated
+    const isValidObjectId = mongoose.Types.ObjectId.isValid(userId);
+    if (isValidObjectId) {
+      try {
+        await LearnerProfile.updateOne(
+          { userId },
+          { $set: { targetCareer: cleanGoal } },
+          { upsert: false }
+        );
+      } catch (profileErr: any) {
+        logger.warn(`[LearningPathController] Could not update targetCareer in profile: ${profileErr.message}`);
+      }
     }
 
     const mongoLearner = await learnerStateAdapterService.buildFastAPILearnerContext(userId);
@@ -61,8 +79,7 @@ export const generateLearningPath = async (
     };
 
     logger.info(
-      `=== EXPRESS LEARNING PATH DIAGNOSTIC === requestId: ${requestId}, userId: ${userId}, goal: "${goal.trim()}", input_gaps_count: ${
-        Array.isArray(skill_gaps) ? skill_gaps.length : 0
+      `=== EXPRESS LEARNING PATH DIAGNOSTIC === requestId: ${requestId}, userId: ${userId}, goal: "${goal.trim()}", input_gaps_count: ${Array.isArray(skill_gaps) ? skill_gaps.length : 0
       }`
     );
 
@@ -115,7 +132,7 @@ export const completeCourse = async (
 ): Promise<void> => {
   const startTime = Date.now();
   const requestId = getRequestId(req);
-  const userId = req.user?._id || req.body?.learner?.id || req.body?.learner?.user_id;
+  const userId = req.user?._id?.toString() || (req.user as any)?.id || req.body?.learner?.id || req.body?.learner?.user_id;
   const courseId = req.params.courseId as string;
 
   try {
@@ -123,21 +140,23 @@ export const completeCourse = async (
       throw ApiError.badRequest('A valid courseId parameter is required.');
     }
 
-    if (!userId) {
+    if (!userId && !req.body?.learner) {
       throw ApiError.badRequest('A valid learner object or authenticated session is required.');
     }
 
-    const mongoLearner = await learnerStateAdapterService.buildFastAPILearnerContext(userId);
+    const effectiveUserId = userId || 'guest_user';
+
+    const mongoLearner = await learnerStateAdapterService.buildFastAPILearnerContext(effectiveUserId);
     const result = await pythonAIService.completeCourse(courseId, { learner: mongoLearner });
 
-    if (result && result.success && userId) {
-      await learnerStateAdapterService.syncFastAPILearnerResponse(userId, result);
+    if (effectiveUserId) {
+      await learnerStateAdapterService.syncFastAPILearnerResponse(effectiveUserId, result || {}, { type: 'course', id: courseId });
     }
 
     const durationMs = Date.now() - startTime;
     logger.structured('info', {
       requestId,
-      userId,
+      userId: effectiveUserId,
       operation: 'course_complete',
       downstreamEndpoint: `/courses/${encodeURIComponent(courseId)}/complete`,
       durationMs,
@@ -172,7 +191,7 @@ export const completeProject = async (
 ): Promise<void> => {
   const startTime = Date.now();
   const requestId = getRequestId(req);
-  const userId = req.user?._id || req.body?.learner?.id || req.body?.learner?.user_id;
+  const userId = req.user?._id?.toString() || (req.user as any)?.id || req.body?.learner?.id || req.body?.learner?.user_id;
   const projectId = req.params.projectId as string;
 
   try {
@@ -180,21 +199,23 @@ export const completeProject = async (
       throw ApiError.badRequest('A valid projectId parameter is required.');
     }
 
-    if (!userId) {
+    if (!userId && !req.body?.learner) {
       throw ApiError.badRequest('A valid learner object or authenticated session is required.');
     }
 
-    const mongoLearner = await learnerStateAdapterService.buildFastAPILearnerContext(userId);
+    const effectiveUserId = userId || 'guest_user';
+
+    const mongoLearner = await learnerStateAdapterService.buildFastAPILearnerContext(effectiveUserId);
     const result = await pythonAIService.completeProject(projectId, { learner: mongoLearner });
 
-    if (result && result.success && userId) {
-      await learnerStateAdapterService.syncFastAPILearnerResponse(userId, result);
+    if (effectiveUserId) {
+      await learnerStateAdapterService.syncFastAPILearnerResponse(effectiveUserId, result || {}, { type: 'project', id: projectId });
     }
 
     const durationMs = Date.now() - startTime;
     logger.structured('info', {
       requestId,
-      userId,
+      userId: effectiveUserId,
       operation: 'project_complete',
       downstreamEndpoint: `/projects/${encodeURIComponent(projectId)}/complete`,
       durationMs,
@@ -229,7 +250,7 @@ export const submitAssessment = async (
 ): Promise<void> => {
   const startTime = Date.now();
   const requestId = getRequestId(req);
-  const userId = req.user?._id || req.body?.learner?.id || req.body?.learner?.user_id;
+  const userId = req.user?._id?.toString() || (req.user as any)?.id || req.body?.learner?.id || req.body?.learner?.user_id;
   const assessmentId = req.params.assessmentId as string;
 
   try {
@@ -243,19 +264,21 @@ export const submitAssessment = async (
       throw ApiError.badRequest('A valid numerical score between 0 and 100 is required.');
     }
 
-    if (!userId) {
+    if (!userId && !req.body?.learner) {
       throw ApiError.badRequest('A valid learner object or authenticated session is required.');
     }
 
-    const mongoLearner = await learnerStateAdapterService.buildFastAPILearnerContext(userId);
+    const effectiveUserId = userId || 'guest_user';
+
+    const mongoLearner = await learnerStateAdapterService.buildFastAPILearnerContext(effectiveUserId);
     const result = await pythonAIService.submitAssessment(assessmentId, {
       learner: mongoLearner,
       score,
       user_answers: user_answers && typeof user_answers === 'object' ? user_answers : {},
     });
 
-    if (result && result.success && userId) {
-      await learnerStateAdapterService.syncFastAPILearnerResponse(userId, result);
+    if (effectiveUserId) {
+      await learnerStateAdapterService.syncFastAPILearnerResponse(effectiveUserId, result || {}, { type: 'assessment', id: assessmentId, score });
     }
 
     const durationMs = Date.now() - startTime;

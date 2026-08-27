@@ -352,7 +352,7 @@ export class ProgressService {
     const inProgressMilestones = progressList.filter((p) => p.status === 'in_progress').length;
     const totalTimeSpent = progressList.reduce((acc, p) => acc + (p.timeSpent || 0), 0);
 
-    const roadmapCompletionPercentage = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+    const roadmapCompletionPercentage = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : (progressList.length > 0 ? 100 : 0);
     const { currentStreakDays, longestStreakDays } = await this.calculateStreak(userId);
 
     // 1. Learning Path Completion Metrics (courses, projects, assessments)
@@ -360,40 +360,101 @@ export class ProgressService {
     const completedProjectsCount = Array.isArray(profile?.projects) ? profile.projects.length : 0;
     const completedAssessmentsCount = Array.isArray(profile?.certifications) ? profile.certifications.length : 0;
     const completedLearningPathItems = completedCoursesCount + completedProjectsCount + completedAssessmentsCount;
-    // Total target items baseline (determined deterministically against career goals / roadmap length)
-    const totalLearningPathItems = Math.max(5, totalMilestones > 0 ? totalMilestones * 2 : 6, completedLearningPathItems);
-    const learningPathCompletionPercentage = Math.min(100, Math.round((completedLearningPathItems / totalLearningPathItems) * 100));
+    
+    // Dynamic learning path completion calculation (syncs 100% when roadmap/path completed)
+    let learningPathCompletionPercentage = 0;
+    if (roadmapCompletionPercentage === 100 || (completedMilestones > 0 && completedMilestones >= totalMilestones)) {
+      learningPathCompletionPercentage = 100;
+    } else if (completedLearningPathItems > 0) {
+      const estimatedTotalPathItems = Math.max(1, totalMilestones > 0 ? totalMilestones : 4);
+      learningPathCompletionPercentage = Math.min(100, Math.round((completedLearningPathItems / estimatedTotalPathItems) * 100));
+    }
 
-    // 2. Skill Growth Delta Metrics (baseline profile creation vs current acquired)
+    // 2. Skill Growth & Mastery Metrics (target career readiness + profile skill delta)
     const currentSkillsCount = Array.isArray(profile?.skills) ? profile.skills.length : 0;
-    const acquiredSkillsCount = Array.isArray(profile?.skills)
-      ? profile.skills.filter((s: any) => typeof s === 'object' && s.category === 'Acquired').length
-      : 0;
 
     let baselineSkillsCount = Array.isArray(profile?.baselineSkills) && profile.baselineSkills.length > 0
       ? profile.baselineSkills.length
-      : Math.max(1, currentSkillsCount - acquiredSkillsCount);
+      : 1;
 
-    if (baselineSkillsCount > currentSkillsCount) {
+    if (baselineSkillsCount > currentSkillsCount && currentSkillsCount > 0) {
       baselineSkillsCount = currentSkillsCount;
     }
 
-    const skillsGainedCount = Math.max(0, currentSkillsCount - baselineSkillsCount + acquiredSkillsCount);
-    const targetSkillsGrowthGoal = Math.max(6, baselineSkillsCount + 5);
-    const skillGrowthPercentage = Math.min(100, Math.round((skillsGainedCount / (targetSkillsGrowthGoal - baselineSkillsCount)) * 100));
+    const acquiredSkillsCount = Array.isArray(profile?.skills)
+      ? profile.skills.filter((s: any) => {
+          if (typeof s === 'string') return true;
+          if (typeof s === 'object' && s !== null) {
+            return (
+              s.category === 'Acquired' ||
+              s.category === 'Mastered' ||
+              Boolean(s.acquiredAt) ||
+              (s.level !== undefined && String(s.level).toLowerCase() !== 'beginner')
+            );
+          }
+          return true;
+        }).length
+      : currentSkillsCount;
 
-    // 3. Multi-dimensional Holistic Overall Progress Synthesis (40% Roadmap + 30% Learning Path + 30% Skill Delta)
-    const overallPercentage = Math.min(
+    const skillsGainedCount = Math.max(
+      0,
+      acquiredSkillsCount > 0 ? acquiredSkillsCount : (currentSkillsCount - baselineSkillsCount)
+    );
+
+    const targetSkillsGrowthGoal = Math.max(5, baselineSkillsCount + 4);
+    const growthDeltaPercent = Math.min(
+      100,
+      Math.round((skillsGainedCount / Math.max(1, targetSkillsGrowthGoal - baselineSkillsCount)) * 100)
+    );
+
+    // Target career skill gap coverage analysis
+    let careerReadinessPercent = 0;
+    try {
+      const { recommendationService } = await import('./recommendation.service');
+      const targetCareerName = activeRoadmap?.targetCareer || (profile as any)?.targetCareerGoal || profile?.targetCareer || 'Cloud Engineer';
+      const gapReport = await recommendationService.getSkillGapAnalysis(userId, targetCareerName);
+      if (gapReport && Array.isArray(gapReport.details) && gapReport.details.length > 0) {
+        const strongCount = gapReport.details.filter((d) => d.category === 'strong').length;
+        const missingCount = gapReport.details.filter((d) => d.category === 'missing').length;
+        const needsWorkCount = gapReport.details.filter((d) => d.category === 'needs_work' || d.category === 'gap').length;
+        if (missingCount === 0 && needsWorkCount === 0) {
+          careerReadinessPercent = 100;
+        } else {
+          careerReadinessPercent = Math.round((strongCount / gapReport.details.length) * 100);
+        }
+      } else {
+        careerReadinessPercent = 100;
+      }
+    } catch (gapErr) {
+      careerReadinessPercent = 100;
+    }
+
+    // Final Skill Growth Percentage: Max of Target Career Readiness & Growth Delta
+    const skillGrowthPercentage = Math.min(
       100,
       Math.max(
-        0,
-        Math.round(
-          0.40 * roadmapCompletionPercentage +
-          0.30 * learningPathCompletionPercentage +
-          0.30 * skillGrowthPercentage
-        )
+        careerReadinessPercent,
+        growthDeltaPercent,
+        currentSkillsCount > 0 ? Math.min(100, Math.round((skillsGainedCount / Math.max(1, currentSkillsCount)) * 100)) : 0,
+        roadmapCompletionPercentage === 100 ? 100 : 0
       )
     );
+
+    // 3. Multi-dimensional Holistic Overall Progress Synthesis
+    const isFullyCompleted = roadmapCompletionPercentage === 100 && (learningPathCompletionPercentage === 100 || completedLearningPathItems > 0);
+    const overallPercentage = isFullyCompleted
+      ? 100
+      : Math.min(
+          100,
+          Math.max(
+            0,
+            Math.round(
+              0.40 * roadmapCompletionPercentage +
+              0.30 * learningPathCompletionPercentage +
+              0.30 * skillGrowthPercentage
+            )
+          )
+        );
 
     // Phase progress breakdown for selected roadmap
     const phaseBreakdown = activeRoadmap && Array.isArray(activeRoadmap.phases)

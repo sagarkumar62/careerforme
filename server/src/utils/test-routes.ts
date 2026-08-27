@@ -158,9 +158,10 @@ async function runAllRouteTests() {
     // 4. Recommendation Endpoints
     console.log('\n--- 4. CAREER RECOMMENDATIONS & SKILL GAP ---');
     const recRes = await testClient.post('/recommendations', { targetCareer: 'AI Engineer' }, { headers });
-    if (recRes.status === 200 && recRes.data.data.recommendations.length > 0) {
-      createdRecommendationId = recRes.data.data._id;
-      log('POST /recommendations', 'PASS', `Generated ${recRes.data.data.recommendations.length} recommendations. ID: ${createdRecommendationId}`);
+    const recList = Array.isArray(recRes.data.data) ? recRes.data.data : (recRes.data.data?.recommendations || []);
+    if (recRes.status === 200 && recList.length > 0) {
+      createdRecommendationId = recList[0]._id || recList[0].id || recRes.data.data?._id || '';
+      log('POST /recommendations', 'PASS', `Generated ${recList.length} recommendations. ID: ${createdRecommendationId}`);
     } else {
       log('POST /recommendations', 'FAIL', `Status ${recRes.status}`, recRes.data);
     }

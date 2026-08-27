@@ -64,6 +64,8 @@ export class RecommendationService {
       throw ApiError.badRequest('Learner profile is required to generate career recommendations.');
     }
 
+    console.log(`[RECOMMENDATION] userId=${userId} profileVersion=${profile.profileVersion || 1} careerCount=${CAREERS_DATASET.length}`);
+
     // Try fetching authoritative scores from Python AI Service first
     try {
       const pythonRes = await pythonAIService.getRecommendations(profile.toObject());
@@ -270,46 +272,67 @@ export class RecommendationService {
     return recs;
   }
 
-  async getRecommendationById(id: string, userId: string): Promise<HybridRecommendation | null> {
+  async getRecommendationById(id: string, userId: string): Promise<any> {
+    const profile = await LearnerProfile.findOne({ userId });
+    const dsCareer = getCareerById(id) || CAREERS_DATASET[0];
+
+    // Compute personalized skill gaps & score breakdown using user's profile
+    const skillGapReport = await this.getSkillGapAnalysis(userId, dsCareer.title);
+    
+    // Match score & breakdown from top recommendations if present or dynamically derived
     const all = await this.getRecommendations(userId);
-    const found = all.find((r) => r.id === id || r.career.toLowerCase() === id.toLowerCase());
-    if (found) return found;
+    const found = all.find((r) => r.id.toLowerCase() === id.toLowerCase() || r.career.toLowerCase() === dsCareer.title.toLowerCase());
 
-    // Fallback: look up in full CAREERS_DATASET if not in top 3 user recommendations
-    const dsCareer = getCareerById(id);
-    if (dsCareer) {
-      return {
-        id: dsCareer.id,
-        career: dsCareer.title,
-        matchScore: 88,
-        confidence: 0.88,
-        difficulty: dsCareer.difficulty,
-        estimatedTransition: `${dsCareer.estimatedMonths} Months`,
-        description: dsCareer.description,
-        whyMatches: [
-          `Key core skill requirements align with modern industry standards.`,
-          `Strong career trajectory and high market demand in ${dsCareer.category}.`,
-          `Clear structured path for level-up and specialization.`
-        ],
-        skillGaps: dsCareer.requiredSkills.slice(0, 3),
-        keyResponsibilities: dsCareer.keyResponsibilities || [
-          'Design and maintain scalable technical architecture',
-          'Implement best practices and code quality standards',
-          'Collaborate across cross-functional engineering teams'
-        ],
-        scoreBreakdown: {
-          skillMatch: 85,
-          interestMatch: 80,
-          goalMatch: 90,
-          experienceMatch: 85,
-          educationMatch: 80,
-          semanticSimilarity: 85
-        },
-        averageSalary: dsCareer.averageSalary
-      };
-    }
+    const matchScore = found?.matchScore ?? 85;
+    const confidence = found?.confidence ?? 0.85;
+    const scoreBreakdown = found?.scoreBreakdown ?? {
+      skillMatch: 85,
+      interestMatch: 80,
+      goalMatch: 90,
+      experienceMatch: 85,
+      educationMatch: 80,
+      semanticSimilarity: 85,
+    };
 
-    return all[0] || null;
+    const whyMatches = found?.whyMatches || [
+      `Core skill requirements in ${dsCareer.title} align with your background in ${profile?.education || 'software development'}.`,
+      `Strong industry demand and clear progression trajectory in ${dsCareer.category}.`,
+      `Structured transition path tailored to your current skill matrix.`
+    ];
+
+    const missingSkills = skillGapReport.missingSkills || [];
+    const skillsToImprove = skillGapReport.skillsToImprove || [];
+    const strongSkills = skillGapReport.currentSkills || [];
+
+    const estimatedHours = missingSkills.length * 35 + skillsToImprove.length * 15 + 40;
+    const estimatedTransitionMonths = Math.max(2, Math.round(estimatedHours / 40));
+
+    return {
+      id: dsCareer.id,
+      careerId: dsCareer.id,
+      title: dsCareer.title,
+      career: dsCareer.title,
+      description: dsCareer.description,
+      difficulty: dsCareer.difficulty || 'Intermediate',
+      domain: dsCareer.category,
+      estimatedTransition: `${estimatedTransitionMonths} Months`,
+      averageSalary: dsCareer.averageSalary || '$135,000 / yr',
+      matchScore,
+      confidence,
+      scoreBreakdown,
+      whyMatches,
+      strengths: strongSkills.length > 0 ? strongSkills : ['Problem Solving', 'Engineering Fundamentals'],
+      skillGaps: missingSkills.concat(skillsToImprove).slice(0, 4),
+      skillGapReport,
+      keyResponsibilities: dsCareer.keyResponsibilities || [
+        'Architect and deliver end-to-end production systems',
+        'Optimize application performance and technical quality',
+        'Collaborate across cross-functional product and engineering teams'
+      ],
+      nextBestAction: missingSkills.length > 0
+        ? `Bridge your top skill gap in '${missingSkills[0]}' to accelerate transition into ${dsCareer.title}.`
+        : `Build a practical capstone project to demonstrate readiness for ${dsCareer.title}.`
+    };
   }
 
   async adaptRecommendations(userId: string, roadmapId?: string): Promise<HybridRecommendation[]> {
@@ -365,28 +388,26 @@ export class RecommendationService {
       };
     });
 
-    const strongSkills = details.filter((d) => d.category === 'strong').map((d) => d.name);
-    const missingSkills = details.filter((d) => d.category === 'missing').map((d) => d.name);
-    const skillsToImprove = details.filter((d) => d.category === 'needsWork').map((d) => d.name);
-    const priorityList = details
-      .filter((d) => d.priority === 'high' || d.priority === 'medium')
-      .map((d) => d.name);
+    const strong = details.filter((d) => d.category === 'strong').map((d) => d.name);
+    const needsWork = details.filter((d) => d.category === 'needsWork').map((d) => d.name);
+    const missing = details.filter((d) => d.category === 'missing').map((d) => d.name);
+
+    console.log(`[SKILL_GAP] careerId=${datasetCareer.id} strong=${strong.length} needsWork=${needsWork.length} missing=${missing.length}`);
 
     return {
       career: datasetCareer.title,
-      currentSkills: userSkillsNorm,
-      missingSkills: missingSkills.length > 0 ? missingSkills : ['Advanced Deployment'],
-      skillsToImprove: skillsToImprove,
-      priority: priorityList.length > 0 ? priorityList : missingSkills.slice(0, 3),
+      currentSkills: strong,
+      missingSkills: missing.length > 0 ? missing : ['Advanced Deployment'],
+      skillsToImprove: needsWork,
+      priority: details.filter((d) => d.priority === 'high' || d.priority === 'medium').map((d) => d.name),
       details,
       summary: {
-        strongCount: strongSkills.length,
-        needsWorkCount: skillsToImprove.length,
-        missingCount: missingSkills.length
+        strongCount: strong.length,
+        needsWorkCount: needsWork.length,
+        missingCount: missing.length
       }
     };
   }
 }
 
 export const recommendationService = new RecommendationService();
-

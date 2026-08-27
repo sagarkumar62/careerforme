@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { askAssistant } from '../controllers/assistant.controller';
-import { authenticate } from '../middleware/auth.middleware';
+import { optionalAuth } from '../middleware/auth.middleware';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(optionalAuth);
 
 router.post('/ask', askAssistant);
 

@@ -10,7 +10,7 @@ export const generateRoadmap = async (
 ): Promise<void> => {
   try {
     const userId = req.user!._id;
-    const { targetCareer } = req.body;
+    const targetCareer = (req.body.targetCareer || req.body.careerId || req.body.career || '').trim();
     const roadmap = await roadmapService.generateRoadmap(userId, targetCareer);
 
     try {
@@ -91,6 +91,35 @@ export const deleteRoadmap = async (
     const id = req.params.id as string;
     await roadmapService.deleteRoadmap(id, userId);
     res.status(200).json(new ApiResponse(200, null, 'Roadmap deleted successfully'));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getActiveRoadmap = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const userId = req.user!._id;
+    const roadmap = await roadmapService.getRoadmapById('active', userId);
+    res.status(200).json(new ApiResponse(200, roadmap, 'Active learning roadmap retrieved successfully'));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSupportedCareers = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { pythonAIService } = await import('../services/python-ai.service');
+    const health = await pythonAIService.getHealth();
+    const careers = health.loadedCareers || [];
+    res.status(200).json(new ApiResponse(200, { count: careers.length, careers }, 'Supported roadmap careers retrieved'));
   } catch (error) {
     next(error);
   }

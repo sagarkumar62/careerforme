@@ -3,6 +3,10 @@ import {
   User,
   LearnerProfile,
   CareerRecommendation,
+  CareerComparison,
+  AIProject,
+  AIResource,
+  FlowchartData,
   SkillGapAnalysis,
   Roadmap,
   UserProgress,
@@ -317,16 +321,63 @@ export const api = {
     return (res as any).profile || (res as LearnerProfile);
   },
 
-  // Recommendations
+  // Recommendations & AI Career Decision Engine
   async getRecommendations(): Promise<CareerRecommendation[]> {
     try {
-      const response = await apiClient.get('/recommendations');
-      const res = unwrapData<{ recommendations: CareerRecommendation[] } | CareerRecommendation[]>(response.data);
+      const response = await apiClient.get('/ai/careers/recommend');
+      const res = unwrapData<{ recommendations: CareerRecommendation[]; topMatch?: CareerRecommendation; alternatives?: CareerRecommendation[] }>(response.data);
       return (res as any).recommendations || (Array.isArray(res) ? res : []);
+    } catch (error) {
+      try {
+        const fallback = await apiClient.get('/recommendations');
+        const res = unwrapData<{ recommendations: CareerRecommendation[] } | CareerRecommendation[]>(fallback.data);
+        return (res as any).recommendations || (Array.isArray(res) ? res : []);
+      } catch (err) {
+        return [];
+      }
+    }
+  },
+
+  async compareCareers(careerIds: string[]): Promise<CareerComparison[]> {
+    try {
+      const response = await apiClient.post('/ai/careers/compare', { careerIds });
+      const res = unwrapData<{ comparisons: CareerComparison[] }>(response.data);
+      return (res as any).comparisons || [];
     } catch (error) {
       return [];
     }
   },
+
+  async getProjectRecommendations(selectedCareer?: string, missingSkills?: string[]): Promise<AIProject[]> {
+    try {
+      const response = await apiClient.post('/ai/projects/recommend', { selectedCareer, missingSkills });
+      const res = unwrapData<{ projects: AIProject[] }>(response.data);
+      return (res as any).projects || [];
+    } catch (error) {
+      return [];
+    }
+  },
+
+  async getResourceRecommendations(skills?: string[], selectedCareer?: string): Promise<AIResource[]> {
+    try {
+      const response = await apiClient.post('/ai/resources/recommend', { skills, selectedCareer });
+      const res = unwrapData<{ resources: AIResource[] }>(response.data);
+      return (res as any).resources || [];
+    } catch (error) {
+      return [];
+    }
+  },
+
+  async getFlowchartData(role: string): Promise<FlowchartData> {
+    try {
+      const response = await apiClient.post('/ai/flowchart/generate', { role });
+      const res = unwrapData<FlowchartData>(response.data);
+      return res || { nodes: [], edges: [] };
+    } catch (error) {
+      return { nodes: [], edges: [] };
+    }
+  },
+
 
   async getRecommendationById(id: string): Promise<CareerRecommendation | null> {
     try {
@@ -339,8 +390,8 @@ export const api = {
       const whyMatches = Array.isArray(raw.whyMatches) && raw.whyMatches.length > 0
         ? raw.whyMatches
         : Array.isArray(raw.reasons) && raw.reasons.length > 0
-        ? raw.reasons
-        : [
+          ? raw.reasons
+          : [
             'Core technical requirements align with your learning goals.',
             'High industry demand and strong advancement opportunities.',
             'Structured transition path tailored to your skillset.'
@@ -351,11 +402,11 @@ export const api = {
       const keyResponsibilities = Array.isArray(raw.keyResponsibilities) && raw.keyResponsibilities.length > 0
         ? raw.keyResponsibilities
         : [
-            'Design, build, and deploy production software components.',
-            'Collaborate with cross-functional product teams on technical specifications.',
-            'Optimize system performance, reliability, and security standards.',
-            'Maintain comprehensive documentation and unit test coverage.'
-          ];
+          'Design, build, and deploy production software components.',
+          'Collaborate with cross-functional product teams on technical specifications.',
+          'Optimize system performance, reliability, and security standards.',
+          'Maintain comprehensive documentation and unit test coverage.'
+        ];
 
       return {
         id: raw.id || id,
@@ -388,90 +439,90 @@ export const api = {
   normalizeRoadmap(rawRoadmap: any): Roadmap {
     const phases = Array.isArray(rawRoadmap?.phases)
       ? rawRoadmap.phases.map((phase: any, phaseIdx: number) => {
-          const milestones = Array.isArray(phase.milestones)
-            ? phase.milestones.map((m: any) => ({
-                id: m.milestoneId || m._id || m.id || `m_${phaseIdx}`,
-                title: m.title || 'Milestone',
-                description: m.description || '',
-                estimatedHours: m.estimatedHours ?? 10,
-                completed: m.completed ?? false,
-                resourceType: m.resources?.[0]?.type || 'Course',
-                resourceUrl: m.resources?.[0]?.url || '#'
+        const milestones = Array.isArray(phase.milestones)
+          ? phase.milestones.map((m: any) => ({
+            id: m.milestoneId || m._id || m.id || `m_${phaseIdx}`,
+            title: m.title || 'Milestone',
+            description: m.description || '',
+            estimatedHours: m.estimatedHours ?? 10,
+            completed: m.completed ?? false,
+            resourceType: m.resources?.[0]?.type || 'Course',
+            resourceUrl: m.resources?.[0]?.url || '#'
+          }))
+          : [];
+
+        let resources = Array.isArray(phase.milestones)
+          ? phase.milestones.flatMap((m: any) =>
+            Array.isArray(m.resources)
+              ? m.resources.map((r: any, rIdx: number) => ({
+                id: `${m.milestoneId || phaseIdx}_res_${rIdx}`,
+                title: r.title || 'Resource',
+                type: r.type || 'Course',
+                duration: m.estimatedHours ? `${m.estimatedHours}h` : '2h',
+                url: r.url || '#'
               }))
-            : [];
+              : []
+          )
+          : [];
 
-          let resources = Array.isArray(phase.milestones)
-            ? phase.milestones.flatMap((m: any) =>
-                Array.isArray(m.resources)
-                  ? m.resources.map((r: any, rIdx: number) => ({
-                      id: `${m.milestoneId || phaseIdx}_res_${rIdx}`,
-                      title: r.title || 'Resource',
-                      type: r.type || 'Course',
-                      duration: m.estimatedHours ? `${m.estimatedHours}h` : '2h',
-                      url: r.url || '#'
-                    }))
-                  : []
-              )
-            : [];
+        const primarySkill = phase.skills?.[0] || (Array.isArray(phase.skillsCovered) && phase.skillsCovered[0]) || rawRoadmap.targetCareer || 'Core';
 
-          const primarySkill = phase.skills?.[0] || (Array.isArray(phase.skillsCovered) && phase.skillsCovered[0]) || rawRoadmap.targetCareer || 'Core';
+        const hasVideo = resources.some((r: any) => r.type === 'Video');
+        const hasDocs = resources.some((r: any) => r.type === 'Docs' || r.type === 'Article');
+        const hasProject = resources.some((r: any) => r.type === 'Project');
 
-          const hasVideo = resources.some((r: any) => r.type === 'Video');
-          const hasDocs = resources.some((r: any) => r.type === 'Docs' || r.type === 'Article');
-          const hasProject = resources.some((r: any) => r.type === 'Project');
+        if (!hasVideo) {
+          resources.push({
+            id: `res_vid_${phaseIdx}`,
+            title: `${primarySkill} Video Course & Walkthrough`,
+            type: 'Video',
+            duration: '3h',
+            url: `https://www.youtube.com/results?search_query=${encodeURIComponent(primarySkill + ' course tutorial')}`
+          });
+        }
 
-          if (!hasVideo) {
-            resources.push({
-              id: `res_vid_${phaseIdx}`,
-              title: `${primarySkill} Video Course & Walkthrough`,
-              type: 'Video',
-              duration: '3h',
-              url: `https://www.youtube.com/results?search_query=${encodeURIComponent(primarySkill + ' course tutorial')}`
-            });
-          }
+        if (!hasDocs) {
+          resources.push({
+            id: `res_docs_${phaseIdx}`,
+            title: `${primarySkill} Official Documentation & Reference Guide`,
+            type: 'Docs',
+            duration: '1.5h',
+            url: 'https://devdocs.io/'
+          });
+        }
 
-          if (!hasDocs) {
-            resources.push({
-              id: `res_docs_${phaseIdx}`,
-              title: `${primarySkill} Official Documentation & Reference Guide`,
-              type: 'Docs',
-              duration: '1.5h',
-              url: 'https://devdocs.io/'
-            });
-          }
+        if (!hasProject) {
+          resources.push({
+            id: `res_proj_${phaseIdx}`,
+            title: `${phase.title || primarySkill} Practical Hands-On Project`,
+            type: 'Project',
+            duration: '5h',
+            url: `https://github.com/topics/${encodeURIComponent(primarySkill.toLowerCase().replace(/\s+/g, '-'))}`
+          });
+        }
 
-          if (!hasProject) {
-            resources.push({
-              id: `res_proj_${phaseIdx}`,
-              title: `${phase.title || primarySkill} Practical Hands-On Project`,
-              type: 'Project',
-              duration: '5h',
-              url: `https://github.com/topics/${encodeURIComponent(primarySkill.toLowerCase().replace(/\s+/g, '-'))}`
-            });
-          }
+        const completedCount = milestones.filter((m: any) => m.completed).length;
+        const isCompleted = milestones.length > 0 && completedCount === milestones.length;
+        const isCurrent = !isCompleted && phaseIdx === rawRoadmap.phases.findIndex((p: any) =>
+          Array.isArray(p.milestones) && p.milestones.some((m: any) => !m.completed)
+        );
 
-          const completedCount = milestones.filter((m: any) => m.completed).length;
-          const isCompleted = milestones.length > 0 && completedCount === milestones.length;
-          const isCurrent = !isCompleted && phaseIdx === rawRoadmap.phases.findIndex((p: any) =>
-            Array.isArray(p.milestones) && p.milestones.some((m: any) => !m.completed)
-          );
-
-          return {
-            id: phase.phaseId || phase._id || `phase_${phaseIdx}`,
-            phaseNumber: phaseIdx + 1,
-            title: phase.title || `Phase ${phaseIdx + 1}`,
-            summary: phase.description || phase.summary || '',
-            durationWeeks: phase.estimatedWeeks ?? phase.durationWeeks ?? 4,
-            skillsCovered: Array.isArray(phase.skills) ? phase.skills : [],
-            milestones,
-            resources,
-            isCompleted,
-            isCurrent,
-            progressPercent: milestones.length > 0
-              ? Math.round((completedCount / milestones.length) * 100)
-              : 0
-          };
-        })
+        return {
+          id: phase.phaseId || phase._id || `phase_${phaseIdx}`,
+          phaseNumber: phaseIdx + 1,
+          title: phase.title || `Phase ${phaseIdx + 1}`,
+          summary: phase.description || phase.summary || '',
+          durationWeeks: phase.estimatedWeeks ?? phase.durationWeeks ?? 4,
+          skillsCovered: Array.isArray(phase.skills) ? phase.skills : [],
+          milestones,
+          resources,
+          isCompleted,
+          isCurrent,
+          progressPercent: milestones.length > 0
+            ? Math.round((completedCount / milestones.length) * 100)
+            : 0
+        };
+      })
       : [];
 
     let nodes = Array.isArray(rawRoadmap.nodes) ? rawRoadmap.nodes : [];
@@ -564,6 +615,8 @@ export const api = {
       edges,
       phases,
       adaptiveEvents: Array.isArray(rawRoadmap.adaptiveEvents) ? rawRoadmap.adaptiveEvents : [],
+      profileVersion: rawRoadmap.profileVersion ?? 1,
+      isStale: rawRoadmap.isStale ?? false,
       updatedAt: rawRoadmap.updatedAt || new Date().toISOString()
     };
   },
@@ -589,6 +642,20 @@ export const api = {
       return this.normalizeRoadmap(rawRoadmap);
     } catch (error) {
       return null;
+    }
+  },
+
+  async getActiveRoadmap(): Promise<Roadmap | null> {
+    return this.getRoadmap('active');
+  },
+
+  async getSupportedCareers(): Promise<{ count: number; careers: string[] }> {
+    try {
+      const response = await apiClient.get('/roadmaps/supported-careers');
+      const res = unwrapData<{ count: number; careers: string[] }>(response.data);
+      return res || { count: 0, careers: [] };
+    } catch (error) {
+      return { count: 0, careers: [] };
     }
   },
 
@@ -704,14 +771,14 @@ export const api = {
 
       const recentActivity = Array.isArray(raw.recentActivity)
         ? raw.recentActivity.map((item: any, idx: number) => ({
-            id: item._id || item.id || `act_${idx}`,
-            title: item.title || (item.milestoneId ? `Activity on ${item.milestoneId}` : 'Learning activity recorded'),
-            type: item.type || (item.status === 'completed' ? 'Completed' : item.status === 'in_progress' ? 'In Progress' : 'Started'),
-            status: item.status || 'in_progress',
-            timestamp: item.updatedAt
-              ? new Date(item.updatedAt).toLocaleDateString('en-US', { weekday: 'short', hour: '2-digit', minute: '2-digit' })
-              : 'Recently'
-          }))
+          id: item._id || item.id || `act_${idx}`,
+          title: item.title || (item.milestoneId ? `Activity on ${item.milestoneId}` : 'Learning activity recorded'),
+          type: item.type || (item.status === 'completed' ? 'Completed' : item.status === 'in_progress' ? 'In Progress' : 'Started'),
+          status: item.status || 'in_progress',
+          timestamp: item.updatedAt
+            ? new Date(item.updatedAt).toLocaleDateString('en-US', { weekday: 'short', hour: '2-digit', minute: '2-digit' })
+            : 'Recently'
+        }))
         : [];
 
       return {
@@ -874,7 +941,11 @@ export const api = {
   },
 
   async sendAssistantMessage(content: string, conversationId?: string): Promise<{ conversationId: string; message: AIMessage }> {
-    const response = await apiClient.post('/conversation/message', { message: content, conversationId });
+    const payload: Record<string, any> = { message: content };
+    if (conversationId && conversationId !== 'new') {
+      payload.conversationId = conversationId;
+    }
+    const response = await apiClient.post('/conversation/message', payload);
     const res = unwrapData<any>(response.data);
 
     const replyObj = res?.message || res?.reply || res;
@@ -924,20 +995,24 @@ export const api = {
   },
 
   async completeCourse(
-    courseId: string
+    courseId: string,
+    learner?: any
   ): Promise<any> {
     const response = await apiClient.post(
-      `/courses/${encodeURIComponent(courseId)}/complete`
+      `/courses/${encodeURIComponent(courseId)}/complete`,
+      { learner: learner || { id: 'guest_user' } }
     );
 
     return unwrapData<any>(response.data);
   },
 
   async completeProject(
-    projectId: string
+    projectId: string,
+    learner?: any
   ): Promise<any> {
     const response = await apiClient.post(
-      `/projects/${encodeURIComponent(projectId)}/complete`
+      `/projects/${encodeURIComponent(projectId)}/complete`,
+      { learner: learner || { id: 'guest_user' } }
     );
 
     return unwrapData<any>(response.data);
@@ -946,13 +1021,14 @@ export const api = {
   async submitAssessment(
     assessmentId: string,
     score: number,
-    userAnswers: Record<string, any> = {}
+    metadata?: any
   ): Promise<any> {
     const response = await apiClient.post(
       `/assessments/${encodeURIComponent(assessmentId)}/submit`,
       {
         score,
-        user_answers: userAnswers
+        learner: { id: 'guest_user' },
+        ...(metadata || {}),
       }
     );
 

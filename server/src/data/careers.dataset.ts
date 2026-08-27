@@ -134,7 +134,7 @@ export const CAREERS_DATASET: CareerRequirement[] = [
     ]
   },
   {
-    id: 'fullstack-developer',
+    id: 'full-stack-developer',
     title: 'Full Stack Developer',
     category: 'Software Engineering',
     difficulty: 'Intermediate',
@@ -218,8 +218,8 @@ export const CAREERS_DATASET: CareerRequirement[] = [
     ]
   },
   {
-    id: 'mobile-developer',
-    title: 'Mobile Developer',
+    id: 'mobile-app-developer',
+    title: 'Mobile App Developer',
     category: 'Software Engineering',
     difficulty: 'Intermediate',
     description: 'Create high-performance native and cross-platform mobile applications for iOS and Android devices.',
@@ -272,8 +272,8 @@ export const CAREERS_DATASET: CareerRequirement[] = [
     ]
   },
   {
-    id: 'cloud-engineer',
-    title: 'Cloud Engineer',
+    id: 'cloud-architect',
+    title: 'Cloud Architect',
     category: 'Infrastructure',
     difficulty: 'Intermediate',
     description: 'Design and manage secure, resilient cloud architecture environments across major public cloud providers.',
@@ -299,8 +299,8 @@ export const CAREERS_DATASET: CareerRequirement[] = [
     ]
   },
   {
-    id: 'cybersecurity-analyst',
-    title: 'Cybersecurity Analyst',
+    id: 'security-analyst',
+    title: 'Security Analyst',
     category: 'Design & Security',
     difficulty: 'Intermediate',
     description: 'Monitor enterprise systems, perform vulnerability assessments, investigate security incidents, and harden defenses.',
@@ -326,8 +326,8 @@ export const CAREERS_DATASET: CareerRequirement[] = [
     ]
   },
   {
-    id: 'ui-ux-designer',
-    title: 'UI/UX Designer',
+    id: 'ux-designer',
+    title: 'UX Designer',
     category: 'Design & Security',
     difficulty: 'Entry',
     description: 'Research user personas, design intuitive wireframe prototypes, and establish cohesive design systems for applications.',
@@ -347,8 +347,7 @@ export const CAREERS_DATASET: CareerRequirement[] = [
     keyResponsibilities: [
       'Conduct user interviews, usability testing, and qualitative user research.',
       'Design interactive wireframes, component systems, and high-fidelity mockups in Figma.',
-      'Establish cohesive design design tokens, color palettes, and typography.',
-      'Collaborate with engineering teams to ensure pixel-perfect design implementation.'
+      'Establish cohesive design design tokens, color palettes, and typography.'
     ]
   },
   {
@@ -356,7 +355,7 @@ export const CAREERS_DATASET: CareerRequirement[] = [
     title: 'Commercial Pilot',
     category: 'Aviation & Aerospace',
     difficulty: 'Advanced',
-    description: 'Navigates and operates aircraft for commercial airlines, cargo services, and private charter flights.',
+    description: 'Operate commercial aircraft, perform navigation and flight planning, manage cockpit automation, and adhere to strict FAA safety regulations.',
     requiredSkills: [
       'Flight Navigation',
       'Aviation Regulations',
@@ -382,22 +381,22 @@ export const CAREERS_DATASET: CareerRequirement[] = [
 
 export function getCareerById(id: string): CareerRequirement | undefined {
   if (!id) return undefined;
-  const lower = id.toLowerCase();
-  let match = CAREERS_DATASET.find((c) => c.id === lower || c.title.toLowerCase() === lower);
+  const norm = id.toLowerCase().trim().replace(/[-_]/g, ' ').replace(/\s+/g, ' ');
+  const slugNorm = norm.replace(/\s+/g, '-');
+
+  // Exact ID or Slug or Title match
+  let match = CAREERS_DATASET.find((c) => {
+    const cIdNorm = c.id.toLowerCase().trim().replace(/[-_]/g, ' ').replace(/\s+/g, ' ');
+    const tNorm = c.title.toLowerCase().trim().replace(/[-_]/g, ' ').replace(/\s+/g, ' ');
+    return cIdNorm === norm || tNorm === norm || c.id === slugNorm;
+  });
+
   if (!match) {
-    if (lower.includes('pilot') || lower.includes('flight') || lower.includes('aviation')) {
-      return CAREERS_DATASET.find((c) => c.id === 'pilot');
-    }
-    if (lower.includes('web') || lower.includes('full stack') || lower.includes('fullstack') || lower.includes('software')) {
-      return CAREERS_DATASET.find((c) => c.id === 'fullstack-developer');
-    }
-    if (lower.includes('frontend') || lower.includes('front end')) {
-      return CAREERS_DATASET.find((c) => c.id === 'frontend-developer');
-    }
-    if (lower.includes('backend') || lower.includes('back end')) {
-      return CAREERS_DATASET.find((c) => c.id === 'backend-developer');
-    }
-    match = CAREERS_DATASET.find((c) => c.title.toLowerCase().includes(lower) || lower.includes(c.title.toLowerCase()));
+    match = CAREERS_DATASET.find((c) => {
+      const tNorm = c.title.toLowerCase().trim().replace(/[-_]/g, ' ').replace(/\s+/g, ' ');
+      return tNorm.includes(norm) || norm.includes(tNorm);
+    });
   }
+
   return match;
 }
