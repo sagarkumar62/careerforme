@@ -113,25 +113,107 @@ Located in `app/data/`:
 
 ---
 
-## 9. Local Development
+## 9. 🛠️ Complete AI Microservice Setup Guide
+
+Follow these step-by-step instructions to configure, run, and verify the Python FastAPI AI Microservice locally.
+
+---
+
+### 📋 Prerequisites
+
+* **Python**: `v3.10.x` or `v3.11.x` (`3.11.9` recommended)
+* **pip**: `v23.x+`
+
+---
+
+### 1️⃣ Virtual Environment Setup
+
+Navigate to the `ai-service/` directory and create a Python virtual environment:
 
 ```bash
-# Navigate to ai-service directory
 cd ai-service
 
-# Create virtual environment with Python 3.11
+# Create virtual environment named .venv
 python -m venv .venv
-.venv\Scripts\Activate.ps1   # Windows
-source .venv/bin/activate    # Linux/macOS
 
-# Install optimized requirements
+# Activate virtual environment
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+
+# Windows (Command Prompt):
+.venv\Scripts\activate.bat
+
+# Linux / macOS (Bash / Zsh):
+source .venv/bin/activate
+```
+
+---
+
+### 2️⃣ Install Dependencies
+
+Install the lightweight, CPU-optimized dependencies (ONNX Runtime, FastAPI, Uvicorn, NumPy):
+
+```bash
+pip install --upgrade pip
 pip install -r requirements.txt
+```
 
-# Precompute career embeddings (optional, already included in repo)
+---
+
+### 3️⃣ Environment Variables Configuration
+
+Create a `.env` file in the `ai-service/` directory based on `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Configure your `.env` variables:
+
+```ini
+AI_SERVICE_PORT=8000
+NODE_BACKEND_URL=http://localhost:5000
+AI_MOCK_MODE=false
+EMBEDDING_MODEL=all-MiniLM-L6-v2
+AI_SERVICE_TIMEOUT=30000
+
+# Optional Google Gemini API Key for direct AI calls
+GEMINI_API_KEY=your_google_gemini_api_key_here
+GEMINI_MODEL=gemini-1.0
+```
+
+---
+
+### 4️⃣ Precompute Vector Embeddings (Optional)
+
+Precompute 384-dimensional dense career vector embeddings into `app/data/career_embeddings.npz`:
+
+```bash
 python scripts/precompute_embeddings.py
+```
 
-# Run development server
+---
+
+### 5️⃣ Run FastAPI Server
+
+Start the FastAPI application server with auto-reload:
+
+```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+* The microservice will run on `http://localhost:8000`.
+* Interactive OpenAPI/Swagger documentation is available at: `http://localhost:8000/docs`
+* Health probe endpoint: `http://localhost:8000/health`
+
+---
+
+### 🧪 Automated Testing
+
+Run the pytest test suite for career recommendations, roadmap graph generation, and ONNX embeddings:
+
+```bash
+pytest
 ```
 
 ---

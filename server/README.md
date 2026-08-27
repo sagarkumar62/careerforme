@@ -134,61 +134,119 @@ server/
 
 ---
 
-## ⚡ Quick Start & Running Locally
+## 🛠️ Complete Server Setup Guide
 
-### 1. Install Dependencies
+Follow these step-by-step instructions to set up, configure, seed, and run the Express Node.js Backend API server locally.
+
+---
+
+### 📋 Prerequisites
+
+* **Node.js**: `v18.x` or `v20.x` (LTS recommended)
+* **npm**: `v9.x+`
+* **MongoDB**: A running MongoDB instance (Local `mongodb://localhost:27017` or MongoDB Atlas URI)
+
+---
+
+### 1️⃣ Installation
+
+Navigate to the `server/` directory and install dependencies:
 
 ```bash
 cd server
 npm install
 ```
 
-### 2. Environment Setup
+---
 
-Create `.env` file from `.env.example`:
+### 2️⃣ Environment Variables Configuration
+
+Create a `.env` file in the `server/` directory by copying `.env.example`:
 
 ```bash
 cp .env.example .env
 ```
 
-Default `.env` contents:
+Configure your `.env` variables:
 
-```env
+```ini
 PORT=5000
 NODE_ENV=development
 
-MONGODB_URI=mongodb+srv://testuser:7s2a5g0a2r6@music.v4orayv.mongodb.net/career_pathfinder
+# MongoDB Connection String (Local MongoDB or Atlas)
+MONGODB_URI=mongodb://localhost:27017/career_pathfinder
 
-JWT_ACCESS_SECRET=career_pathfinder_jwt_access_secret_key_2026_dev
-JWT_REFRESH_SECRET=career_pathfinder_jwt_refresh_secret_key_2026_dev
+# JWT Authentication Secrets (Use strong random strings in production)
+JWT_ACCESS_SECRET=your_jwt_access_secret_key_here
+JWT_REFRESH_SECRET=your_jwt_refresh_secret_key_here
 
 ACCESS_TOKEN_EXPIRES_IN=15m
 REFRESH_TOKEN_EXPIRES_IN=7d
 
+# CORS & Connected Service URLs
 FRONTEND_URL=http://localhost:3000
-
 AI_SERVICE_URL=http://localhost:8000
 AI_SERVICE_TIMEOUT=30000
-AI_MOCK_MODE=true
+
+# Mock Mode (Set false when Python AI Service or Gemini is active)
+AI_MOCK_MODE=false
+
+# Optional Direct Google Gemini Integration
+GEMINI_API_KEY=your_google_gemini_api_key_here
 ```
 
-### 3. Seed Database
+---
 
-Populate realistic career, skill, and resource data:
+### 3️⃣ Seed Database
+
+Populate MongoDB with canonical career definitions, skill dependency graphs, and resource datasets:
 
 ```bash
 npm run seed
 ```
 
-### 4. Start Development Server
+*Expected output: `Database seeded successfully with career catalog, skills, and resources.`*
+
+---
+
+### 4️⃣ Start Development Server
+
+Run the development server with live watch reloads:
 
 ```bash
 npm run dev
 ```
 
-The server will start at: `http://localhost:5000/api/v1/health`
+The Express API gateway will listen at `http://localhost:5000`. Verify health status at:
+`http://localhost:5000/api/v1/health`
 
 ---
+
+### 5️⃣ Production Build & Deployment
+
+To compile TypeScript and start the production distribution:
+
+```bash
+# Build TypeScript to dist/
+npm run build
+
+# Start production server
+npm start
+```
+
+---
+
+### 🧪 Automated Tests & AI Benchmark Suite
+
+Run integration tests and the 6-factor recommendation precision benchmark:
+
+```bash
+# Run unit & API integration tests
+npm run test
+
+# Run AI recommendation precision evaluation benchmark
+npx tsx src/utils/ai-evaluation.ts
+```
 
 ## 🤖 Mock AI Mode (`AI_MOCK_MODE=true`)
 

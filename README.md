@@ -349,10 +349,12 @@ Career For Me includes an automated evaluation suite ([`server/src/utils/ai-eval
 
 ---
 
-## 📖 Key Documentation Links
+## 📖 Key Documentation Links & Module Setup Guides
 
-* [`docs/`](docs/) — Complete system documentation series (00 through 17).
-* [`ai.md`](ai.md) — Deep technical guide for the AI Subsystem.
-* [`diagram.md`](diagram.md) — Exhaustive path index and architecture flow maps.
-* [`ai-service/README.md`](ai-service/README.md) — Fast-API microservice configuration.
+* [`server/README.md`](server/README.md) — Complete Express Backend Server Setup Guide
+* [`ai-service/README.md`](ai-service/README.md) — Complete Python FastAPI AI Microservice Setup Guide
+* [`client/README.md`](client/README.md) — Complete Next.js Client Frontend Setup Guide
+* [`docs/`](docs/) — Complete system documentation series (00 through 17)
+* [`ai.md`](ai.md) — Deep technical guide for the AI Subsystem
+* [`diagram.md`](diagram.md) — Exhaustive path index and architecture flow maps
 
