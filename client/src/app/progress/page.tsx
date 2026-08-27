@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Flame, Clock, CheckCircle2, Trophy, BarChart2, Activity, MapPin, Layers, Trash2, Loader2, AlertCircle, Radio, Sparkles, RefreshCw, Zap, BookOpen, ArrowRight, FolderGit2 } from 'lucide-react';
+import { Flame, CheckCircle2, Trophy, BarChart2, Activity, MapPin, Layers, Trash2, Loader2, AlertCircle, Radio, Sparkles, RefreshCw, Zap, BookOpen, ArrowRight, FolderGit2 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -305,17 +305,7 @@ export default function ProgressPage() {
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          <Card className="p-5 bg-white border-slate-200 flex items-center gap-3">
-            <div className="h-11 w-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold shrink-0">
-              <Clock className="h-5 w-5" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] text-slate-500 font-bold uppercase tracking-wider truncate">Total Learning</p>
-              <h3 className="text-xl font-black text-slate-900 truncate">{safeProgress.totalLearningHours} hrs</h3>
-            </div>
-          </Card>
-
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="p-5 bg-white border-slate-200 flex items-center gap-3">
             <div className="h-11 w-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold shrink-0">
               <Flame className="h-5 w-5" />
