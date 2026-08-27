@@ -1,16 +1,11 @@
 import Link from 'next/link';
-import { Compass } from 'lucide-react';
+import { Logo } from '@/components/ui/logo';
 
 export function Footer() {
   return (
     <footer className="bg-slate-950 text-slate-400 py-12 border-t border-slate-900 text-xs">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold">
-            <Compass className="h-4 w-4" />
-          </div>
-          <span className="font-extrabold text-sm text-white tracking-tight">CAREER PATHFINDER</span>
-        </div>
+        <Logo href="/" size="sm" showBadge={true} className="brightness-125" />
 
         <p className="text-slate-500 text-center md:text-left">
           © {new Date().getFullYear()} Career PathFinder Inc. AI-Powered Personalized Career & Learning Path SaaS.

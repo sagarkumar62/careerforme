@@ -22,6 +22,8 @@ import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { getInitials } from '@/lib/utils';
 
+import { Logo } from '@/components/ui/logo';
+
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/recommendations', label: 'Explore Careers', icon: Compass },
@@ -58,12 +60,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-64 flex-col border-r border-slate-200 bg-white sticky top-0 h-screen z-30">
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold">
-              <Compass className="h-5 w-5" />
-            </div>
-            <span className="font-extrabold text-sm text-slate-900 tracking-tight">PATHFINDER</span>
-          </Link>
+          <Logo href="/dashboard" size="sm" />
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">

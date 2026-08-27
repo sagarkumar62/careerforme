@@ -20,6 +20,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Career PathFinder | AI-Powered Career Navigator',
   description: 'Discover your ideal career path with AI-driven skill gap analysis, personalized roadmaps, and adaptive learning recommendations.',
+  icons: {
+    icon: [
+      { url: '/logo.jpg', type: 'image/jpeg' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    shortcut: '/logo.jpg',
+    apple: '/logo.jpg',
+  },
 };
 
 export default function RootLayout({
