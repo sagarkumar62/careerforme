@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Career PathFinder AI Service",
+    title="Career For Me AI Service",
     description="Lightweight CPU-Optimized FastAPI Microservice for Render Free Deployment",
     lifespan=lifespan,
 )
@@ -68,7 +68,7 @@ app.include_router(project_progress_router)
 @app.get("/")
 async def root():
     return {
-        "service": "career-pathfinder-ai",
+        "service": "career-for-me-ai",
         "status": "ready",
         "runtime": "ONNX CPU Engine (Render Free Optimized)",
     }

@@ -14,7 +14,7 @@ const startServer = async () => {
 
     const server = httpServer.listen(env.PORT, () => {
       logger.info(`=================================`);
-      logger.info(`🚀 CAREER PATHFINDER API Server`);
+      logger.info(`🚀 CAREER FOR ME API Server`);
       logger.info(`Environment: ${env.NODE_ENV}`);
       logger.info(`Port: ${env.PORT}`);
       logger.info(`URL: http://localhost:${env.PORT}/api/v1/health`);

@@ -1,6 +1,6 @@
-# Career PathFinder — Python AI Microservice (Render Free CPU-Optimized)
+# Career For Me — Python AI Microservice (Render Free CPU-Optimized)
 
-This FastAPI microservice powers the deterministic machine learning and semantic recommendation engine for Career PathFinder. It is engineered specifically for low-memory CPU cloud environments like **Render Free Plan (512 MiB RAM limit)**.
+This FastAPI microservice powers the deterministic machine learning and semantic recommendation engine for Career For Me. It is engineered specifically for low-memory CPU cloud environments like **Render Free Plan (512 MiB RAM limit)**.
 
 ---
 

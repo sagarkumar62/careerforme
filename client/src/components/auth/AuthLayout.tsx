@@ -14,7 +14,7 @@ export function AuthLayout({ children, title, subtitle }: { children: React.Reac
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold">
               <Compass className="h-5 w-5" />
             </div>
-            <span className="font-extrabold text-lg text-white tracking-tight">CAREER PATHFINDER</span>
+            <span className="font-extrabold text-lg text-white tracking-tight">CAREER FOR ME</span>
           </Link>
         </div>
 
@@ -49,7 +49,7 @@ export function AuthLayout({ children, title, subtitle }: { children: React.Reac
         </div>
 
         <div className="relative z-10 text-xs text-indigo-400">
-          © {new Date().getFullYear()} Career PathFinder. Intelligent Career Growth.
+          © {new Date().getFullYear()} Career For Me. Intelligent Career Growth.
         </div>
       </div>
 
@@ -61,7 +61,7 @@ export function AuthLayout({ children, title, subtitle }: { children: React.Reac
               <div className="h-8 w-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center">
                 <Compass className="h-4 w-4" />
               </div>
-              <span className="font-extrabold text-base text-slate-900">CAREER PATHFINDER</span>
+              <span className="font-extrabold text-base text-slate-900">CAREER FOR ME</span>
             </Link>
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">{title}</h1>
             <p className="text-slate-500 text-sm">{subtitle}</p>

@@ -72,7 +72,7 @@ export const EVALUATION_PROFILES: EvaluationProfile[] = [
 
 export function runAIEvaluation() {
   console.log('====================================================');
-  console.log('           CAREER PATHFINDER AI EVALUATION          ');
+  console.log('           CAREER FOR ME AI EVALUATION          ');
   console.log('====================================================\n');
 
   let top1Hits = 0;

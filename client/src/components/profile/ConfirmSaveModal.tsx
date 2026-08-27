@@ -42,7 +42,7 @@ export function ConfirmSaveModal({
         </div>
 
         <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-100">
-          Are you sure you want to save these changes to your profile? Your updated full name, career goals, and skills will be reflected across your entire PATHFINDER workspace.
+          Are you sure you want to save these changes to your profile? Your updated full name, career goals, and skills will be reflected across your entire CAREER FOR ME workspace.
         </p>
 
         <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100">

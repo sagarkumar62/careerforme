@@ -7,7 +7,7 @@ export function HowItWorks() {
       number: '01',
       icon: UserCheck,
       title: 'Build Your Profile',
-      description: 'Tell CareerPathFinder about your current skills, experience, interests, learning preferences, and weekly hours.'
+      description: 'Tell Career For Me about your current skills, experience, interests, learning preferences, and weekly hours.'
     },
     {
       number: '02',
@@ -34,7 +34,7 @@ export function HowItWorks() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
           <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-600">Continuous Career Navigation</h2>
-          <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">How Career PathFinder Works</p>
+          <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">How Career For Me Works</p>
           <p className="text-slate-600 text-base">A simple 4-step intelligent journey designed to eliminate guesswork from your career growth.</p>
         </div>
 

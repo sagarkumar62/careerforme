@@ -79,7 +79,7 @@ app.use('/ai', aiRoutes);
 // Root endpoint redirect / simple info
 app.get('/', (req, res) => {
   res.json({
-    message: 'Welcome to CAREER PATHFINDER API',
+    message: 'Welcome to CAREER FOR ME API',
     version: 'v1',
     health: '/api/v1/health',
     dashboard: '/api/v1/dashboard',

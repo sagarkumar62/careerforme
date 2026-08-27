@@ -25,7 +25,7 @@ export function Logo({ size = 'md', showBadge = true, className = '', href = '/'
       <div className="relative flex items-center justify-center rounded-xl overflow-hidden shadow-md ring-1 ring-indigo-500/20 group-hover:scale-105 group-hover:shadow-indigo-500/20 transition-all duration-300">
         <Image
           src="/logo.jpg"
-          alt="Career Pathfinder Logo"
+          alt="Career For Me Logo"
           width={dim.img}
           height={dim.img}
           className="object-cover rounded-xl"
@@ -34,7 +34,7 @@ export function Logo({ size = 'md', showBadge = true, className = '', href = '/'
       </div>
       <div className="flex flex-col">
         <span className={`font-extrabold tracking-tight text-slate-900 flex items-center gap-1.5 ${dim.text}`}>
-          PATHFINDER
+          CAREER FOR ME
           {showBadge && (
             <span className={`inline-flex items-center rounded-full bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-bold shadow-xs ${dim.badge}`}>
               <Sparkles className="mr-0.5 h-2.5 w-2.5 animate-pulse" /> AI

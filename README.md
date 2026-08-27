@@ -1,4 +1,4 @@
-# CAREER PATHFINDER
+# CAREER FOR ME
 
 > **AI-Powered Personalized Career and Learning Path Recommendation SaaS**  
 > *Deterministic ML + Generative Cloud LLM Hybrid Platform*
@@ -7,7 +7,7 @@
 
 ## 🎯 Executive Overview
 
-**Career Pathfinder** is an enterprise-grade prototype SaaS application designed to help learners and professionals navigate career transitions through hyper-personalized, AI-driven learning paths. It combines a **deterministic 6-factor ML recommendation engine** with **Google Gemini generative LLMs** to offer:
+**Career For Me** is an enterprise-grade prototype SaaS application designed to help learners and professionals navigate career transitions through hyper-personalized, AI-driven learning paths. It combines a **deterministic 6-factor ML recommendation engine** with **Google Gemini generative LLMs** to offer:
 
 * 📊 **Deterministic Match Scoring**: Explainable percentage compatibility based on 6 core profile factors.
 * 🎯 **Skill-Gap Categorization**: Identifies acquired, in-progress, and missing critical skill dependencies.
@@ -19,7 +19,7 @@
 
 ## 🏛️ System Architecture & Design Topology
 
-Path Finder uses a **Hybrid Microservice Architecture** that decouples heavy deterministic calculations from generative cloud services.
+Career For Me uses a **Hybrid Microservice Architecture** that decouples heavy deterministic calculations from generative cloud services.
 
 ```mermaid
 flowchart TD
@@ -242,7 +242,7 @@ npm run build
 
 ## 📊 Evaluation & Precision Benchmarks
 
-Path Finder includes an automated evaluation suite ([`server/src/utils/ai-evaluation.ts`](server/src/utils/ai-evaluation.ts)) to verify recommendation precision:
+Career For Me includes an automated evaluation suite ([`server/src/utils/ai-evaluation.ts`](server/src/utils/ai-evaluation.ts)) to verify recommendation precision:
 
 * **Top-1 Precision Accuracy**: `100.0%` (5/5 target careers ranked #1 for matching test personas).
 * **Top-3 Recall Precision**: `100.0%` (5/5 target careers present in Top 3 recommendation list).

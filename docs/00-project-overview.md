@@ -1,8 +1,8 @@
-# 00 - CAREER PATHFINDER: Project Overview
+# 00 - CAREER FOR ME: Project Overview
 
 ## 1. Executive Summary
 
-**CAREER PATHFINDER** is an AI-powered personalized career and learning path recommendation SaaS platform built during a 10-day hackathon. The platform helps users discover optimal career trajectories, diagnose skill gaps, follow tailored learning roadmaps, track progress, interact with an AI career assistant, and receive adaptive recommendation updates based on ongoing feedback and completed milestones.
+**CAREER FOR ME** is an AI-powered personalized career and learning path recommendation SaaS platform built during a 10-day hackathon. The platform helps users discover optimal career trajectories, diagnose skill gaps, follow tailored learning roadmaps, track progress, interact with an AI career assistant, and receive adaptive recommendation updates based on ongoing feedback and completed milestones.
 
 ## 2. Core Capabilities
 

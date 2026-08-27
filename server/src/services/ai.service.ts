@@ -288,7 +288,7 @@ Return JSON:
   async generateAssistantResponse(data: AIAssistantRequest) {
     if (env.GEMINI_API_KEY || env.LLM_API_KEY) {
       try {
-        const prompt = `You are Path Finder AI, an intelligent, empathetic AI Career Navigator.
+        const prompt = `You are Career For Me AI, an intelligent, empathetic AI Career Navigator.
 User Question: "${data.message}"
 User Context: Target Role: ${data.context?.currentCareer || 'Technology'}, Current Skills: ${(data.context?.currentSkills || []).join(', ')}, Active Phase: ${data.context?.currentPhaseTitle || 'Phase 1'}, Next Milestone: ${data.context?.nextMilestoneTitle || 'Core Setup'}.
 

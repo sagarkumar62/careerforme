@@ -1,6 +1,6 @@
-# Path Finder — Comprehensive File Architecture & Path Diagram
+# Career For Me — Comprehensive File Architecture & Path Diagram
 
-This document contains the structural path map, system relationship flow diagram, and file index for the **Path Finder** ecosystem across `ai-service`, `server`, and `client`.
+This document contains the structural path map, system relationship flow diagram, and file index for the **Career For Me** ecosystem across `ai-service`, `server`, and `client`.
 
 ---
 

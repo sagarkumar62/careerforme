@@ -1,12 +1,12 @@
-# Path Finder — AI Subsystem & Hybrid Architecture Guide
+# Career For Me — AI Subsystem & Hybrid Architecture Guide
 
-This document provides a comprehensive technical reference for the entire **AI Subsystem** of **Path Finder**. It details system topology, mathematical scoring formulas, sentence embedding vector search, skill-gap categorization, 4-phase adaptive roadmap generation, LLM enrichment, conversational RAG assistant, multi-tiered fallback mechanisms, file/folder organization, and automated benchmarking.
+This document provides a comprehensive technical reference for the entire **AI Subsystem** of **Career For Me**. It details system topology, mathematical scoring formulas, sentence embedding vector search, skill-gap categorization, 4-phase adaptive roadmap generation, LLM enrichment, conversational RAG assistant, multi-tiered fallback mechanisms, file/folder organization, and automated benchmarking.
 
 ---
 
 ## 1. Architectural Philosophy & System Topology
 
-Path Finder implements a **Hybrid AI Architecture** combining deterministic, explainable microservice calculations with generative cloud LLMs.
+Career For Me implements a **Hybrid AI Architecture** combining deterministic, explainable microservice calculations with generative cloud LLMs.
 
 * **Deterministic & Explainable Core (Python AI Microservice)**: Calculates objective, reproducible 6-factor match scores, skill gap classifications, prerequisite DAG ordering, and 4-phase roadmap structural milestones.
 * **Generative Content Engine (Google Gemini Cloud LLM)**: Enriches structural milestones with personalized project ideas, documentation references, video search terms, flowchart visual metadata (`nodes` and `edges`), and interactive career mentoring.

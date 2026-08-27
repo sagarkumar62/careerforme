@@ -122,7 +122,7 @@ export default function OnboardingPage() {
           <div className="h-8 w-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold">
             <Compass className="h-4 w-4" />
           </div>
-          <span className="font-extrabold text-sm text-slate-900 tracking-tight">CAREER PATHFINDER</span>
+          <span className="font-extrabold text-sm text-slate-900 tracking-tight">CAREER FOR ME</span>
         </div>
         {step < 7 && (
           <div className="flex items-center gap-4 text-xs font-semibold text-slate-500">

@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Career PathFinder | AI-Powered Career Navigator',
+  title: 'Career For Me | AI-Powered Career Navigator',
   description: 'Discover your ideal career path with AI-driven skill gap analysis, personalized roadmaps, and adaptive learning recommendations.',
   icons: {
     icon: [

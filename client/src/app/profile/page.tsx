@@ -307,7 +307,7 @@ export default function ProfilePage() {
             <div className="h-6 w-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
               ✓
             </div>
-            <span>Profile updated successfully! Your updated name and details are now reflected across PATHFINDER.</span>
+            <span>Profile updated successfully! Your updated name and details are now reflected across CAREER FOR ME.</span>
           </div>
         )}
 

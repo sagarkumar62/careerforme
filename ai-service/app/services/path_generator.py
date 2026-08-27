@@ -192,7 +192,7 @@ def organize_items_into_4_phases(
             courses_payload.append({
                 "courseId": item.get("id") or item.get("course_id") or f"c_{phase_id}_{idx}",
                 "title": item_title,
-                "provider": item.get("provider", "PathFinder Academy"),
+                "provider": item.get("provider", "Career For Me Academy"),
                 "durationHours": hrs,
                 "rating": item.get("rating", 4.8),
                 "matchScore": item.get("match_score", 0.9),

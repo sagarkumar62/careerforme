@@ -27,7 +27,7 @@ export function SkillGapShowcase() {
               <span className="text-indigo-600">Zero wasted effort.</span>
             </h2>
             <p className="text-slate-600 text-base leading-relaxed">
-              Career PathFinder compares your current proficiency against market demands. It categorizes your skill set into <strong className="text-slate-900">Strong</strong>, <strong className="text-slate-900">Needs Improvement</strong>, and <strong className="text-slate-900">Missing</strong> skills so you only invest time in high-priority gaps.
+              Career For Me compares your current proficiency against market demands. It categorizes your skill set into <strong className="text-slate-900">Strong</strong>, <strong className="text-slate-900">Needs Improvement</strong>, and <strong className="text-slate-900">Missing</strong> skills so you only invest time in high-priority gaps.
             </p>
 
             {/* Adaptive Banner Highlight */}

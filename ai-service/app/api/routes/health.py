@@ -13,7 +13,7 @@ async def health():
     registered = get_registered_careers()
     return {
         "status": "ok",
-        "service": "career-pathfinder-ai",
+        "service": "career-for-me-ai",
         "gemini": "mock" if settings.AI_MOCK_MODE else ("available" if settings.GEMINI_API_KEY else "unavailable"),
         "embedding_model": "all-MiniLM-L6-v2 (ONNX CPU)",
         "loadedCareersCount": len(registered),

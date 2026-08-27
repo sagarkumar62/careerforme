@@ -8,7 +8,7 @@ export function Footer() {
         <Logo href="/" size="sm" showBadge={true} className="brightness-125" />
 
         <p className="text-slate-500 text-center md:text-left">
-          © {new Date().getFullYear()} Career PathFinder Inc. AI-Powered Personalized Career & Learning Path SaaS.
+          © {new Date().getFullYear()} Career For Me Inc. AI-Powered Personalized Career & Learning Path SaaS.
         </p>
 
         <div className="flex items-center gap-6 text-slate-400 font-medium">
