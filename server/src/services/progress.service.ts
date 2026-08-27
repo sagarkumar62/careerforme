@@ -416,7 +416,7 @@ export class ProgressService {
       if (gapReport && Array.isArray(gapReport.details) && gapReport.details.length > 0) {
         const strongCount = gapReport.details.filter((d) => d.category === 'strong').length;
         const missingCount = gapReport.details.filter((d) => d.category === 'missing').length;
-        const needsWorkCount = gapReport.details.filter((d) => d.category === 'needs_work' || d.category === 'gap').length;
+        const needsWorkCount = gapReport.details.filter((d) => d.category === 'needsWork' || (d.category as string) === 'needs_work' || (d.category as string) === 'gap').length;
         if (missingCount === 0 && needsWorkCount === 0) {
           careerReadinessPercent = 100;
         } else {

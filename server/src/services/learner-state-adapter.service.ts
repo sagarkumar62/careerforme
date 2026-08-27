@@ -67,7 +67,7 @@ export class LearnerStateAdapterService {
     return {
       id: userId,
       user_id: userId,
-      target_career: profile?.targetCareerGoal || profile?.targetCareer || 'Full Stack Developer',
+      target_career: (profile as any)?.targetCareerGoal || profile?.targetCareer || 'Full Stack Developer',
       experience_level: profile?.experienceLevel || 'Beginner',
       education_level: profile?.educationLevel || 'Bachelor',
       weekly_hours: weeklyHoursVal,
@@ -262,7 +262,7 @@ export class LearnerStateAdapterService {
             if (m.completed) continue;
             const mTitle = (m.title || '').toLowerCase();
             const mId = (m.milestoneId || '').toLowerCase();
-            const mSkill = (m.targetSkill || '').toLowerCase();
+            const mSkill = ((m as any).targetSkill || '').toLowerCase();
 
             const isMatch = completedKeys.some(
               (key) => key && (mTitle.includes(key) || key.includes(mTitle) || mId.includes(key) || (mSkill && key.includes(mSkill)))
