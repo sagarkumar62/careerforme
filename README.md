@@ -70,7 +70,7 @@ flowchart TD
 ### 🛡️ 3-Tier Multi-Layer Fallback Strategy
 1. **Tier 1 (Python AI Microservice)**: Primary calculation engine for 6-factor scoring, ONNX sentence embeddings, and prerequisite graph ordering.
 2. **Tier 2 (Gemini Direct Fallback)**: If Python AI service is unreachable, Node.js invokes Gemini Cloud LLM directly to score and structure recommendations.
-3. **Tier 3 (Local Rule Engine)**: If cloud services are unavailable, local static dataset rules ([careers.dataset.ts](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/server/src/data/careers.dataset.ts)) serve recommendations without application crashes.
+3. **Tier 3 (Local Rule Engine)**: If cloud services are unavailable, local static dataset rules ([careers.dataset.ts](server/src/data/careers.dataset.ts)) serve recommendations without application crashes.
 
 ### ⚡ Memory-Optimized CPU Architecture (Render 512 MiB RAM)
 * **ONNX Runtime CPU**: Replaced PyTorch (`torch`) with `xenova/all-MiniLM-L6-v2` in INT8 ONNX format.
@@ -242,7 +242,7 @@ npm run build
 
 ## 📊 Evaluation & Precision Benchmarks
 
-Path Finder includes an automated evaluation suite ([`server/src/utils/ai-evaluation.ts`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/server/src/utils/ai-evaluation.ts)) to verify recommendation precision:
+Path Finder includes an automated evaluation suite ([`server/src/utils/ai-evaluation.ts`](server/src/utils/ai-evaluation.ts)) to verify recommendation precision:
 
 * **Top-1 Precision Accuracy**: `100.0%` (5/5 target careers ranked #1 for matching test personas).
 * **Top-3 Recall Precision**: `100.0%` (5/5 target careers present in Top 3 recommendation list).
@@ -251,8 +251,8 @@ Path Finder includes an automated evaluation suite ([`server/src/utils/ai-evalua
 
 ## 📖 Key Documentation Links
 
-* [`docs/`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/docs) — Complete system documentation series (00 through 17).
-* [`ai.md`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/ai.md) — Deep technical guide for the AI Subsystem.
-* [`diagram.md`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/diagram.md) — Exhaustive path index and architecture flow maps.
-* [`ai-service/README.md`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/ai-service/README.md) — Fast-API microservice configuration.
+* [`docs/`](docs/) — Complete system documentation series (00 through 17).
+* [`ai.md`](ai.md) — Deep technical guide for the AI Subsystem.
+* [`diagram.md`](diagram.md) — Exhaustive path index and architecture flow maps.
+* [`ai-service/README.md`](ai-service/README.md) — Fast-API microservice configuration.
 

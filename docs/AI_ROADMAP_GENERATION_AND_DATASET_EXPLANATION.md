@@ -52,8 +52,8 @@ Career PathFinder uses a **Hybrid AI Approach** combining three complementary AI
 
 ### A. The Benchmark Dataset Structure
 The core career benchmark dataset is stored in:
-- [`ai-service/app/data/careers.json`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/ai-service/app/data/careers.json) (Python AI microservice)
-- [`server/src/data/careers.dataset.ts`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/server/src/data/careers.dataset.ts) (Node.js fallback service)
+- [`ai-service/app/data/careers.json`](../ai-service/app/data/careers.json) (Python AI microservice)
+- [`server/src/data/careers.dataset.ts`](../server/src/data/careers.dataset.ts) (Node.js fallback service)
 
 It covers 12+ major technology career tracks, including:
 1. **AI Engineer**

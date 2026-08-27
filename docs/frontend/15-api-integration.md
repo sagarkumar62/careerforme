@@ -7,10 +7,10 @@ The frontend communicates with the Node.js + Express backend running at `NEXT_PU
 
 ## Configuration
 - Environment variable: `NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1` stored in `client/.env.local`.
-- Centralized API Client: [lib/api.ts](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/client/src/lib/api.ts) using Axios with `withCredentials: true`.
+- Centralized API Client: [lib/api.ts](../../client/src/lib/api.ts) using Axios with `withCredentials: true`.
 - Request Interceptor: Automatically attaches `Authorization: Bearer <token>` from `sessionStorage` if available.
 - Response Unwrapping: Unwraps backend `ApiResponse` payload `{ statusCode, data, message, success }` into strongly typed frontend structures.
-- Offline & Resilience Mode: If the Express backend server is offline or unreachable, the API client seamlessly falls back to realistic mock datasets in [lib/mock-data/index.ts](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/client/src/lib/mock-data/index.ts).
+- Offline & Resilience Mode: If the Express backend server is offline or unreachable, the API client seamlessly falls back to realistic mock datasets in [lib/mock-data/index.ts](../../client/src/lib/mock-data/index.ts).
 
 ---
 

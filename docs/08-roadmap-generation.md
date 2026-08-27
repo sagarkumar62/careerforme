@@ -4,7 +4,7 @@
 
 Generates structured step-by-step learning roadmaps containing phases, milestones, estimated hours, prerequisite skills, and recommended learning resources.
 
-> For a complete deep-dive on the hybrid AI pipeline, sentence-transformers embedding model, FAISS vector index, `careers.json` benchmark dataset, and Gemini `gemini-3.6-flash` integration, see [`docs/AI_ROADMAP_GENERATION_AND_DATASET_EXPLANATION.md`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/docs/AI_ROADMAP_GENERATION_AND_DATASET_EXPLANATION.md).
+> For a complete deep-dive on the hybrid AI pipeline, sentence-transformers embedding model, FAISS vector index, `careers.json` benchmark dataset, and Gemini `gemini-3.6-flash` integration, see [`docs/AI_ROADMAP_GENERATION_AND_DATASET_EXPLANATION.md`](../docs/AI_ROADMAP_GENERATION_AND_DATASET_EXPLANATION.md).
 
 ## 2. API Endpoints
 

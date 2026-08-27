@@ -36,7 +36,7 @@ This document defines the production hybrid AI architecture combining the **Loca
 ## 2. Responsibility Division
 
 ### **A. Python AI Microservice (`ai-service/`)**
-* **Source of Truth**: [`ai-service/app/data/careers.json`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/ai-service/app/data/careers.json)
+* **Source of Truth**: [`ai-service/app/data/careers.json`](../ai-service/app/data/careers.json)
 * **6-Factor Formula**:
   $$\text{Score} = 0.40 \times \text{Skill} + 0.20 \times \text{Interest} + 0.15 \times \text{Goal} + 0.10 \times \text{Experience} + 0.05 \times \text{Education} + 0.10 \times \text{Semantic Sim}$$
 * **FAISS Vector Search**: `sentence-transformers` (`all-MiniLM-L6-v2`) 384-dimensional dense embeddings.
@@ -54,8 +54,8 @@ This document defines the production hybrid AI architecture combining the **Loca
 
 ### **C. Express Node.js Backend (`server/`)**
 * **Role**: Central Orchestrator & Public API Gateway.
-* **Service Client**: [`server/src/services/python-ai.service.ts`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/server/src/services/python-ai.service.ts) calls Python FastAPI (`http://localhost:8000`).
-* **Gemini Gateway**: [`server/src/services/ai.service.ts`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/server/src/services/ai.service.ts) enriches Python's roadmap structure.
+* **Service Client**: [`server/src/services/python-ai.service.ts`](../server/src/services/python-ai.service.ts) calls Python FastAPI (`http://localhost:8000`).
+* **Gemini Gateway**: [`server/src/services/ai.service.ts`](../server/src/services/ai.service.ts) enriches Python's roadmap structure.
 
 ---
 

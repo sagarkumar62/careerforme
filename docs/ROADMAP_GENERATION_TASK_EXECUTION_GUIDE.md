@@ -116,7 +116,7 @@ The Node.js server calls Google Gemini (`gemini-3.6-flash`) with the structured 
 
 ### Step 6: MongoDB Persistence & Next.js 16 UI Rendering
 1. **Database Persistence**: Saved to MongoDB `Roadmap` collection.
-2. **Interactive UI ([`/roadmap`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/client/src/app/roadmap/page.tsx))**:
+2. **Interactive UI ([`/roadmap`](../client/src/app/roadmap/page.tsx))**:
    - **Saved Roadmaps Selector Bar**: Allows users to switch between saved roadmaps (*AI Engineer*, *Full Stack Developer*, etc.).
    - **Checkable Milestones**: Toggling a milestone updates overall completion percentage in real time.
    - **Formated Resources**: Displays resources matching onboarding preferences (`Videos`, `Docs`, `Projects`).

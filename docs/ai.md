@@ -72,7 +72,7 @@ $$\text{MatchScore} = 0.40 \cdot \text{SkillMatch} + 0.20 \cdot \text{InterestMa
 * **Index**: FAISS (`IndexFlatIP` / Inner Product Cosine Normalization)
 
 ### **Vector Ingestion & Search Pipeline**
-1. **Startup Indexing**: At startup, `app.main:app` loads canonical careers from [`ai-service/app/data/careers.json`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/ai-service/app/data/careers.json).
+1. **Startup Indexing**: At startup, `app.main:app` loads canonical careers from [`ai-service/app/data/careers.json`](../ai-service/app/data/careers.json).
 2. **Text Synthesis**: A rich text representation is synthesized for each career:
    ```text
    "Role: {title}. Category: {category}. Skills: {required_skills}. Description: {description}"
@@ -125,7 +125,7 @@ The roadmap generator constructs a structured 4-phase sequential learning path:
 4. **Phase 4: Capstone Projects & Job Readiness**: End-to-end portfolio build, resume/interview prep.
 
 ### **Gemini LLM Generative Enrichment**
-Once Python constructs the structural phases and milestone IDs, the Express backend sends the payload to Gemini LLM (`@google/genai` model `gemini-3.6-flash`) via [`server/src/services/ai.service.ts`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/server/src/services/ai.service.ts#L170):
+Once Python constructs the structural phases and milestone IDs, the Express backend sends the payload to Gemini LLM (`@google/genai` model `gemini-3.6-flash`) via [`server/src/services/ai.service.ts`](../server/src/services/ai.service.ts#L170):
 
 * **Practical Projects**: Generates real-world portfolio project prompts linked directly to phase milestones.
 * **Documentation & Resources**: Pulls verified developer documentation links (e.g. MDN, React Docs, PyTorch Docs).
@@ -177,13 +177,13 @@ Path Finder guarantees 100% uptime through a 3-tier fallback strategy:
 
 1. **Tier 1 (Python AI Microservice)**: primary engine for 6-factor calculation, FAISS similarity, and initial phase ordering.
 2. **Tier 2 (Gemini Direct Fallback)**: If Python AI service is unreachable, Node.js backend invokes Gemini directly to score and structure recommendations.
-3. **Tier 3 (Deterministic Local TypeScript Engine)**: If both AI microservice and Gemini API are unavailable, Node.js uses local dataset rules ([`server/src/data/careers.dataset.ts`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/server/src/data/careers.dataset.ts)) to calculate match scores and generate static roadmaps without crashing.
+3. **Tier 3 (Deterministic Local TypeScript Engine)**: If both AI microservice and Gemini API are unavailable, Node.js uses local dataset rules ([`server/src/data/careers.dataset.ts`](../server/src/data/careers.dataset.ts)) to calculate match scores and generate static roadmaps without crashing.
 
 ---
 
 ## 8. Automated Evaluation & Benchmarking Suite
 
-Path Finder includes an automated evaluation suite ([`server/src/utils/ai-evaluation.ts`](file:///c:/Users/hp/OneDrive/Documents/Desktop/Path%20Finder/server/src/utils/ai-evaluation.ts)) to continuously test precision and recall across representative test personas.
+Path Finder includes an automated evaluation suite ([`server/src/utils/ai-evaluation.ts`](../server/src/utils/ai-evaluation.ts)) to continuously test precision and recall across representative test personas.
 
 ### **Benchmark Metrics**
 * **Top-1 Precision Accuracy**: `100.0%` (5/5 target careers ranked #1 for matching test profiles)
