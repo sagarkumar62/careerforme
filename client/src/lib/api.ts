@@ -529,7 +529,9 @@ export const api = {
     let edges = Array.isArray(rawRoadmap.edges) ? rawRoadmap.edges : [];
 
     if (nodes.length === 0 && phases.length > 0) {
-      console.warn(`[Roadmap API] Graph nodes empty for roadmap "${rawRoadmap.title || rawRoadmap.targetCareer}", dynamically generating node DAG from phases.`);
+      if (process.env.NODE_ENV === 'development') {
+        console.debug(`[Roadmap API] Graph nodes empty for roadmap "${rawRoadmap.title || rawRoadmap.targetCareer}", dynamically generating node DAG from phases.`);
+      }
       let previousNodeId: string | null = null;
       let allPreviousCompleted = true;
 

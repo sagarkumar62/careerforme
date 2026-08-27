@@ -400,15 +400,18 @@ export class RoadmapService {
     uniqueRoadmaps.sort((a, b) => (b.status === 'active' ? 1 : 0) - (a.status === 'active' ? 1 : 0));
     roadmaps = uniqueRoadmaps;
 
-    // Ensure graph nodes and edges are populated for stored roadmaps
-    roadmaps.forEach((rm: any) => {
+    // Ensure graph nodes and edges are populated and persisted for stored roadmaps
+    for (const rm of roadmaps) {
       if (!rm.nodes || rm.nodes.length === 0) {
         console.warn(`[RoadmapService] Graph nodes empty for stored roadmap "${rm.title}", deriving graph DAG from phases.`);
         const derived = deriveGraphFromPhases(rm.phases, rm.domain);
-        rm.nodes = derived.nodes;
-        rm.edges = derived.edges;
+        (rm as any).nodes = derived.nodes;
+        (rm as any).edges = derived.edges;
+        Roadmap.updateOne({ _id: rm._id }, { $set: { nodes: derived.nodes, edges: derived.edges } }).catch(err =>
+          console.error('[RoadmapService] Failed to persist derived graph nodes:', err)
+        );
       }
-    });
+    }
 
     return roadmaps;
   }
@@ -486,12 +489,15 @@ export class RoadmapService {
       result.isStale = false;
     }
 
-    // Ensure graph nodes and edges are populated for stored roadmap
+    // Ensure graph nodes and edges are populated and persisted for stored roadmap
     if (!result.nodes || result.nodes.length === 0) {
       console.warn(`[RoadmapService] Graph nodes empty for roadmap "${result.title}", deriving graph DAG from phases.`);
       const derived = deriveGraphFromPhases(result.phases, result.domain);
       (result as any).nodes = derived.nodes;
       (result as any).edges = derived.edges;
+      Roadmap.updateOne({ _id: result._id }, { $set: { nodes: derived.nodes, edges: derived.edges } }).catch(err =>
+        console.error('[RoadmapService] Failed to persist derived graph nodes:', err)
+      );
     }
 
     return result;
