@@ -1,10 +1,16 @@
+'use client';
+
 import { Bot, Sparkles, MessageSquare, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export function AssistantSpotlight() {
+  const { user } = useAuth();
+  const onboardingHref = user ? '/onboarding' : '/register';
+
   const prompts = [
     "What should I learn next?",
     "Why is AI Engineering a good fit for me?",
@@ -78,7 +84,7 @@ export function AssistantSpotlight() {
               Unlike generic chatbots, CareerPath AI is connected directly to your learner profile, active goals, skill gap scores, and roadmap phase. Ask for advice, practice projects, resource explanations, or next steps anytime.
             </p>
             <div>
-              <Link href="/onboarding">
+              <Link href={onboardingHref}>
                 <Button size="md" variant="primary" className="gap-2">
                   Try CareerPath AI <ArrowRight className="h-4 w-4" />
                 </Button>

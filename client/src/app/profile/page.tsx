@@ -27,7 +27,8 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  ChevronDown
 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card } from '@/components/ui/card';
@@ -39,17 +40,24 @@ import { Skill, SkillProficiency } from '@/types';
 import { getInitials } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { getSkillSuggestions, SuggestedSkill } from '@/lib/skill-suggestions';
+import { api } from '@/lib/api';
 
 export default function ProfilePage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, profile, loading: authLoading, updateUserAndProfile, changePassword } = useAuth();
+  const { user, profile, loading: authLoading, updateUserAndProfile, changePassword, refreshAuth } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Profile Action Dropdown & Delete Modal State
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
 
   // Password Change State
   const [currentPassword, setCurrentPassword] = useState('');
@@ -120,6 +128,44 @@ export default function ProfilePage() {
 
   const handleReanalyze = () => {
     router.push('/onboarding');
+  };
+
+  const handleDeleteProfile = async () => {
+    try {
+      setDeleting(true);
+      await api.deleteProfile();
+
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
+      queryClient.invalidateQueries({ queryKey: ['career'] });
+      queryClient.invalidateQueries({ queryKey: ['skill-gap'] });
+      queryClient.invalidateQueries({ queryKey: ['roadmap'] });
+      queryClient.invalidateQueries({ queryKey: ['progress'] });
+
+      // Reset local profile form state
+      setEducation('');
+      setExperienceLevel('Mid');
+      setCurrentRole('');
+      setLocation('');
+      setTargetCareerGoal('');
+      setGoalReason('');
+      setWeeklyHours(10);
+      setPreferredLearningStyle('Projects & Interactive');
+      setSkills([]);
+      setInterests([]);
+
+      setShowDeleteModal(false);
+      setDeleteSuccess(true);
+      setTimeout(() => setDeleteSuccess(false), 5000);
+      await refreshAuth();
+    } catch (err: any) {
+      console.error('Error deleting profile:', err);
+      setSaveError('Failed to delete profile. Please try again.');
+      setShowDeleteModal(false);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const handleOpenConfirm = (e: React.FormEvent) => {
@@ -283,23 +329,90 @@ export default function ProfilePage() {
             </h1>
             <p className="text-slate-500 text-sm mt-0.5">Manage your personal information, skill set, and career goals.</p>
           </div>
-          <div className="flex items-center gap-2.5">
-            {!isEditing ? (
-              <>
-                <Button variant="outline" onClick={() => setIsEditing(true)} className="gap-2 font-bold text-slate-700">
-                  <Edit3 className="h-4 w-4 text-indigo-600" /> Edit Profile
-                </Button>
-                <Button variant="ai" onClick={handleReanalyze} className="gap-2 font-bold">
-                  <RefreshCw className="h-4 w-4" /> Re-Analyze Career
-                </Button>
-              </>
-            ) : (
-              <Button variant="outline" onClick={() => setIsEditing(false)} className="gap-2 font-bold text-rose-600 hover:bg-rose-50 border-rose-200">
+          <div className="flex items-center gap-2.5 relative">
+            {isEditing && (
+              <Button variant="outline" onClick={() => setIsEditing(false)} className="gap-2 font-bold text-rose-600 hover:bg-rose-50 border-rose-200 text-xs">
                 <X className="h-4 w-4" /> Cancel Editing
               </Button>
             )}
+
+            {/* Profile Action Dropdown */}
+            <div className="relative">
+              <Button
+                variant="primary"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="gap-2 font-bold text-xs shadow-md bg-indigo-600 hover:bg-indigo-700 text-white"
+              >
+                <span>Profile Options</span>
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+              </Button>
+
+              {dropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-30" onClick={() => setDropdownOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200 shadow-xl z-40 p-2 space-y-1 animate-in fade-in zoom-in-95 duration-150">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsEditing(true);
+                        setDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors text-left"
+                    >
+                      <Edit3 className="h-4 w-4 text-indigo-600 shrink-0" />
+                      <div>
+                        <div>Edit Profile</div>
+                        <div className="text-[10px] font-normal text-slate-400">Modify skills, goals & personal info</div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        handleReanalyze();
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors text-left"
+                    >
+                      <RefreshCw className="h-4 w-4 text-indigo-600 shrink-0" />
+                      <div>
+                        <div>Re-Analyze Career</div>
+                        <div className="text-[10px] font-normal text-slate-400">Re-run AI career discovery wizard</div>
+                      </div>
+                    </button>
+
+                    <div className="border-t border-slate-100 my-1" />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        setShowDeleteModal(true);
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors text-left"
+                    >
+                      <Trash2 className="h-4 w-4 text-rose-600 shrink-0" />
+                      <div>
+                        <div>Delete Profile</div>
+                        <div className="text-[10px] font-normal text-rose-400">Clear profile & reset goals</div>
+                      </div>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Delete Success Alert Banner */}
+        {deleteSuccess && (
+          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-center gap-3 text-rose-800 text-xs font-bold animate-in fade-in slide-in-from-top-2 duration-300 shadow-xs">
+            <div className="h-6 w-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold">
+              ✓
+            </div>
+            <span>Your learner profile has been deleted and reset. You can set up your preferences again anytime.</span>
+          </div>
+        )}
 
         {/* Success Alert Banner */}
         {savedSuccess && (
@@ -879,6 +992,56 @@ export default function ProfilePage() {
           onConfirm={handleConfirmSave}
           loading={saving}
         />
+
+        {/* Delete Profile Confirmation Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                  <Trash2 className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-slate-900">Delete Learner Profile</h3>
+                  <p className="text-xs text-slate-500">This action will reset your saved profile.</p>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 leading-relaxed font-medium">
+                Are you sure you want to delete your profile? This will reset your target career goals, current skills, interests, and learning preferences.
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowDeleteModal(false)}
+                  disabled={deleting}
+                  className="font-bold text-xs"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleDeleteProfile}
+                  disabled={deleting}
+                  className="gap-2 font-bold text-xs bg-rose-600 hover:bg-rose-700 text-white"
+                >
+                  {deleting ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" /> Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-3.5 w-3.5" /> Delete Profile
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AppLayout>
   );

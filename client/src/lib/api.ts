@@ -321,6 +321,16 @@ export const api = {
     return (res as any).profile || (res as LearnerProfile);
   },
 
+  async deleteProfile(): Promise<boolean> {
+    try {
+      await apiClient.delete('/profile');
+      return true;
+    } catch (error) {
+      console.error('[API] Error deleting profile:', error);
+      return false;
+    }
+  },
+
   // Recommendations & AI Career Decision Engine
   async getRecommendations(): Promise<CareerRecommendation[]> {
     try {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Compass, Sparkles, Check, ArrowRight, ArrowLeft, Loader2, Brain, CheckCircle2, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,9 +26,15 @@ const INTEREST_OPTIONS = [
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { updateUserAndProfile } = useAuth();
+  const { user, loading, updateUserAndProfile } = useAuth();
   const [step, setStep] = useState(1);
   const totalSteps = 7;
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/register');
+    }
+  }, [loading, user, router]);
 
   // Form State
   const [education, setEducation] = useState('B.S. in Computer Science');
@@ -86,33 +92,58 @@ export default function OnboardingPage() {
   };
 
   const startAIAnalysis = async () => {
+    if (!user) {
+      router.push('/register');
+      return;
+    }
+
     setStep(7);
     setIsProcessing(true);
 
-    // Save profile to API and invalidate query caches
-    await updateUserAndProfile({}, {
-      skills: Object.entries(selectedSkills).map(([name, level]) => ({ name, proficiency: level })),
-      interests: selectedInterests,
-      education,
-      experienceLevel,
-      targetCareerGoal: targetGoal,
-      targetCareer: targetGoal,
-      goalReason,
-      learningPreferences: {
-        formats: learningFormats as any,
-        weeklyHours
+    try {
+      // Save profile to API and invalidate query caches
+      await updateUserAndProfile({}, {
+        skills: Object.entries(selectedSkills).map(([name, level]) => ({ name, proficiency: level })),
+        interests: selectedInterests,
+        education,
+        experienceLevel,
+        targetCareerGoal: targetGoal,
+        targetCareer: targetGoal,
+        goalReason,
+        learningPreferences: {
+          formats: learningFormats as any,
+          weeklyHours
+        }
+      } as any);
+
+      // Simulate intelligent processing steps
+      for (let i = 0; i < 4; i++) {
+        await new Promise(r => setTimeout(r, 700));
+        setAiStages(prev => prev.map((st, idx) => idx === i ? { ...st, status: 'completed' } : st));
       }
-    } as any);
 
-    // Simulate intelligent processing steps
-    for (let i = 0; i < 4; i++) {
-      await new Promise(r => setTimeout(r, 700));
-      setAiStages(prev => prev.map((st, idx) => idx === i ? { ...st, status: 'completed' } : st));
+      setIsProcessing(false);
+      setIsComplete(true);
+    } catch (err: any) {
+      setIsProcessing(false);
+      if (err?.response?.status === 401 || !user) {
+        router.push('/register');
+      } else {
+        console.error('[Onboarding] Failed to save profile:', err);
+      }
     }
-
-    setIsProcessing(false);
-    setIsComplete(true);
   };
+
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center space-y-3">
+          <Loader2 className="h-8 w-8 text-indigo-600 animate-spin" />
+          <p className="text-xs font-semibold text-slate-500">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">

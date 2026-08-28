@@ -42,3 +42,14 @@ export const patchProfile = async (req: AuthenticatedRequest, res: Response, nex
     next(error);
   }
 };
+
+export const deleteProfile = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const userId = req.user!._id;
+    await profileService.deleteProfile(userId);
+    res.status(200).json(new ApiResponse(200, null, 'Learner profile deleted successfully'));
+  } catch (error) {
+    next(error);
+  }
+};
+

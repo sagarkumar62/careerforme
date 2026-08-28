@@ -135,7 +135,10 @@ export class ProfileService {
     return profile;
   }
 
-
+  async deleteProfile(userId: string): Promise<boolean> {
+    await LearnerProfile.deleteOne({ userId });
+    return true;
+  }
 }
 
 export const profileService = new ProfileService();

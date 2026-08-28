@@ -1,11 +1,17 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight, Sparkles, CheckCircle2, Zap, Brain, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MatchScore } from '@/components/ui/match-score';
+import { useAuth } from '@/context/AuthContext';
 
 export function Hero() {
+  const { user } = useAuth();
+  const onboardingHref = user ? '/onboarding' : '/register';
+
   return (
     <section className="relative overflow-hidden bg-grid-pattern pt-12 pb-20 lg:pt-20 lg:pb-28">
       {/* Ambient background glow */}
@@ -33,7 +39,7 @@ export function Hero() {
 
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Link href="/onboarding">
+            <Link href={onboardingHref}>
               <Button size="lg" variant="ai" className="w-full sm:w-auto shadow-glow-indigo text-base font-semibold px-8 py-3.5">
                 Find My Career Path <ArrowRight className="ml-2 h-5 w-5" />
               </Button>

@@ -1,8 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight, Compass, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
 
 export function FinalCTA() {
+  const { user } = useAuth();
+  const onboardingHref = user ? '/onboarding' : '/register';
+
   return (
     <section className="py-20 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
@@ -21,7 +27,7 @@ export function FinalCTA() {
         </p>
 
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/onboarding">
+          <Link href={onboardingHref}>
             <Button size="lg" variant="secondary" className="w-full sm:w-auto text-base font-bold px-8 py-3.5">
               Find My Career Path <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
