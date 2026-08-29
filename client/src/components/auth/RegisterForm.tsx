@@ -20,14 +20,23 @@ export function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const passwordCriteria = {
+    minLength: password.length >= 8,
+    hasUppercase: /[A-Z]/.test(password),
+    hasLowercase: /[a-z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSpecialChar: /[^A-Za-z0-9]/.test(password),
+  };
+  const isPasswordValid = Object.values(passwordCriteria).every(Boolean);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !password) {
       setError('Please fill in all required fields.');
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+    if (!isPasswordValid) {
+      setError('Your password does not meet the strict security guidelines displayed below.');
       return;
     }
 
@@ -63,7 +72,7 @@ export function RegisterForm() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Sagar Sharma"
+              placeholder="Your Name"
               required
               className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-600 focus:outline-none transition-colors"
             />
@@ -78,14 +87,14 @@ export function RegisterForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder="Your Email"
               required
               className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-600 focus:outline-none transition-colors"
             />
           </div>
         </div>
 
-        <div className="space-y-1">
+        <div className="space-y-2">
           <label className="text-xs font-semibold text-slate-700">Password</label>
           <div className="relative">
             <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
@@ -93,7 +102,7 @@ export function RegisterForm() {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 6 characters"
+              placeholder="Your Password"
               required
               className="w-full h-10 pl-9 pr-10 text-sm rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-600 focus:outline-none transition-colors"
             />
@@ -104,6 +113,35 @@ export function RegisterForm() {
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
+          </div>
+
+          {/* Strict Password Guidelines Box */}
+          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
+            <span className="font-bold text-slate-700 block text-[11px] uppercase tracking-wider">
+              Password Security Guidelines:
+            </span>
+            <ul className="space-y-1 text-[11px]">
+              <li className={`flex items-center gap-2 font-medium ${passwordCriteria.minLength ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                <span className="font-bold">{passwordCriteria.minLength ? '✓' : '•'}</span>
+                <span>At least 8 characters long</span>
+              </li>
+              <li className={`flex items-center gap-2 font-medium ${passwordCriteria.hasUppercase ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                <span className="font-bold">{passwordCriteria.hasUppercase ? '✓' : '•'}</span>
+                <span>At least one uppercase letter (A-Z)</span>
+              </li>
+              <li className={`flex items-center gap-2 font-medium ${passwordCriteria.hasLowercase ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                <span className="font-bold">{passwordCriteria.hasLowercase ? '✓' : '•'}</span>
+                <span>At least one lowercase letter (a-z)</span>
+              </li>
+              <li className={`flex items-center gap-2 font-medium ${passwordCriteria.hasNumber ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                <span className="font-bold">{passwordCriteria.hasNumber ? '✓' : '•'}</span>
+                <span>At least one number (0-9)</span>
+              </li>
+              <li className={`flex items-center gap-2 font-medium ${passwordCriteria.hasSpecialChar ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                <span className="font-bold">{passwordCriteria.hasSpecialChar ? '✓' : '•'}</span>
+                <span>At least one special character (!@#$%^&*)</span>
+              </li>
+            </ul>
           </div>
         </div>
 

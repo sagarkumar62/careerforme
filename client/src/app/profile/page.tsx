@@ -273,10 +273,19 @@ export default function ProfilePage() {
       setPassError('Please fill in all password fields.');
       return;
     }
-    if (newPassword.length < 6) {
-      setPassError('New password must be at least 6 characters long.');
+
+    const newPassCriteria = {
+      minLength: newPassword.length >= 8,
+      hasUppercase: /[A-Z]/.test(newPassword),
+      hasLowercase: /[a-z]/.test(newPassword),
+      hasNumber: /[0-9]/.test(newPassword),
+      hasSpecialChar: /[^A-Za-z0-9]/.test(newPassword),
+    };
+    if (!Object.values(newPassCriteria).every(Boolean)) {
+      setPassError('Your new password does not meet the strict security guidelines.');
       return;
     }
+
     if (newPassword !== confirmPassword) {
       setPassError('New passwords do not match.');
       return;
@@ -909,7 +918,7 @@ export default function ProfilePage() {
                     type={showCurrentPass ? 'text' : 'password'}
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="••••••••"
+                    placeholder="Your Current Password"
                     required
                     className="w-full h-10 pl-9 pr-9 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 transition-colors"
                   />
@@ -932,7 +941,7 @@ export default function ProfilePage() {
                     type={showNewPass ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Min 6 characters"
+                    placeholder="Your New Password"
                     required
                     className="w-full h-10 pl-9 pr-9 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 transition-colors"
                   />
@@ -955,12 +964,41 @@ export default function ProfilePage() {
                     type={showNewPass ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Repeat new password"
+                    placeholder="Confirm Your New Password"
                     required
                     className="w-full h-10 pl-9 pr-3 text-xs rounded-lg border border-slate-200 bg-white focus:outline-none focus:border-indigo-600 transition-colors"
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Strict Password Guidelines Widget */}
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
+              <span className="font-bold text-slate-700 block text-[11px] uppercase tracking-wider">
+                Strict Password Security Guidelines:
+              </span>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px]">
+                <li className={`flex items-center gap-2 font-medium ${newPassword.length >= 8 ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                  <span className="font-bold">{newPassword.length >= 8 ? '✓' : '•'}</span>
+                  <span>At least 8 characters long</span>
+                </li>
+                <li className={`flex items-center gap-2 font-medium ${/[A-Z]/.test(newPassword) ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                  <span className="font-bold">{/[A-Z]/.test(newPassword) ? '✓' : '•'}</span>
+                  <span>At least one uppercase letter (A-Z)</span>
+                </li>
+                <li className={`flex items-center gap-2 font-medium ${/[a-z]/.test(newPassword) ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                  <span className="font-bold">{/[a-z]/.test(newPassword) ? '✓' : '•'}</span>
+                  <span>At least one lowercase letter (a-z)</span>
+                </li>
+                <li className={`flex items-center gap-2 font-medium ${/[0-9]/.test(newPassword) ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                  <span className="font-bold">{/[0-9]/.test(newPassword) ? '✓' : '•'}</span>
+                  <span>At least one number (0-9)</span>
+                </li>
+                <li className={`flex items-center gap-2 font-medium ${/[^A-Za-z0-9]/.test(newPassword) ? 'text-emerald-600 font-bold' : 'text-slate-500'}`}>
+                  <span className="font-bold">{/[^A-Za-z0-9]/.test(newPassword) ? '✓' : '•'}</span>
+                  <span>At least one special character (!@#$%^&*)</span>
+                </li>
+              </ul>
             </div>
 
             <div className="flex justify-end pt-2">
