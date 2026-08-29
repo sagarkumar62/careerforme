@@ -113,7 +113,7 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  timeout: 20000
+  timeout: 45000
 });
 
 // Attach JWT access token if present in memory/sessionStorage

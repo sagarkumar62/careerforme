@@ -105,6 +105,81 @@ sequenceDiagram
 
 ---
 
+## 👤 End-to-End User Journey & Authentication Flow (Example: `user` — `user@gmail.com`)
+
+To illustrate how the system functions in practice, here is a complete step-by-step walkthrough of a user named **"user"** (`user@gmail.com`) interacting with the platform from registration to real-time AI mentorship:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as user (user@gmail.com)
+    participant Client as Next.js Client (Port 3000)
+    participant Gateway as Express Gateway (Port 5000)
+    participant DB as MongoDB Atlas
+    participant AIService as FastAPI AI Service (Port 8000)
+    participant Gemini as Google Gemini LLM
+
+    %% 1. Registration & Auth
+    User->>Client: 1. Sign up (Name: "user", Email: "user@gmail.com", Pass: "******")
+    Client->>Gateway: POST /api/v1/auth/register
+    Gateway->>DB: Hash password (bcrypt) & Save User Document
+    Gateway-->>Client: Returns JWT Access Token (15m) + HTTP-Only Refresh Cookie (7d)
+    Note over Client: Token stored in sessionStorage ('token')
+
+    %% 2. Profile Setup
+    User->>Client: 2. Completes Onboarding (Target Goal: "AI Engineer", Skills: Python, Git)
+    Client->>Gateway: POST /api/v1/profile (Authorization: Bearer <JWT>)
+    Gateway->>DB: Validates (Zod) & Saves Learner Profile
+
+    %% 3. Recommendations & Roadmap
+    User->>Client: 3. Requests Career Recommendations
+    Client->>Gateway: POST /api/v1/recommendations
+    Gateway->>AIService: POST /recommend (6-Factor Equation + ONNX Cosine Search)
+    AIService-->>Gateway: Ranked Careers & Skill Gaps (AI Engineer: 92% match)
+    Gateway->>Gemini: Generate 4-Phase Adaptive Roadmap & Projects
+    Gemini-->>Gateway: Enriched Roadmap Payload
+    Gateway->>DB: Persist Recommendations & Roadmap
+    Gateway-->>Client: HTTP 200 JSON (Career Cards & DAG Flowchart)
+
+    %% 4. Real-time AI Mentor Chat
+    User->>Client: 4. Opens Assistant & asks "What project should I build next?"
+    Client->>Gateway: POST /api/v1/conversation/message (stream: true)
+    Gateway->>Gemini: Stream Context-Aware Mentor Reply (Profile + Roadmap Synced)
+    Gateway-->>Client: Server-Sent Events (SSE) Chunks
+    Client-->>User: Renders live streaming response without page refresh
+```
+
+### Detailed Functional Breakdown:
+
+#### 1. 🔑 User Registration & Authentication Phase
+* **Signup**: User **"user"** submits registration details (`name: "user"`, `email: "user@gmail.com"`).
+* **Security & Storage**: Express backend hashes the password using `bcryptjs` (10 salt rounds) and stores the user in MongoDB.
+* **Token Issuance**: Server issues a dual-token payload:
+  * **JWT Access Token**: Short-lived (15 minutes), attached as a `Bearer` token in the request header (`sessionStorage.getItem('token')`).
+  * **JWT Refresh Token**: Long-lived (7 days), stored securely inside an `httpOnly`, `sameSite`, encrypted HTTP cookie.
+* **Seamless Refresh**: If **"user"** stays logged in and the 15-minute access token expires, Axios interceptors silently call `POST /api/v1/auth/refresh` to obtain a fresh token without logging out **"user"**.
+
+#### 2. 📋 Profile Onboarding & Skill Assessment
+* **"user"** configures their learner profile:
+  * **Target Goal**: AI Engineer
+  * **Current Skills**: Python (Proficiency: 4/5), Linear Algebra (Proficiency: 3/5), Git (Proficiency: 4/5)
+  * **Interests**: Machine Learning, Deep Learning, Computer Vision
+  * **Weekly Commitment**: 15 hours/week
+* The Express server validates the payload using `Zod` schema validators and updates **"user"**'s `LearnerProfile` document in MongoDB.
+
+#### 3. 🎯 Recommendation & Roadmap Generation
+* Express Gateway calls the Python FastAPI AI Microservice (`http://localhost:8000/recommend`).
+* **6-Factor Math Engine**: Calculates exact match percentages (e.g., **92% match for AI Engineer**) using **"user"**'s skills, interests, goal alignment, experience, education, and ONNX vector embeddings.
+* **Skill Gap Analysis**: Identifies acquired skills vs. missing critical gaps (e.g., PyTorch, Transformers, Model Deployment).
+* **Roadmap Structuring**: Generates a custom 4-phase learning path (Foundations $\rightarrow$ Core Competencies $\rightarrow$ Advanced Topics $\rightarrow$ Capstone Projects) tailored to **"user"**'s 15 hrs/week commitment.
+
+#### 4. 💬 Real-Time Conversational AI Mentorship
+* **"user"** navigates to `/assistant` and asks: *"What project should I build next to improve my AI Engineer skills?"*
+* **Context Injection**: Express server pulls **"user"**'s MongoDB `LearnerProfile` and active `Roadmap` context, building a specialized prompt for Gemini Cloud.
+* **SSE Streaming**: Server streams response chunks via Server-Sent Events (`Accept: text/event-stream`). The client updates the UI incrementally with zero flickering.
+
+---
+
 ## 🧠 AI Subsystem & Mathematical Formulation
 
 ### 1. The 6-Factor Hybrid Scoring Equation

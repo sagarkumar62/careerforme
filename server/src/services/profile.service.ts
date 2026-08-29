@@ -45,27 +45,60 @@ export class ProfileService {
       });
     }
 
-    // Recalculate % AI fit and career recommendations in real time for updated skills & target career
-    try {
-      const { recommendationService } = await import('./recommendation.service');
-      const { roadmapService } = await import('./roadmap.service');
-      const { emitProgressEvent, PROGRESS_EVENTS } = await import('../socket');
-      const { progressService } = await import('./progress.service');
+  private triggerBackgroundAiSync(userId: string, targetCareer?: string) {
+    // Execute AI fit recalculation, roadmap generation, & socket emissions in background without blocking HTTP response
+    (async () => {
+      try {
+        const { recommendationService } = await import('./recommendation.service');
+        const { roadmapService } = await import('./roadmap.service');
+        const { emitProgressEvent, PROGRESS_EVENTS } = await import('../socket');
+        const { progressService } = await import('./progress.service');
 
-      await recommendationService.getRecommendations(userId);
+        await recommendationService.getRecommendations(userId);
 
-      const targetCareer = normalizedData.targetCareer || normalizedData.targetCareerGoal || profile.targetCareer;
-      if (targetCareer) {
-        await roadmapService.generateRoadmap(userId, targetCareer);
+        if (targetCareer) {
+          await roadmapService.generateRoadmap(userId, targetCareer);
+        }
+
+        const summary = await progressService.getProgressSummary(userId);
+
+        emitProgressEvent(userId, PROGRESS_EVENTS.UPDATED, { userId, timestamp: new Date().toISOString() });
+        emitProgressEvent(userId, PROGRESS_EVENTS.SUMMARY_UPDATED, { summary });
+      } catch (err) {
+        console.warn('[ProfileService] Background AI fit & roadmap sync skipped:', err);
       }
+    })();
+  }
 
-      const summary = await progressService.getProgressSummary(userId);
+  async createOrUpdateProfile(userId: string, data: ProfileInput): Promise<ILearnerProfile> {
+    let profile = await LearnerProfile.findOne({ userId });
 
-      emitProgressEvent(userId, PROGRESS_EVENTS.UPDATED, { userId, timestamp: new Date().toISOString() });
-      emitProgressEvent(userId, PROGRESS_EVENTS.SUMMARY_UPDATED, { summary });
-    } catch (err) {
-      console.warn('[ProfileService] Real-time AI fit & roadmap sync skipped:', err);
+    const normalizedData: any = { ...data };
+    if (data.targetCareerGoal && !data.targetCareer) {
+      normalizedData.targetCareer = data.targetCareerGoal;
     }
+    if (data.learningPreferences && typeof data.learningPreferences === 'object' && !Array.isArray(data.learningPreferences)) {
+      if (data.learningPreferences.weeklyHours && !data.weeklyLearningHours) {
+        normalizedData.weeklyLearningHours = data.learningPreferences.weeklyHours;
+      }
+    }
+
+    if (profile) {
+      Object.assign(profile, normalizedData);
+      if (!profile.baselineSkills || profile.baselineSkills.length === 0) {
+        profile.baselineSkills = Array.isArray(profile.skills) ? [...profile.skills] : [];
+      }
+      await profile.save();
+    } else {
+      profile = await LearnerProfile.create({
+        userId,
+        ...normalizedData,
+        baselineSkills: Array.isArray(normalizedData.skills) ? [...normalizedData.skills] : [],
+      });
+    }
+
+    const targetCareer = normalizedData.targetCareer || normalizedData.targetCareerGoal || profile.targetCareer;
+    this.triggerBackgroundAiSync(userId, targetCareer);
 
     return profile;
   }
@@ -87,19 +120,8 @@ export class ProfileService {
 
     await profile.save();
 
-    try {
-      const { recommendationService } = await import('./recommendation.service');
-      const { emitProgressEvent, PROGRESS_EVENTS } = await import('../socket');
-      const { progressService } = await import('./progress.service');
-
-      await recommendationService.getRecommendations(userId);
-      const summary = await progressService.getProgressSummary(userId);
-
-      emitProgressEvent(userId, PROGRESS_EVENTS.UPDATED, { userId, timestamp: new Date().toISOString() });
-      emitProgressEvent(userId, PROGRESS_EVENTS.SUMMARY_UPDATED, { summary });
-    } catch (err) {
-      console.warn('[ProfileService] Real-time AI fit & socket emission skipped:', err);
-    }
+    const targetCareer = normalizedData.targetCareer || normalizedData.targetCareerGoal || profile.targetCareer;
+    this.triggerBackgroundAiSync(userId, targetCareer);
 
     return profile;
   }
@@ -118,19 +140,8 @@ export class ProfileService {
     Object.assign(profile, normalizedData);
     await profile.save();
 
-    try {
-      const { recommendationService } = await import('./recommendation.service');
-      const { emitProgressEvent, PROGRESS_EVENTS } = await import('../socket');
-      const { progressService } = await import('./progress.service');
-
-      await recommendationService.getRecommendations(userId);
-      const summary = await progressService.getProgressSummary(userId);
-
-      emitProgressEvent(userId, PROGRESS_EVENTS.UPDATED, { userId, timestamp: new Date().toISOString() });
-      emitProgressEvent(userId, PROGRESS_EVENTS.SUMMARY_UPDATED, { summary });
-    } catch (err) {
-      console.warn('[ProfileService] Real-time AI fit & socket emission skipped:', err);
-    }
+    const targetCareer = normalizedData.targetCareer || normalizedData.targetCareerGoal || profile.targetCareer;
+    this.triggerBackgroundAiSync(userId, targetCareer);
 
     return profile;
   }
