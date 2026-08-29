@@ -54,8 +54,12 @@ export default function AssistantPage() {
 
   // Set default active conversation when loaded
   useEffect(() => {
-    if (conversations.length > 0 && !activeId) {
-      setActiveId(conversations[0].id || conversations[0]._id || null);
+    if (conversations.length > 0) {
+      const exists = conversations.some((c) => (c.id || c._id) === activeId);
+      if (!activeId || !exists) {
+        const defaultId = conversations[0].id || conversations[0]._id || null;
+        setActiveId(defaultId);
+      }
     }
   }, [conversations, activeId]);
 
@@ -81,6 +85,7 @@ export default function AssistantPage() {
 
   const sendMutation = useMutation({
     mutationFn: async ({ content, convId }: { content: string; convId?: string }) => {
+      const targetConvId = convId || activeId || (conversations[0]?.id || conversations[0]?._id);
       const userMsgId = `usr_${Date.now()}`;
       const assistantMsgId = `ast_${Date.now()}`;
 
@@ -100,11 +105,30 @@ export default function AssistantPage() {
         timestamp: 'Just now',
       };
 
-      // Optimistically append user & empty assistant message
+      // Optimistically append user & empty assistant message to cache
       queryClient.setQueryData(['conversations'], (old: Conversation[] | undefined) => {
-        if (!old || old.length === 0) return old;
-        return old.map((c) => {
-          if (c.id === convId || c._id === convId || c.id === activeId || c._id === activeId) {
+        const list = old ? [...old] : [];
+        const currentUserId = (authProfile as any)?._id || authProfile?.id || 'user';
+        if (list.length === 0) {
+          const tempConvId = targetConvId || `temp_${Date.now()}`;
+          return [
+            {
+              id: tempConvId,
+              _id: tempConvId,
+              userId: currentUserId,
+              title: content.length > 30 ? content.substring(0, 30) + '...' : content,
+              updatedAt: new Date().toISOString(),
+              createdAt: new Date().toISOString(),
+              messages: [userMsg, assistantPlaceholder],
+            },
+          ];
+        }
+
+        let found = false;
+        const updated = list.map((c) => {
+          const cId = c.id || c._id;
+          if (cId === targetConvId || (targetConvId && cId === targetConvId)) {
+            found = true;
             return {
               ...c,
               messages: [...c.messages, userMsg, assistantPlaceholder],
@@ -112,26 +136,36 @@ export default function AssistantPage() {
           }
           return c;
         });
+
+        if (!found) {
+          const tempConvId = targetConvId || `temp_${Date.now()}`;
+          updated.unshift({
+            id: tempConvId,
+            _id: tempConvId,
+            userId: currentUserId,
+            title: content.length > 30 ? content.substring(0, 30) + '...' : content,
+            updatedAt: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            messages: [userMsg, assistantPlaceholder],
+          });
+        }
+
+        return updated;
       });
 
       // Stream chunks
       const result = await api.streamAssistantMessage(
         content,
-        convId || activeId || undefined,
+        targetConvId || undefined,
         (chunk, resConvId) => {
-          if (resConvId && resConvId !== activeId) {
-            setActiveId(resConvId);
-          }
           queryClient.setQueryData(['conversations'], (old: Conversation[] | undefined) => {
             if (!old) return old;
             return old.map((c) => {
+              const cId = c.id || c._id;
               if (
-                c.id === resConvId ||
-                c._id === resConvId ||
-                c.id === convId ||
-                c._id === convId ||
-                c.id === activeId ||
-                c._id === activeId
+                cId === resConvId ||
+                cId === targetConvId ||
+                (cId && cId.startsWith('temp_'))
               ) {
                 return {
                   ...c,
@@ -158,7 +192,8 @@ export default function AssistantPage() {
         setActiveId(data.conversationId);
       }
     },
-    onError: () => {
+    onError: (err) => {
+      console.error('Send mutation error:', err);
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     },
   });

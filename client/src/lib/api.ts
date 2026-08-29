@@ -838,8 +838,9 @@ export const api = {
           actionCard: m.metadata?.actionCard || m.actionCard
         }))
       }));
-    } catch {
-      return [];
+    } catch (error) {
+      console.error('Failed to fetch conversations:', error);
+      throw error;
     }
   },
 
@@ -898,7 +899,9 @@ export const api = {
     conversationId: string | undefined,
     onChunk: (chunk: string, convId: string) => void
   ): Promise<{ conversationId: string; fullContent: string }> {
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
+    const token = typeof window !== 'undefined'
+      ? (sessionStorage.getItem('token') || sessionStorage.getItem('accessToken'))
+      : null;
     const response = await fetch(`${BASE_URL}/conversation/message`, {
       method: 'POST',
       headers: {
